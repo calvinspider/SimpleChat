@@ -4,19 +4,27 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="430.0" style="-fx-background-color: #EBF2F9;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <CheckBox layoutX="135.0" layoutY="258.0" minHeight="15.0" minWidth="15.0" mnemonicParsing="false" opacity="0.8" text="CheckBox" />
-      <ImageView fitHeight="180.0" fitWidth="430.0" pickOnBounds="true" preserveRatio="true" />
+      <CheckBox layoutX="135.0" layoutY="258.0" minHeight="15.0" minWidth="15.0" mnemonicParsing="false" opacity="0.8" text="记住密码" />
+      <ImageView fitHeight="180.0" fitWidth="430.0" pickOnBounds="true" smooth="false">
+         <image>
+            <Image url="@banner.jpg" />
+         </image></ImageView>
       <Button layoutX="135.0" layoutY="290.0" minHeight="30.0" minWidth="200.0" mnemonicParsing="false" text="Button" />
-      <ImageView fitHeight="80.0" fitWidth="85.0" layoutX="40.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fitHeight="80.0" fitWidth="85.0" layoutX="40.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icon.jpg" />
+         </image></ImageView>
       <TextField layoutX="135.0" layoutY="195.0" minHeight="30.0" minWidth="200.0" />
       <TextField layoutX="135.0" layoutY="225.0" minHeight="30.0" minWidth="200.0" />
-      <Label layoutX="340.0" layoutY="195.0" minHeight="30.0" minWidth="75.0" text="lebel" />
-      <Label layoutX="340.0" layoutY="225.0" minHeight="30.0" minWidth="75.0" text="Label" />
-      <CheckBox layoutX="255.0" layoutY="258.0" minHeight="15.0" minWidth="15.0" mnemonicParsing="false" opacity="0.8" text="CheckBox" />
+      <Label layoutX="340.0" layoutY="195.0" minHeight="30.0" minWidth="75.0" text="注册账号" />
+      <Label layoutX="340.0" layoutY="225.0" minHeight="30.0" minWidth="75.0" text="忘记密码" />
+      <CheckBox layoutX="255.0" layoutY="258.0" minHeight="15.0" minWidth="15.0" mnemonicParsing="false" opacity="0.8" text="自动登陆" />
+      <Button layoutX="13.0" layoutY="293.0" maxHeight="15.0" maxWidth="15.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="15.0" text="Button" />
    </children>
 </Pane>
