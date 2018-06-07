@@ -1,5 +1,7 @@
 package org.yang.zhang.controller;
 
+import org.yang.zhang.dto.GroupDto;
+import org.yang.zhang.dto.RecentChatDto;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
 import org.yang.zhang.utils.Result;
@@ -27,6 +29,31 @@ public class ChatController {
     {
         return Result.successData(chatService.getFriendList(user.getId()));
     }
+
+    @RequestMapping("/getFriendGroup")
+    public Result getFriendGroup(Integer userId){
+        //TODO
+        return null;
+    }
+
+    @RequestMapping("/getGroupList")
+    public Result getGroupList(@RequestBody GroupDto groupDto){
+        //TODO
+        return null;
+    }
+
+    @RequestMapping("/recentChat")
+    public Result recentChat(@RequestBody RecentChatDto recentChatDto){
+        //TODO
+        return null;
+    }
+
+    @RequestMapping("/chatHistory")
+    public Result chatHistory(Integer userId){
+        //TODO
+        return null;
+    }
+
 
 
 }

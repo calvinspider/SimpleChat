@@ -1,23 +1,22 @@
 package org.yang.zhang.controller;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.yang.zhang.dto.LoginDto;
+import org.yang.zhang.utils.Result;
 
 /**
  * @Author calvin.zhang
  * @Description
- * @Date 2018 04 28 13:45
+ * @Date 2018 06 07 16:28
  */
-@Controller
+@RestController
 public class LoginController {
 
     @RequestMapping("/login")
-    public String login()
-    {
-        return "login";
+    public Result login(@RequestBody LoginDto loginDto) {
+        //TODO
+        return null;
     }
-
-    @RequestMapping("/home")
-    public String home(){
-        return "index";}
 }

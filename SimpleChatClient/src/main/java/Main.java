@@ -7,6 +7,7 @@ import javafx.stage.StageStyle;
 
 import static javafx.stage.StageStyle.TRANSPARENT;
 import static javafx.stage.StageStyle.UTILITY;
+import socket.WebsocketThread;
 
 public class Main extends Application {
 
@@ -19,6 +20,8 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+//        launch(args);
+        Thread thread=new Thread(new WebsocketThread(1));
+        thread.start();
     }
 }
