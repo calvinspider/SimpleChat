@@ -1,6 +1,6 @@
 package org.yang.zhang.service;
 
-import org.yang.zhang.module.User;
+import org.yang.zhang.entity.User;
 
 import java.util.List;
 

@@ -1,10 +1,13 @@
 package org.yang.zhang.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.yang.zhang.dto.LoginDto;
-import org.yang.zhang.utils.Result;
+import org.yang.zhang.entity.Result;
+import org.yang.zhang.service.UserService;
+import org.yang.zhang.utils.JsonUtils;
 
 /**
  * @Author calvin.zhang
@@ -14,9 +17,12 @@ import org.yang.zhang.utils.Result;
 @RestController
 public class LoginController {
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping("/login")
-    public Result login(@RequestBody LoginDto loginDto) {
-        //TODO
-        return null;
+    public String login(@RequestBody LoginDto loginDto) {
+        Result result= userService.login(loginDto.getUserName(),loginDto.getPassWord());
+        return JsonUtils.toJson(result);
     }
 }

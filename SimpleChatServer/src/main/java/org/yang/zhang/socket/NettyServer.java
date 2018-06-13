@@ -21,7 +21,8 @@ import org.springframework.stereotype.Component;
  * @author Administrator
  * @date 2017-8-31
  */
-public class NettyServer {
+public class NettyServer implements Runnable{
+
     private static final int port = 6789; //设置服务端端口
     private static  EventLoopGroup group = new NioEventLoopGroup();   // 通过nio方式来接收连接和处理连接
     private static  ServerBootstrap b = new ServerBootstrap();
@@ -31,7 +32,8 @@ public class NettyServer {
      * Netty创建全部都是实现自AbstractBootstrap。
      * 客户端的是Bootstrap，服务端的则是    ServerBootstrap。
      **/
-    public void start() throws InterruptedException {
+    @Override
+    public void run() {
         try {
             b.group(group);
             b.channel(NioServerSocketChannel.class);
@@ -41,7 +43,9 @@ public class NettyServer {
             System.out.println("服务端启动成功...");
             // 监听服务器关闭监听
             f.channel().closeFuture().sync();
-        } finally {
+        } catch (Exception e){
+            e.printStackTrace();
+        }finally {
             group.shutdownGracefully(); ////关闭EventLoopGroup，释放掉所有资源包括创建的线程
         }
     }

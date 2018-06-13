@@ -1,13 +1,9 @@
 package org.yang.zhang.controller;
 
-import org.yang.zhang.dto.GroupDto;
-import org.yang.zhang.dto.RecentChatDto;
-import org.yang.zhang.module.User;
+import org.yang.zhang.entity.User;
 import org.yang.zhang.service.ChatService;
-import org.yang.zhang.utils.Result;
+import org.yang.zhang.entity.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.QueryAnnotation;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,13 +33,13 @@ public class ChatController {
     }
 
     @RequestMapping("/getGroupList")
-    public Result getGroupList(@RequestBody GroupDto groupDto){
+    public Result getGroupList(){
         //TODO
         return null;
     }
 
     @RequestMapping("/recentChat")
-    public Result recentChat(@RequestBody RecentChatDto recentChatDto){
+    public Result recentChat(){
         //TODO
         return null;
     }

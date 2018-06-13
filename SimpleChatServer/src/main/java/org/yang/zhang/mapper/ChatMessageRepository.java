@@ -1,11 +1,7 @@
 package org.yang.zhang.mapper;
 
-import org.yang.zhang.module.ClientInfo;
-import org.yang.zhang.module.MessageInfo;
+import org.yang.zhang.entity.MessageInfo;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * @Author calvin.zhang

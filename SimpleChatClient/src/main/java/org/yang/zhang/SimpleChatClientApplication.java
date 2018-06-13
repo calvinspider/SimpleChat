@@ -1,8 +1,7 @@
 package org.yang.zhang;
 
-import javafx.scene.Scene;
 import javafx.stage.StageStyle;
-import org.yang.zhang.fxcontroller.MainStageView;
+import org.yang.zhang.stageview.MainStageView;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

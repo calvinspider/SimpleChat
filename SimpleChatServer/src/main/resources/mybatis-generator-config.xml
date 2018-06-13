@@ -25,7 +25,7 @@
         </javaTypeResolver>
 
         <!-- !!!! Model Configurations !!!! -->
-        <javaModelGenerator targetPackage="org.yang.zhang.module" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="org.yang.zhang.entity" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>

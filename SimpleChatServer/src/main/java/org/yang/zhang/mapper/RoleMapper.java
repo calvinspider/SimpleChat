@@ -1,6 +1,6 @@
 package org.yang.zhang.mapper;
 
-import org.yang.zhang.module.Role;
+import org.yang.zhang.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

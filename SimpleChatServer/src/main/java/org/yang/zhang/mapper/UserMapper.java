@@ -1,10 +1,11 @@
 package org.yang.zhang.mapper;
 
-import org.yang.zhang.module.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
+import org.yang.zhang.entity.User;
 
-@Repository
-public interface UserMapper{
-
+public interface UserMapper extends JpaRepository<User, Integer>,
+        JpaSpecificationExecutor<User>{
+       User findByName(String name);
 }

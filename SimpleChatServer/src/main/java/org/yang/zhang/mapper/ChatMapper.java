@@ -1,8 +1,7 @@
 package org.yang.zhang.mapper;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.yang.zhang.module.User;
+import org.yang.zhang.entity.User;
 
 import java.util.List;
 
