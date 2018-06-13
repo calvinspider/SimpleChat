@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 @MapperScan("org.yang.zhang.mapper")
-public class FinacemanagerApplication {
+public class SimpleChatApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FinacemanagerApplication.class, args);
+        SpringApplication.run(SimpleChatApplication.class, args);
     }
 }

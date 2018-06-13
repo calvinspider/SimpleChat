@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.yang.zhang.mapper.ChatMessageCustRepository">
 
-    <select id="findUnsendChatMessage" resultType="org.yang.zhang.module.MessageInfo">
+    <select id="findUnsendChatMessage" resultType="org.yang.zhang.org.yang.zhang.module.MessageInfo">
         select
         sourceclientId,
         targetclientId,

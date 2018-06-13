@@ -1,4 +1,4 @@
-package enums;
+package org.yang.zhang.enums;
 
 /**
  * @Author calvin.zhang

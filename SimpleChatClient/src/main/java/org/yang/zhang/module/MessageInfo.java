@@ -1,9 +1,9 @@
-package module;
+package org.yang.zhang.module;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import enums.MessageType;
+import org.yang.zhang.enums.MessageType;
 
 /**
  * @Author calvin.zhang
