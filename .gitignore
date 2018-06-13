@@ -1,0 +1,8 @@
+.idea/
+SimpleChatServer/target/
+SimpleChatClient/target/
+common/target/
+SimpleChatServer/SimpleChatServer.iml
+SimpleChatClient/SimpleChatClient.iml
+common/common.iml
+SimpleChat.iml
