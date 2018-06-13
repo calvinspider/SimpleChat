@@ -3,7 +3,10 @@ package org.yang.zhang.fxcontroller;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
@@ -54,6 +57,18 @@ public class LoginController  implements Initializable {
 //            return;
 //        }
 //        System.out.println("登陆成功");
+        try {
+            FXMLLoader fxmlLoader=new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
+            Parent root=fxmlLoader.load();
+            Scene scene=new Scene(root,280,700);
+            Stage stage=new Stage();
+            stage.setScene(scene);
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
 
 
 
