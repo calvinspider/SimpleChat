@@ -1,65 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="700.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="700.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
    <children>
       <Pane maxHeight="110.0" maxWidth="280.0" minHeight="110.0" minWidth="280.0" prefHeight="110.0" prefWidth="280.0" />
       <TextField layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" />
-      <MenuBar layoutY="140.0" maxHeight="35.0" maxWidth="280.0" minHeight="35.0" minWidth="280.0" prefHeight="35.0" prefWidth="280.0">
-        <menus>
-          <Menu mnemonicParsing="false" style="-fx-min-width: 90" text="联系人">
-            <items>
-              <MenuItem mnemonicParsing="false" text="friends" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" style="-fx-min-width: 90;" text="消息">
-            <items>
-              <MenuItem mnemonicParsing="false" text="messages" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" style="-fx-min-width: 90;" text="空间">
-            <items>
-              <MenuItem mnemonicParsing="false" text="space" />
-            </items>
-          </Menu>
-        </menus>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
-      </MenuBar>
-      <TreeView layoutY="165.0" minHeight="480.0" minWidth="280.0" prefHeight="502.0" prefWidth="280.0" />
-      <TableView layoutY="165.0" prefHeight="502.0" prefWidth="280.0">
-        <columns>
-          <TableColumn prefWidth="279.0" />
-        </columns>
-      </TableView>
       <MenuBar layoutY="666.0" prefHeight="35.0" prefWidth="280.0">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
+          <Menu mnemonicParsing="false" text="添加好友" />
         </menus>
       </MenuBar>
+      <TabPane layoutY="140.0" prefHeight="526.0" prefWidth="280.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab closable="false" style="-fx-pref-Width: 90; -fx-text-alignment: center;" text="联系人">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="379.0" prefWidth="280.0">
+                     <children>
+                        <TreeView fx:id="GroupList" editable="true" layoutY="6.0" prefHeight="491.0" prefWidth="280.0" style="-fx-background-color: #B9AFA0;" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab closable="false" style="-fx-pref-Width: 90;" text="消息">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView prefHeight="491.0" prefWidth="280.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab closable="false" style="-fx-pref-Width: 80;" text="空间">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView layoutX="-4.0" layoutY="6.0" prefHeight="492.0" prefWidth="287.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
    </children>
 </Pane>

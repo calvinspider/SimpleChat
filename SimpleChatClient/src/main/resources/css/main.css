@@ -1,0 +1,19 @@
+#GroupList{
+    -fx-control-inner-background:#B9AFA0;
+}
+
+#GroupList .label{
+    -fx-pref-width: 250;
+    -fx-pref-height: 25;
+    -fx-background-color: #B9AFA0;
+}
+
+#GroupList .label:hover{
+    -fx-background-color: #DDD0A3;
+    -fx-pref-height: 55;
+    -fx-font-size: 14;
+}
+
+#messageList{
+    -fx-control-background:#B9AFA0;
+}
