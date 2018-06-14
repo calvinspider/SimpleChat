@@ -23,7 +23,12 @@ public class LoginServiceImpl implements LoginService {
         LoginDto loginDto=new LoginDto();
         loginDto.setUserName(userName);
         loginDto.setPassWord(passWord);
-        String result=restTemplate.postForObject(Constant.LoginUrl,loginDto,String.class);
-        return JsonUtils.fromJson(result, type);
+        try {
+            String result=restTemplate.postForObject(Constant.LoginUrl,loginDto,String.class);
+            return JsonUtils.fromJson(result, type);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return Result.errorMessage("",null);
     }
 }
