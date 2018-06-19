@@ -21,15 +21,15 @@ import javafx.stage.Stage;
 @Component
 public class StageManager{
 
-    private static Map<StageType,Stage> stageMap=new HashMap<>();
+    private static Map<String,Stage> stageMap=new HashMap<>();
 
     private static Logger logger=Logger.getLogger(StageManager.class);
 
-    public static void registerStage(StageType name, Stage stage){
+    public static void registerStage(String name, Stage stage){
         stageMap.put(name,stage);
     }
 
-    public static Stage getStage(StageType name){
+    public static Stage getStage(String name){
         return stageMap.get(name);
     }
 

@@ -3,7 +3,6 @@ package org.yang.zhang;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.StageStyle;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.enums.StageType;
 import org.yang.zhang.utils.StageManager;
@@ -26,7 +25,7 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
         stage.setResizable(false);
         stage.setIconified(false);
         stage.setTitle("登录");
-        StageManager.registerStage(StageType.login,stage);
+        StageManager.registerStage("login",stage);
         super.start(stage);
     }
 

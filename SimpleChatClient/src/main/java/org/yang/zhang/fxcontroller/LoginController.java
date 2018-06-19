@@ -65,7 +65,7 @@ public class LoginController  implements Initializable {
 //            passWord.setText("");
 //            return;
 //        }
-        Stage login=StageManager.getStage(StageType.login);
+        Stage login=StageManager.getStage("login");
         login.close();
         Parent root=mainView.getView();
         Scene scene=new Scene(root);
@@ -73,7 +73,7 @@ public class LoginController  implements Initializable {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-        StageManager.registerStage(StageType.main,stage);
+        StageManager.registerStage("main",stage);
 
     }
 }
