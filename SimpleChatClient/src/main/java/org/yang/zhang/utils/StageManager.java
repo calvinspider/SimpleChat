@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 public class StageManager{
 
     private static Map<String,Stage> stageMap=new HashMap<>();
+    private static Map<String,Parent> chatWindowMap=new HashMap<>();
 
     private static Logger logger=Logger.getLogger(StageManager.class);
 
@@ -33,4 +34,11 @@ public class StageManager{
         return stageMap.get(name);
     }
 
+    public static void registerChatWindows(String id, Parent root) {
+        chatWindowMap.put(id,root);
+    }
+
+    public static Parent getParent(String id){
+        return chatWindowMap.get(id);
+    }
 }

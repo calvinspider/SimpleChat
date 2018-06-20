@@ -1,5 +1,9 @@
 package org.yang.zhang.service;
 
+import java.util.List;
+
+import org.yang.zhang.entity.Contract;
+
 /**
  * @Author calvin.zhang
  * @Description
@@ -7,4 +11,5 @@ package org.yang.zhang.service;
  */
 
 public interface ContractService {
+    List<Contract> getContractList(String s);
 }

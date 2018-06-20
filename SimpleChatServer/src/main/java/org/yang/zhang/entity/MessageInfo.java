@@ -2,6 +2,7 @@ package org.yang.zhang.entity;
 
 import javax.persistence.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,26 +19,13 @@ public class MessageInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //源客户端id
-    private Integer sourceclientid;
-    //目标客户端id
-    private Integer targetclientid;
-    //消息类型
-    private String msgtype;
-    //消息内容
+    private String sourceclientid;
+
+    private String targetclientid;
+
     private String msgcontent;
 
-    private Integer sendflag;
-
     private Date time;
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
 
     public Integer getId() {
         return id;
@@ -47,28 +35,20 @@ public class MessageInfo {
         this.id = id;
     }
 
-    public Integer getSourceclientid() {
+    public String getSourceclientid() {
         return sourceclientid;
     }
 
-    public void setSourceclientid(Integer sourceclientid) {
+    public void setSourceclientid(String sourceclientid) {
         this.sourceclientid = sourceclientid;
     }
 
-    public Integer getTargetclientid() {
+    public String getTargetclientid() {
         return targetclientid;
     }
 
-    public void setTargetclientid(Integer targetclientid) {
+    public void setTargetclientid(String targetclientid) {
         this.targetclientid = targetclientid;
-    }
-
-    public String getMsgtype() {
-        return msgtype;
-    }
-
-    public void setMsgtype(String msgtype) {
-        this.msgtype = msgtype;
     }
 
     public String getMsgcontent() {
@@ -79,11 +59,12 @@ public class MessageInfo {
         this.msgcontent = msgcontent;
     }
 
-    public Integer getSendflag() {
-        return sendflag;
+    public Date getTime() {
+        return time;
     }
 
-    public void setSendflag(Integer sendflag) {
-        this.sendflag = sendflag;
+    public void setTime(Date time) {
+        this.time = time;
     }
+
 }

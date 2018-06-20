@@ -8,6 +8,7 @@ package org.yang.zhang.socket;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -24,31 +25,25 @@ import java.io.IOException;
  */
 public class NettyClient {
 
-    public static String host = "127.0.0.1";  //ip地址
-    public static int port = 6789;          //端口
-    /// 通过nio方式来接收连接和处理连接
-    private static EventLoopGroup group = new NioEventLoopGroup();
-    private static  Bootstrap b = new Bootstrap();
-    private static Channel ch;
+    private  String host = "127.0.0.1";
+    private  int port = 6789;
+    private  EventLoopGroup group = new NioEventLoopGroup();
+    private  Bootstrap b = new Bootstrap();
+    private  Channel channel;
 
-    /**
-     * Netty创建全部都是实现自AbstractBootstrap。
-     * 客户端的是Bootstrap，服务端的则是    ServerBootstrap。
-     **/
-    public static void main(String[] args) throws InterruptedException, IOException {
-        System.out.println("客户端成功启动...");
-        b.group(group);
-        b.channel(NioSocketChannel.class);
-        b.handler(new NettyClientFilter());
-        // 连接服务端
-        ch = b.connect(host, port).sync().channel();
-        star();
+    public NettyClient(){
+        try {
+            b.group(group);
+            b.channel(NioSocketChannel.class);
+            b.handler(new NettyClientFilter());
+            channel=b.connect(host, port).sync().channel();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public static void star() throws IOException{
-        String str="Hello Netty";
-        ch.writeAndFlush(str+ "\r\n");
-        System.out.println("客户端发送数据:"+str);
+    public void sendMessage(String message){
+        channel.writeAndFlush(message);
     }
 
 }

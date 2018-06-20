@@ -14,8 +14,13 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.entity.Contract;
+import org.yang.zhang.service.ContractService;
 import org.yang.zhang.utils.StageManager;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 @FXMLController
@@ -27,12 +32,14 @@ public class MainController  implements Initializable {
     @FXML
     private ListView<Label> messageList;
 
+    @Autowired
+    private ContractService contractService;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         //好友列表属性
         GroupList.setScaleShape(false);
-
         //根节点
          TreeItem<Label> rootItem = new TreeItem<Label>();
          Label root=new Label();
@@ -41,23 +48,17 @@ public class MainController  implements Initializable {
          GroupList.setRoot(rootItem);
          GroupList.setShowRoot(false);
          rootItem.setExpanded(true);
-         //子节点
 
-         TreeItem<Label> i1 = new TreeItem<Label>();
-         ImageView imageView=new ImageView("images/personIcon.jpg");
-         imageView.setFitWidth(25);
-         imageView.setFitHeight(25);
-         Label sign=new Label("10001",imageView);
-         i1.setValue(sign);
-         rootItem.getChildren().add(i1);
-
-         i1 = new TreeItem<Label>();
-         imageView=new ImageView("images/personIcon.jpg");
-         imageView.setFitWidth(25);
-         imageView.setFitHeight(25);
-         sign=new Label("10002",imageView);
-         i1.setValue(sign);
-         rootItem.getChildren().add(i1);
+        List<Contract> contracts= contractService.getContractList("1003");
+        for (Contract contract:contracts){
+            TreeItem<Label> i1 = new TreeItem<Label>();
+            ImageView imageView=new ImageView("images/personIcon.jpg");
+            imageView.setFitWidth(25);
+            imageView.setFitHeight(25);
+            Label sign=new Label(contract.getUserId(),imageView);
+            i1.setValue(sign);
+            rootItem.getChildren().add(i1);
+        }
 
         GroupList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
@@ -79,7 +80,7 @@ public class MainController  implements Initializable {
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
-            StageManager.registerStage("chat"+id,stage);
+            StageManager.registerChatWindows(id,root);
         }catch (Exception e){
             e.printStackTrace();
         }
