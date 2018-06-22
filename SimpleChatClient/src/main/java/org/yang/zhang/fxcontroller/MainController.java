@@ -14,7 +14,6 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.entity.Contract;
 import org.yang.zhang.service.ContractService;
@@ -27,30 +26,38 @@ import java.util.ResourceBundle;
 public class MainController  implements Initializable {
 
     @FXML
-    private TreeView<Label> GroupList;
-
+    public TreeView<Label> GroupList;
     @FXML
-    private ListView<Label> messageList;
-
+    public ListView<Label> messageList;
+    @FXML
+    public Label nameLabel;
     @Autowired
-    private ContractService contractService;
+    public ContractService contractService;
 
+    /**
+     * 主页面初始化
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        //好友列表属性
-        GroupList.setScaleShape(false);
-        //根节点
+
+        //联系人列表根节点
          TreeItem<Label> rootItem = new TreeItem<Label>();
          Label root=new Label();
          root.setVisible(false);
          rootItem.setValue(root);
          GroupList.setRoot(rootItem);
+         //隐藏根节点
          GroupList.setShowRoot(false);
+         //默认展开节点
          rootItem.setExpanded(true);
 
-        List<Contract> contracts= contractService.getContractList("1003");
-        for (Contract contract:contracts){
+         //获取当前用户联系人列表
+         List<Contract> contracts= contractService.getContractList(nameLabel.getText());
+         //添加联系人到列表
+         for (Contract contract:contracts){
             TreeItem<Label> i1 = new TreeItem<Label>();
             ImageView imageView=new ImageView("images/personIcon.jpg");
             imageView.setFitWidth(25);
@@ -60,6 +67,7 @@ public class MainController  implements Initializable {
             rootItem.getChildren().add(i1);
         }
 
+        //点击联系人弹出聊天框
         GroupList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue,Object newValue) {
@@ -72,15 +80,17 @@ public class MainController  implements Initializable {
 
     private void openChatWindow(String id) {
         try {
+            //创建聊天框
             Parent root = FXMLLoader.load(getClass().getResource( "/fxml/chatWindow.fxml"));
+            Stage chatStage=new Stage();
+            chatStage.setScene(new Scene(root));
+            chatStage.setResizable(false);
+            //设置所属联系人信息
             Label nameLabel = (Label)root.lookup("#nameLabel");
             nameLabel.setText(id);
-            Scene scene=new Scene(root);
-            Stage stage=new Stage();
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-            StageManager.registerChatWindows(id,root);
+            chatStage.show();
+            //注册聊天框
+            StageManager.registerStage(id,chatStage);
         }catch (Exception e){
             e.printStackTrace();
         }

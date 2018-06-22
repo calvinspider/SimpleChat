@@ -1,4 +1,4 @@
-package org.yang.zhang.mapper;
+package org.yang.zhang.repository;
 
 import org.yang.zhang.entity.MessageInfo;
 import org.springframework.stereotype.Repository;

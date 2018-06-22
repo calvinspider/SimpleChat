@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.yang.zhang.enums.StageType;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 /**
@@ -20,6 +20,7 @@ import javafx.stage.Stage;
  */
 @Component
 public class StageManager{
+
 
     private static Map<String,Stage> stageMap=new HashMap<>();
     private static Map<String,Parent> chatWindowMap=new HashMap<>();
@@ -41,4 +42,5 @@ public class StageManager{
     public static Parent getParent(String id){
         return chatWindowMap.get(id);
     }
+
 }

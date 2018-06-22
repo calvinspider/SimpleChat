@@ -1,4 +1,4 @@
-package org.yang.zhang.mapper;
+package org.yang.zhang.repository;
 
 import org.yang.zhang.entity.ClientInfo;
 import org.springframework.data.repository.CrudRepository;

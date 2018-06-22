@@ -4,6 +4,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.StageStyle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.enums.StageType;
 import org.yang.zhang.utils.StageManager;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
@@ -15,6 +16,7 @@ import org.yang.zhang.view.MainView;
 @SpringBootApplication
 public class SimpleChatClientApplication extends AbstractJavaFxApplicationSupport {
 
+    //启动应用弹出登陆框
     public static void main(String[] args) {
         launch(SimpleChatClientApplication.class,LoginView.class,args);
     }
@@ -25,7 +27,8 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
         stage.setResizable(false);
         stage.setIconified(false);
         stage.setTitle("登录");
-        StageManager.registerStage("login",stage);
+        //注册登陆页面
+        StageManager.registerStage(StageCodes.LOGIN,stage);
         super.start(stage);
     }
 

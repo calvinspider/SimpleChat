@@ -14,18 +14,18 @@ import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.constants.Constant;
 import org.yang.zhang.entity.MessageInfo;
 import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.JsonUtils;
+import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.view.MainView;
 
-@FXMLController
 public class ChatWindowController  implements Initializable {
 
     private NettyClient client;
 
-    @Autowired
-    private MainView mainView;
+
 
     @FXML
     private Label nameLabel;
@@ -51,11 +51,10 @@ public class ChatWindowController  implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         client=new NettyClient();
+        //向服务器注册当前channel
         MessageInfo messageInfo=new MessageInfo();
-        Parent root=mainView.getView();
-        Label nameLabel = (Label)root.lookup("#nameLabel");
-        messageInfo.setSourceclientid(nameLabel.getText());
-        messageInfo.setMsgcontent("register");
+        messageInfo.setSourceclientid(UserUtils.getCurrentUser());
+        messageInfo.setMsgcontent(Constant.REGEIST);
         messageInfo.setTime(new Date());
         client.sendMessage(JsonUtils.toJson(messageInfo));
     }
@@ -64,9 +63,7 @@ public class ChatWindowController  implements Initializable {
     private void sendMessage(ActionEvent event) {
         String targetUser=nameLabel.getText();
         MessageInfo messageInfo=new MessageInfo();
-        Parent root=mainView.getView();
-        Label nameLabel = (Label)root.lookup("#nameLabel");
-        messageInfo.setSourceclientid(nameLabel.getText());
+        messageInfo.setSourceclientid(UserUtils.getCurrentUser());
         messageInfo.setTargetclientid(targetUser);
         messageInfo.setMsgcontent(chatArea.getText());
         messageInfo.setTime(new Date());

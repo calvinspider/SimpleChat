@@ -28,44 +28,6 @@ public class ChatController {
     @RequestMapping(value = "/contract")
     public List<Contract> getContractList(String userId)
     {
-        List<Contract> list=new ArrayList<>();
-        Contract contract=new Contract();
-        contract.setUserId("10001");
-        contract.setUserName("USER1");
-        list.add(contract);
-        return list;
+        return chatService.getContractList(userId);
     }
-
-    @RequestMapping(value = "/getfriendlist")
-    public Result getfriendlist(@RequestBody User user)
-    {
-        return Result.successData(chatService.getFriendList(user.getId()));
-    }
-
-    @RequestMapping("/getFriendGroup")
-    public Result getFriendGroup(Integer userId){
-        //TODO
-        return null;
-    }
-
-    @RequestMapping("/getGroupList")
-    public Result getGroupList(){
-        //TODO
-        return null;
-    }
-
-    @RequestMapping("/recentChat")
-    public Result recentChat(){
-        //TODO
-        return null;
-    }
-
-    @RequestMapping("/chatHistory")
-    public Result chatHistory(Integer userId){
-        //TODO
-        return null;
-    }
-
-
-
 }

@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.SimpleChatClientApplication;
+import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.enums.StageType;
@@ -24,15 +25,6 @@ import org.yang.zhang.view.MainView;
 
 @FXMLController
 public class LoginController  implements Initializable {
-
-    @Autowired
-    private LoginServiceImpl loginService;
-
-    @Autowired
-    private MainView mainView;
-
-    @Autowired
-    private LoginErrorView loginErrorView;
 
     @FXML
     private Button loginButton;
@@ -46,36 +38,50 @@ public class LoginController  implements Initializable {
     private TextField passWord;
     @FXML
     private ImageView userIcon;
+    @Autowired
+    private LoginServiceImpl loginService;
+    @Autowired
+    private MainController mainController;
+    @Autowired
+    private LoginView loginView;
 
     public void initialize(URL url, ResourceBundle rb) {
 
     }
 
+    /**
+     * 登陆事件
+     * @param event
+     */
     @FXML
     private void handleSubmitButtonAction(ActionEvent event) {
+        //登陆
         loginButton.setText("登录中...");
         String name=userName.getText();
         String pwd=passWord.getText();
         Result result=loginService.login(name,pwd);
         if(ResultConstants.RESULT_FAILED.equals(result.getCode())){
-            System.out.println("登陆失败");
+            //登陆失败显示失败框
             SimpleChatClientApplication.showView(LoginErrorView.class);
             loginButton.setText("登录");
             userName.setText("");
             passWord.setText("");
             return;
         }
-        Stage login=StageManager.getStage("login");
+
+        //登陆成功关闭登陆框
+        Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.close();
-        Parent root=mainView.getView();
-        Label nameLabel = (Label)root.lookup("#nameLabel");
+
+        //弹出主页面
+        Label nameLabel =mainController.nameLabel;
         nameLabel.setText(userName.getText());
-        Scene scene=new Scene(root);
-        Stage stage=new Stage();
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-        StageManager.registerStage("main",stage);
+        Stage mainStage=new Stage();
+        mainStage.setScene(new Scene(loginView.getView()));
+        mainStage.show();
+
+        //注册主页面
+        StageManager.registerStage(StageCodes.MAIN,mainStage);
 
     }
 }

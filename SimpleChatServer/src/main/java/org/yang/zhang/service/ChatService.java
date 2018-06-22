@@ -1,5 +1,6 @@
 package org.yang.zhang.service;
 
+import org.yang.zhang.entity.Contract;
 import org.yang.zhang.entity.User;
 
 import java.util.List;
@@ -12,5 +13,5 @@ import java.util.List;
 
 public interface ChatService {
 
-    List<User> getFriendList(Integer userId);
+    List<Contract> getContractList(String userId);
 }

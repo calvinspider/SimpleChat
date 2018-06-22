@@ -9,15 +9,16 @@ import java.io.Serializable;
  */
 
 public class Contract implements Serializable {
-    private String userName;
+    private Integer id;
     private String userId;
+    private String contractId;
 
-    public String getUserName() {
-        return userName;
+    public Integer getId() {
+        return id;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -26,5 +27,13 @@ public class Contract implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(String contractId) {
+        this.contractId = contractId;
     }
 }
