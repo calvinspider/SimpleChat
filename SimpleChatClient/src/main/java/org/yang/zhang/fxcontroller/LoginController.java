@@ -53,21 +53,23 @@ public class LoginController  implements Initializable {
 
     @FXML
     private void handleSubmitButtonAction(ActionEvent event) {
-//        loginButton.setText("登录中...");
-//        String name=userName.getText();
-//        String pwd=passWord.getText();
-//        Result result=loginService.login(name,pwd);
-//        if(ResultConstants.RESULT_FAILED.equals(result.getCode())){
-//            System.out.println("登陆失败");
-//            SimpleChatClientApplication.showView(LoginErrorView.class);
-//            loginButton.setText("登录");
-//            userName.setText("");
-//            passWord.setText("");
-//            return;
-//        }
+        loginButton.setText("登录中...");
+        String name=userName.getText();
+        String pwd=passWord.getText();
+        Result result=loginService.login(name,pwd);
+        if(ResultConstants.RESULT_FAILED.equals(result.getCode())){
+            System.out.println("登陆失败");
+            SimpleChatClientApplication.showView(LoginErrorView.class);
+            loginButton.setText("登录");
+            userName.setText("");
+            passWord.setText("");
+            return;
+        }
         Stage login=StageManager.getStage("login");
         login.close();
         Parent root=mainView.getView();
+        Label nameLabel = (Label)root.lookup("#nameLabel");
+        nameLabel.setText(userName.getText());
         Scene scene=new Scene(root);
         Stage stage=new Stage();
         stage.setScene(scene);

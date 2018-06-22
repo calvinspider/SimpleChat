@@ -24,7 +24,7 @@
                         <Image url="@../images/personIcon.jpg" />
                      </image>
                   </ImageView>
-                  <Label layoutX="82.0" layoutY="-1.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
+                  <Label fx:id="nameLabel" layoutX="82.0" layoutY="-1.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
                   <Label layoutX="82.0" layoutY="30.0" prefHeight="30.0" prefWidth="102.0" text="编辑个性签名" />
                </children>
             </Pane>
