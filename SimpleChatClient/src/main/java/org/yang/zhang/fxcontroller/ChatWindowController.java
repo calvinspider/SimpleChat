@@ -24,9 +24,7 @@ import org.yang.zhang.view.MainView;
 public class ChatWindowController  implements Initializable {
 
     private NettyClient client;
-
-
-
+    
     @FXML
     private Label nameLabel;
 
