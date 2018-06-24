@@ -33,8 +33,16 @@ import javafx.stage.Stage;
 public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("channelRead");
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
         TypeReference type = new TypeReference<List<MessageInfo>>(){};
+        if(msg==null||"".equals(msg)){
+            return;
+        }
         MessageInfo info=JsonUtils.fromJson(msg,type);
         String userName=info.getTargetclientid();
         Parent chatWindow=StageManager.getParent(userName);
@@ -50,7 +58,6 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("连接关闭! ");
         super.channelInactive(ctx);
     }
 }

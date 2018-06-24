@@ -1,5 +1,6 @@
 package org.yang.zhang.controller;
 
+import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.entity.Contract;
 import org.yang.zhang.entity.User;
 import org.yang.zhang.service.ChatService;
@@ -26,7 +27,7 @@ public class ChatController {
 
 
     @RequestMapping(value = "/contract")
-    public List<Contract> getContractList(String userId)
+    public List<Contract> getContractList(@RequestBody  FindByUserDto userId)
     {
         return chatService.getContractList(userId);
     }

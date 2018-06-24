@@ -1,5 +1,6 @@
 package org.yang.zhang.service.impl;
 
+import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.entity.Contract;
 import org.yang.zhang.mapper.ChatMapper;
 import org.yang.zhang.entity.User;
@@ -23,7 +24,7 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     private ContractRepository contractRepository;
     @Override
-    public List<Contract> getContractList(String userId) {
-        return contractRepository.findByUserId(userId);
+    public List<Contract> getContractList(FindByUserDto userId) {
+        return contractRepository.findByUserId(userId.getUserId());
     }
 }

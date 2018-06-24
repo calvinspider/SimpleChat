@@ -1,5 +1,6 @@
 package org.yang.zhang.service;
 
+import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.entity.Contract;
 import org.yang.zhang.entity.User;
 
@@ -13,5 +14,5 @@ import java.util.List;
 
 public interface ChatService {
 
-    List<Contract> getContractList(String userId);
+    List<Contract> getContractList(FindByUserDto userId);
 }

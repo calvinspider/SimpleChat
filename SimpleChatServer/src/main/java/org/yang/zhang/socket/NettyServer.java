@@ -8,6 +8,7 @@ package org.yang.zhang.socket;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -24,9 +25,6 @@ import org.springframework.stereotype.Component;
 public class NettyServer implements Runnable{
 
     private static final int port = 6789; //设置服务端端口
-    private static  EventLoopGroup group = new NioEventLoopGroup();   // 通过nio方式来接收连接和处理连接
-    private static  ServerBootstrap b = new ServerBootstrap();
-
 
     /**
      * Netty创建全部都是实现自AbstractBootstrap。
@@ -34,19 +32,26 @@ public class NettyServer implements Runnable{
      **/
     @Override
     public void run() {
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
         try {
-            b.group(group);
-            b.channel(NioServerSocketChannel.class);
-            b.childHandler(new NettyServerFilter()); //设置过滤器
-            // 服务器绑定端口监听
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new NettyServerFilter())
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture f = b.bind(port).sync();
-            System.out.println("服务端启动成功...");
-            // 监听服务器关闭监听
             f.channel().closeFuture().sync();
-        } catch (Exception e){
+        }catch (Exception e){
             e.printStackTrace();
         }finally {
-            group.shutdownGracefully(); ////关闭EventLoopGroup，释放掉所有资源包括创建的线程
+            bossGroup.shutdownGracefully();
         }
+    }
+
+    public static void main(String[] args) {
+        NettyServer server=new NettyServer();
+        server.run();
+        System.out.println("服务器启动了");
     }
 }

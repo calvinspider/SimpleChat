@@ -7,13 +7,16 @@ package org.yang.zhang.socket;
  */
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelException;
-import io.netty.channel.EventLoopGroup;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.CharsetUtil;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  *
@@ -23,27 +26,28 @@ import java.io.IOException;
  * @author Administrator
  * @date 2017-8-31
  */
-public class NettyClient {
+public class NettyClient{
 
-    private  String host = "127.0.0.1";
-    private  int port = 6789;
-    private  EventLoopGroup group = new NioEventLoopGroup();
-    private  Bootstrap b = new Bootstrap();
-    private  Channel channel;
+    private  static String host = "127.0.0.1";
+    private  static int port = 6789;
+    private  static Channel channel;
 
-    public NettyClient(){
+    public void run() {
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
-            b.group(group);
+            Bootstrap b = new Bootstrap();
+            b.group(workerGroup);
             b.channel(NioSocketChannel.class);
+            b.option(ChannelOption.SO_KEEPALIVE, true);
             b.handler(new NettyClientFilter());
-            channel=b.connect(host, port).sync().channel();
+            channel = b.connect(host, port).sync().channel();
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void sendMessage(String message){
-        channel.writeAndFlush(message);
+    public static void sendMessage(String message){
+        channel.writeAndFlush(message+"\n");
     }
 
 }

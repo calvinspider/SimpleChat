@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.yang.zhang.constants.Constant;
+import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.LoginDto;
 import org.yang.zhang.entity.Contract;
 import org.yang.zhang.entity.Result;
@@ -27,7 +28,7 @@ public class ContractServiceImpl implements ContractService {
     private RestTemplate restTemplate;
 
     @Override
-    public List<Contract> getContractList(String userId) {
+    public List<Contract> getContractList(FindByUserDto userId) {
         TypeReference type = new TypeReference<List<Contract>>(){};
         try {
             String result=restTemplate.postForObject(Constant.ContractUrl,userId,String.class);

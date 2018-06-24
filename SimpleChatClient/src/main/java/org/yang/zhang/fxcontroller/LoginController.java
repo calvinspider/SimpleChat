@@ -44,6 +44,8 @@ public class LoginController  implements Initializable {
     private MainController mainController;
     @Autowired
     private LoginView loginView;
+    @Autowired
+    private MainView mainView;
 
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -74,10 +76,14 @@ public class LoginController  implements Initializable {
         login.close();
 
         //弹出主页面
-        Label nameLabel =mainController.nameLabel;
-        nameLabel.setText(userName.getText());
+        Parent main=mainView.getView();
+        Label label=(Label) main.lookup("#nameLabel");
+        label.setText(userName.getText());
+
+        mainController.initContract();
+
         Stage mainStage=new Stage();
-        mainStage.setScene(new Scene(loginView.getView()));
+        mainStage.setScene(new Scene(mainView.getView()));
         mainStage.show();
 
         //注册主页面
