@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.yang.zhang.entity.MessageInfo;
+import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.JsonUtils;
 
 @FXMLController
@@ -60,7 +61,8 @@ public class ChatWindowController  implements Initializable {
         messageInfo.setTime(new Date());
         Label label=new Label(chatArea.getText());
         myChat.getChildren().add(label);
-//        ChannelUtils.getCurrentClient().sendMessage(JsonUtils.toJson(messageInfo));
+        //发送消息
+        NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
         chatArea.setText("");
     }
 }

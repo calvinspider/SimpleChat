@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.User;
-import org.yang.zhang.mapper.UserCustMapper;
-import org.yang.zhang.mapper.UserMapper;
+import org.yang.zhang.repository.UserRepository;
 import org.yang.zhang.service.UserService;
 
 /**
@@ -17,7 +16,7 @@ import org.yang.zhang.service.UserService;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserRepository userMapper;
 
     @Override
     public Result login(String userName, String passWord) {

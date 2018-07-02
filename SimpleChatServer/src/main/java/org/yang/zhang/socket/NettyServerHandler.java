@@ -13,9 +13,14 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.CharsetUtil;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.yang.zhang.entity.MessageInfo;
+import org.yang.zhang.repository.ChatMessageRepository;
 import org.yang.zhang.utils.ChannelManager;
 import org.yang.zhang.utils.JsonUtils;
+import org.yang.zhang.utils.SpringContextUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -35,13 +40,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         String sourceUser=info.getSourceclientid();
         if(targetUser==null&&info.getMsgcontent().equals("register")){
             //注册
-            ChannelManager.registerChannel(info.getSourceclientid(),ctx);
+            ChannelManager.registerChannel(sourceUser,ctx);
         }else{
             //转发消息
             ChannelHandlerContext targetChannel=ChannelManager.getChannel(targetUser);
             targetChannel.writeAndFlush(msg);
+            //本地存储消息
+            ChatMessageRepository chatMessageRepository=SpringContextUtils.getBean("chatMessageRepository");
+            chatMessageRepository.save(info);
         }
-
     }
 
     @Override

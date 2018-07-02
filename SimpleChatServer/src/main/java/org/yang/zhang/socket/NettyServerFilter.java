@@ -6,6 +6,9 @@ package org.yang.zhang.socket;
  * @Date 2018 06 08 15:11
  */
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -22,7 +25,9 @@ import io.netty.handler.codec.string.StringEncoder;
  * @author Administrator
  * @date 2017-8-31
  */
+
 public class NettyServerFilter extends ChannelInitializer<SocketChannel> {
+
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
