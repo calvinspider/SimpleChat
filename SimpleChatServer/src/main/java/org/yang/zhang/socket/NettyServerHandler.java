@@ -15,6 +15,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.CharsetUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 import org.yang.zhang.entity.MessageInfo;
 import org.yang.zhang.repository.ChatMessageRepository;
@@ -36,15 +37,28 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         }
         TypeReference type = new TypeReference<List<MessageInfo>>(){};
         MessageInfo info=JsonUtils.fromJson((String) msg,type);
+        if(info==null){
+            throw new Exception("MessageInfo must not be NULL!");
+        }
         String targetUser=info.getTargetclientid();
         String sourceUser=info.getSourceclientid();
         if(targetUser==null&&info.getMsgcontent().equals("register")){
-            //注册
+            //注册channel
             ChannelManager.registerChannel(sourceUser,ctx);
+        }if(targetUser==null&&info.getMsgcontent().equals("loginOut")){
+            //注销channel
+            ChannelManager.unregisterChannel(sourceUser);
         }else{
             //转发消息
             ChannelHandlerContext targetChannel=ChannelManager.getChannel(targetUser);
-            targetChannel.writeAndFlush(msg);
+            //未找到接收方的channel,将该消息记为离线消息
+            if(targetChannel==null){
+                info.setSendflag(0);
+            }else{
+                targetChannel.writeAndFlush(msg);
+                info.setSendflag(1);
+            }
+            info.setTime(new Date());
             //本地存储消息
             ChatMessageRepository chatMessageRepository=SpringContextUtils.getBean("chatMessageRepository");
             chatMessageRepository.save(info);

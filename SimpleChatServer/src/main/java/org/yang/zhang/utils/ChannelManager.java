@@ -19,6 +19,10 @@ public class ChannelManager {
         map.put(id,ctx);
     }
 
+    public static void unregisterChannel(String id){
+        map.remove(id);
+    }
+
     public static ChannelHandlerContext getChannel(String id){
         return map.get(id);
     }

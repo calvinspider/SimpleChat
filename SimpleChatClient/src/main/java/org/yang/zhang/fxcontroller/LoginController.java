@@ -88,6 +88,7 @@ public class LoginController  implements Initializable {
 
         //注册主页面
         StageManager.registerStage(StageCodes.MAIN,mainStage);
+        StageManager.unregisterStage(StageCodes.LOGIN);
 
     }
 }

@@ -3,7 +3,9 @@ package org.yang.zhang.fxcontroller;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,6 +15,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.dto.FindByUserDto;
@@ -22,7 +26,6 @@ import org.yang.zhang.service.ContractService;
 import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
-import org.yang.zhang.view.ChatView;
 
 import java.net.URL;
 import java.util.Date;
@@ -37,15 +40,13 @@ public class MainController  implements Initializable {
 
     @FXML
     public ListView<Label> messageList;
+
     @FXML
     public Label nameLabel;
 
     @Autowired
-    private ChatView chatView;
-    @Autowired
     public ContractService contractService;
-    @Autowired
-    private ChatWindowController chatWindowController;
+
 
     /**
      * 主页面初始化
@@ -105,18 +106,27 @@ public class MainController  implements Initializable {
     private void openChatWindow(String id) {
         try {
             //创建聊天框
-            Parent root = chatView.getView();
             Stage chatStage=new Stage();
-            chatStage.setScene(new Scene(root));
+            Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
+            chatStage.setScene(scene);
+            //聊天框大小不可修改
             chatStage.setResizable(false);
-            //设置所属联系人信息
-            Label nameLabel1 = (Label)root.lookup("#nameLabel");
+            //目标联系人
+            Label nameLabel1 = (Label)scene.lookup("#nameLabel");
             nameLabel1.setText(id);
-            Label sourceNameLabel = (Label)root.lookup("#sourceNameLabel");
+            //当前登陆用户
+            Label sourceNameLabel = (Label)scene.lookup("#sourceNameLabel");
             sourceNameLabel.setText(nameLabel.getText());
             chatStage.show();
             //注册聊天框
             StageManager.registerStage(id,chatStage);
+
+            chatStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    StageManager.unregisterStage(id);
+                }
+            });
         }catch (Exception e){
             e.printStackTrace();
         }

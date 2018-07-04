@@ -30,7 +30,9 @@ public class StageManager{
     public static void registerStage(String name, Stage stage){
         stageMap.put(name,stage);
     }
-
+    public static void unregisterStage(String name){
+        stageMap.remove(name);
+    }
     public static Stage getStage(String name){
         return stageMap.get(name);
     }
