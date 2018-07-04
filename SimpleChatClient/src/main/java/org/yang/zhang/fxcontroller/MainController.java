@@ -80,6 +80,7 @@ public class MainController  implements Initializable {
             imageView.setFitWidth(25);
             imageView.setFitHeight(25);
             Label sign=new Label(contract.getContractId(),imageView);
+            sign.setId(contract.getContractId());
             i1.setValue(sign);
             rootItem.getChildren().add(i1);
         }

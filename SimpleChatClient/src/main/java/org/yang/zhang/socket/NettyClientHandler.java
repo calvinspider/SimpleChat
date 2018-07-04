@@ -50,7 +50,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             System.out.println("聊天框未打开");
         }else{
             Scene scene=chatWindow.getScene();
-            Pane otherChat = (Pane) scene.lookup("#otherChat");
+            Pane otherChat = (Pane) scene.lookup("#otherchat");
             Label label=new Label(info.getMsgcontent());
             otherChat.getChildren().add(label);
         }

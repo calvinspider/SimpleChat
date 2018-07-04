@@ -5,6 +5,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.Pane?>
 
+<?import javafx.scene.layout.FlowPane?>
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.ChatWindowController">
    <children>
       <Pane prefHeight="40.0" prefWidth="600.0">
@@ -13,11 +14,15 @@
             <Label fx:id="sourceNameLabel" layoutX="313.0" layoutY="13.0" prefHeight="0.0" prefWidth="0.0" />
          </children>
       </Pane>
-      <Pane layoutY="40.0" prefHeight="322.0" prefWidth="600.0">
+      <FlowPane fx:id="chatHistory" layoutY="40.0" prefHeight="322.0" prefWidth="600.0">
          <children>
-            <Pane fx:id="myChat" layoutX="7.0" prefHeight="322.0" prefWidth="304.0" />
-            <Pane fx:id="otherChat" layoutX="296.0" prefHeight="322.0" prefWidth="304.0" />
-         </children></Pane>
+            <FlowPane fx:id="mychat" layoutY="40.0" prefHeight="322.0" prefWidth="600.0">
+            </FlowPane>
+            <FlowPane fx:id="otherchat" layoutY="40.0" prefHeight="322.0" prefWidth="600.0">
+            </FlowPane>
+         </children>
+
+      </FlowPane>
       <Button fx:id="sendBtn" layoutX="516.0" layoutY="458.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="26.0" prefWidth="70.0" text="发送" />
       <Button fx:id="closeBtn" layoutX="434.0" layoutY="458.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="关闭" />
       <TextArea fx:id="chatArea" layoutY="360.0" prefHeight="96.0" prefWidth="600.0" />

@@ -4,9 +4,13 @@ import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.Date;
@@ -26,14 +30,11 @@ public class ChatWindowController  implements Initializable {
     private Label sourceNameLabel;
 
     @FXML
-    private Pane chatHistory;
-
+    private FlowPane chatHistory;
     @FXML
-    private Pane otherChat;
-
+    private FlowPane mychat;
     @FXML
-    private Pane myChat;
-
+    private FlowPane otherchat;
     @FXML
     private TextArea chatArea;
 
@@ -59,10 +60,19 @@ public class ChatWindowController  implements Initializable {
         messageInfo.setTargetclientid(targetUser);
         messageInfo.setMsgcontent(chatArea.getText());
         messageInfo.setTime(new Date());
+
+        //向聊天框中添加聊天内容
         Label label=new Label(chatArea.getText());
-        myChat.getChildren().add(label);
+        label.setPrefWidth(300);
+        mychat.setOrientation(Orientation.VERTICAL);
+        mychat.setColumnHalignment(HPos.LEFT);
+        mychat.getChildren().add(label);
+
+        //情况打字区
+        chatArea.setText("");
         //发送消息
         NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
-        chatArea.setText("");
+
+
     }
 }
