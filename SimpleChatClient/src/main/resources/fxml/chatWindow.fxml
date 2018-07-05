@@ -6,7 +6,8 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.ChatWindowController">
+<?import javafx.scene.web.WebView?>
+<Pane stylesheets="@../css/chat.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.ChatWindowController">
    <children>
       <Pane prefHeight="40.0" prefWidth="600.0">
          <children>
@@ -21,7 +22,6 @@
             <FlowPane fx:id="otherchat" layoutY="40.0" prefHeight="322.0" prefWidth="300.0">
             </FlowPane>
          </children>
-
       </FlowPane>
       <Button fx:id="sendBtn" layoutX="516.0" layoutY="458.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="26.0" prefWidth="70.0" text="发送" />
       <Button fx:id="closeBtn" layoutX="434.0" layoutY="458.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="关闭" />

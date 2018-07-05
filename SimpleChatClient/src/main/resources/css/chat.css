@@ -1,0 +1,9 @@
+#mychat .label{
+    -fx-background-color: #088cb7;
+    -fx-border-radius: 12px;
+}
+
+#otherchat .label{
+    -fx-background-color: #088cb7;
+    -fx-border-radius: 12px;
+}

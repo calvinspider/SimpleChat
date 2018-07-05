@@ -15,8 +15,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -49,7 +51,11 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             Platform.runLater(()->{
                 Scene scene=chatWindow.getScene();
                 Pane otherChat = (Pane) scene.lookup("#otherchat");
-                Label label=new Label(info.getMsgcontent());
+                ImageView imageView=new ImageView("images/personIcon.jpg");
+                imageView.setFitWidth(25);
+                imageView.setFitHeight(25);
+                Label label=new Label(info.getMsgcontent(),imageView);
+                label.setAlignment(Pos.CENTER_RIGHT);
                 otherChat.getChildren().add(label);
             });
 

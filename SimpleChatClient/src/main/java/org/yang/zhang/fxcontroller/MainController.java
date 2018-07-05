@@ -3,6 +3,7 @@ package org.yang.zhang.fxcontroller;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,6 +62,8 @@ public class MainController  implements Initializable {
 
     @FXML
     public Menu addFriendMenu;
+    @FXML
+    public Menu systemMenu;
 
     @Autowired
     public ContractService contractService;
@@ -154,6 +157,24 @@ public class MainController  implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 系统设置
+     * @param event
+     */
+    @FXML
+    public void openSystemConfig(ActionEvent event){
+
+    }
+
+    /**
+     * 添加好友
+     * @param event
+     */
+    @FXML
+    public void openAddFriend(ActionEvent event){
+
     }
 
     public Tab getGroupTab() {

@@ -72,6 +72,5 @@ public class ChatWindowController  implements Initializable {
         //发送消息
         NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
 
-
     }
 }

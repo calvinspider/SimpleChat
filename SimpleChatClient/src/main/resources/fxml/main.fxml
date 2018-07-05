@@ -33,7 +33,8 @@
       <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" />
       <MenuBar layoutY="666.0" prefHeight="35.0" prefWidth="280.0">
         <menus>
-          <Menu fx:id="addFriendMenu" mnemonicParsing="false" text="添加好友" />
+          <Menu fx:id="addFriendMenu" onAction="#openAddFriend" mnemonicParsing="false" text="添加好友"/>
+          <Menu fx:id="systemMenu" onAction="#openSystemConfig" mnemonicParsing="false" text="系统配置"/>
         </menus>
       </MenuBar>
       <TabPane layoutY="140.0" prefHeight="526.0" prefWidth="280.0" tabClosingPolicy="UNAVAILABLE">
