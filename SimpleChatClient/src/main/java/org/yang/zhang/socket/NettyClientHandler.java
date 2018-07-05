@@ -50,12 +50,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         }else{
             Platform.runLater(()->{
                 Scene scene=chatWindow.getScene();
-                Pane otherChat = (Pane) scene.lookup("#otherchat");
+                Pane otherChat = (Pane) scene.lookup("#chatHistory");
                 ImageView imageView=new ImageView("images/personIcon.jpg");
                 imageView.setFitWidth(25);
                 imageView.setFitHeight(25);
                 Label label=new Label(info.getMsgcontent(),imageView);
                 label.setAlignment(Pos.CENTER_RIGHT);
+                label.setPrefWidth(570);
                 otherChat.getChildren().add(label);
             });
 
