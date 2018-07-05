@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -38,27 +39,30 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         if(msg==null||"".equals(msg)){
             return;
         }
-        TypeReference type = new TypeReference<List<MessageInfo>>(){};
+        TypeReference type = new TypeReference<MessageInfo>(){};
         MessageInfo info=JsonUtils.fromJson((String) msg,type);
         if(info==null){
             throw new Exception("MessageInfo must not be NULL!");
         }
-        String userName=info.getTargetclientid();
+        String userName=info.getSourceclientid();
         Stage chatWindow=StageManager.getStage(userName);
         //聊天框未打开,头像闪动
         if(chatWindow==null){
             System.out.println("聊天框未打开");
         }else{
-            Scene scene=chatWindow.getScene();
-            Pane otherChat = (Pane) scene.lookup("#otherchat");
-            Label label=new Label(info.getMsgcontent());
-            otherChat.getChildren().add(label);
+            Platform.runLater(()->{
+                Scene scene=chatWindow.getScene();
+                Pane otherChat = (Pane) scene.lookup("#otherchat");
+                Label label=new Label(info.getMsgcontent());
+                otherChat.getChildren().add(label);
+            });
+
         }
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
-
+        System.out.println("channelRead0");
     }
 
     @Override

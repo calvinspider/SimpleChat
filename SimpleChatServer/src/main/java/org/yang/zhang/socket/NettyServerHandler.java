@@ -35,14 +35,14 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         if(msg==null){
             return;
         }
-        TypeReference type = new TypeReference<List<MessageInfo>>(){};
+        TypeReference type = new TypeReference<MessageInfo>(){};
         MessageInfo info=JsonUtils.fromJson((String) msg,type);
         if(info==null){
             throw new Exception("MessageInfo must not be NULL!");
         }
         String targetUser=info.getTargetclientid();
         String sourceUser=info.getSourceclientid();
-        if(targetUser==null&&info.getMsgcontent().equals("register")){
+        if(targetUser==null&&info.getMsgcontent().equals("REGEIST")){
             //注册channel
             ChannelManager.registerChannel(sourceUser,ctx);
         }if(targetUser==null&&info.getMsgcontent().equals("loginOut")){
@@ -55,7 +55,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             if(targetChannel==null){
                 info.setSendflag(0);
             }else{
-                targetChannel.writeAndFlush(msg);
+                targetChannel.writeAndFlush(msg+"\n");
                 info.setSendflag(1);
             }
             info.setTime(new Date());

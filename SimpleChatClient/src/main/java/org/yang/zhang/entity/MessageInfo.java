@@ -14,13 +14,11 @@ import org.yang.zhang.enums.MessageType;
 public class MessageInfo implements Serializable {
 
     private Integer id;
-
     private String sourceclientid;
-
     private String targetclientid;
-
+    private Integer msgtype;
     private String msgcontent;
-
+    private Integer sendflag;
     private Date time;
 
     public Integer getId() {
@@ -47,12 +45,28 @@ public class MessageInfo implements Serializable {
         this.targetclientid = targetclientid;
     }
 
+    public Integer getMsgtype() {
+        return msgtype;
+    }
+
+    public void setMsgtype(Integer msgtype) {
+        this.msgtype = msgtype;
+    }
+
     public String getMsgcontent() {
         return msgcontent;
     }
 
     public void setMsgcontent(String msgcontent) {
         this.msgcontent = msgcontent;
+    }
+
+    public Integer getSendflag() {
+        return sendflag;
+    }
+
+    public void setSendflag(Integer sendflag) {
+        this.sendflag = sendflag;
     }
 
     public Date getTime() {
