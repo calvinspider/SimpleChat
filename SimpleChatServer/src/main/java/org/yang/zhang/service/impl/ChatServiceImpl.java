@@ -40,7 +40,7 @@ public class ChatServiceImpl implements ChatService {
         List<ContractGroup> contractGroups=contractGroupRepository.findByUserId(parma.getUserId());
         contractGroups.forEach(item->{
             ContractGroupDto groupDto=new ContractGroupDto();
-            List<GroupUser> groupUsers=groupUserRepository.findbyGroupId(item.getId());
+            List<GroupUser> groupUsers=groupUserRepository.findByGroupId(item.getId());
             List<Integer> userIds=groupUsers.stream().map(groupUser -> groupUser.getUserId()).collect(Collectors.toList());
             List<User> users=userRepository.findByIdIn(userIds);
             groupDto.setGroupId(item.getId());

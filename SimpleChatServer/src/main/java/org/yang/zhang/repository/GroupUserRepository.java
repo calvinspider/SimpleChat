@@ -13,5 +13,5 @@ import org.yang.zhang.module.User;
  */
 
 public interface GroupUserRepository extends CrudRepository<GroupUser,Integer> {
-    List<GroupUser> findbyGroupId(Integer id);
+    List<GroupUser> findByGroupId(Integer id);
 }
