@@ -2,8 +2,8 @@ package org.yang.zhang.service;
 
 import java.util.List;
 
+import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
-import org.yang.zhang.entity.Contract;
 
 /**
  * @Author calvin.zhang
@@ -12,5 +12,5 @@ import org.yang.zhang.entity.Contract;
  */
 
 public interface ContractService {
-    List<Contract> getContractList(FindByUserDto s);
+    List<ContractGroupDto> getContractList(FindByUserDto s);
 }

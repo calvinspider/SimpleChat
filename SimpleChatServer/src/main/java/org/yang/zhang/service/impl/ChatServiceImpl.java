@@ -1,15 +1,21 @@
 package org.yang.zhang.service.impl;
 
+import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
-import org.yang.zhang.entity.Contract;
 import org.yang.zhang.mapper.ChatMapper;
-import org.yang.zhang.entity.User;
-import org.yang.zhang.repository.ContractRepository;
+import org.yang.zhang.module.ContractGroup;
+import org.yang.zhang.module.GroupUser;
+import org.yang.zhang.module.User;
+import org.yang.zhang.repository.ContractGroupRepository;
+import org.yang.zhang.repository.GroupUserRepository;
+import org.yang.zhang.repository.UserRepository;
 import org.yang.zhang.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author calvin.zhang
@@ -22,9 +28,26 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     private ChatMapper chatMapper;
     @Autowired
-    private ContractRepository contractRepository;
+    private ContractGroupRepository contractGroupRepository;
+    @Autowired
+    private GroupUserRepository groupUserRepository;
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
-    public List<Contract> getContractList(FindByUserDto userId) {
-        return contractRepository.findByUserId(userId.getUserId());
+    public List<ContractGroupDto> getContractList(FindByUserDto parma) {
+        List<ContractGroupDto> result=new ArrayList<>();
+        List<ContractGroup> contractGroups=contractGroupRepository.findByUserId(parma.getUserId());
+        contractGroups.forEach(item->{
+            ContractGroupDto groupDto=new ContractGroupDto();
+            List<GroupUser> groupUsers=groupUserRepository.findbyGroupId(item.getId());
+            List<Integer> userIds=groupUsers.stream().map(groupUser -> groupUser.getUserId()).collect(Collectors.toList());
+            List<User> users=userRepository.findByIdIn(userIds);
+            groupDto.setGroupId(item.getId());
+            groupDto.setGroupName(item.getGroupName());
+            groupDto.setUserList(users);
+            result.add(groupDto);
+        });
+        return result;
     }
 }

@@ -16,8 +16,9 @@ import org.yang.zhang.SimpleChatClientApplication;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
-import org.yang.zhang.enums.StageType;
+import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
+import org.yang.zhang.utils.ClientContextUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.LoginErrorView;
 import org.yang.zhang.view.LoginView;
@@ -70,22 +71,26 @@ public class LoginController  implements Initializable {
             passWord.setText("");
             return;
         }
-
+        User user=(User) result.getData();
+        ClientContextUtils.setCurrentUser(user);
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.close();
 
         //弹出主页面
         Parent main=mainView.getView();
-        Label label=(Label) main.lookup("#nameLabel");
-        label.setText(userName.getText());
-
-        mainController.initContract();
-
+        Label label=mainController.getNameLabel();
+        label.setText(user.getNickName());
+        //设置用户头像
+        ImageView userIcon=mainController.getUserIcon();
+        Label personWord=mainController.getPersonWord();
+        //个性签名
+        personWord.setText(user.getPersonWord());
+        mainController.initContract(user.getId());
+        //显示主页面
         Stage mainStage=new Stage();
-        mainStage.setScene(new Scene(mainView.getView()));
+        mainStage.setScene(new Scene(main));
         mainStage.show();
-
         //注册主页面
         StageManager.registerStage(StageCodes.MAIN,mainStage);
         StageManager.unregisterStage(StageCodes.LOGIN);

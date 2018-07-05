@@ -13,51 +13,54 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
+<?import javafx.scene.layout.FlowPane?>
 <Pane maxHeight="700.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
    <children>
       <Pane maxHeight="110.0" maxWidth="280.0" minHeight="110.0" minWidth="280.0" prefHeight="110.0" prefWidth="280.0">
          <children>
             <Pane layoutX="21.0" layoutY="25.0" prefHeight="60.0" prefWidth="180.0">
                <children>
-                  <ImageView fitHeight="60.0" fitWidth="72.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="userIcon" fitHeight="60.0" fitWidth="72.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/personIcon.jpg" />
                      </image>
                   </ImageView>
                   <Label fx:id="nameLabel" layoutX="82.0" layoutY="-1.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
-                  <Label layoutX="82.0" layoutY="30.0" prefHeight="30.0" prefWidth="102.0" text="编辑个性签名" />
+                  <Label fx:id="personWord" layoutX="82.0" layoutY="30.0" prefHeight="30.0" prefWidth="102.0" text="编辑个性签名" />
                </children>
             </Pane>
          </children></Pane>
-      <TextField layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" />
+      <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" />
       <MenuBar layoutY="666.0" prefHeight="35.0" prefWidth="280.0">
         <menus>
-          <Menu mnemonicParsing="false" text="添加好友" />
+          <Menu fx:id="addFriendMenu" mnemonicParsing="false" text="添加好友" />
         </menus>
       </MenuBar>
       <TabPane layoutY="140.0" prefHeight="526.0" prefWidth="280.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab closable="false" style="-fx-pref-Width: 90; -fx-text-alignment: center;" text="联系人">
+          <Tab id="groupTab" closable="false" style="-fx-pref-Width: 90; -fx-text-alignment: center;" text="联系人">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="379.0" prefWidth="280.0">
                      <children>
-                        <TreeView fx:id="GroupList" editable="true" layoutY="6.0" prefHeight="491.0" prefWidth="280.0" style="-fx-background-color: #B9AFA0;" />
+                        <FlowPane fx:id="groupPane">
+
+                        </FlowPane>
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab closable="false" style="-fx-pref-Width: 90;" text="消息">
+            <Tab fx:id="messageTab" closable="false" style="-fx-pref-Width: 90;" text="消息">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView prefHeight="491.0" prefWidth="280.0" />
+                        <ListView fx:id="messageList" prefHeight="491.0" prefWidth="280.0" />
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab closable="false" style="-fx-pref-Width: 80;" text="空间">
+            <Tab fx:id="spaceTab" closable="false" style="-fx-pref-Width: 80;" text="空间">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView layoutX="-4.0" layoutY="6.0" prefHeight="492.0" prefWidth="287.0" />
+                        <ListView fx:id="spaceList" layoutX="-4.0" layoutY="6.0" prefHeight="492.0" prefWidth="287.0" />
                      </children></AnchorPane>
               </content>
             </Tab>

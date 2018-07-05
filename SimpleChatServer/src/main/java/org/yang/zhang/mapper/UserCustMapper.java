@@ -3,7 +3,7 @@ package org.yang.zhang.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-import org.yang.zhang.entity.User;
+import org.yang.zhang.module.User;
 
 /**
  * @Author calvin.zhang

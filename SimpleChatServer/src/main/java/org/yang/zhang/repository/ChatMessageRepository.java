@@ -1,7 +1,8 @@
 package org.yang.zhang.repository;
 
-import org.yang.zhang.entity.MessageInfo;
+
 import org.springframework.data.repository.CrudRepository;
+import org.yang.zhang.module.MessageInfo;
 
 /**
  * @Author calvin.zhang

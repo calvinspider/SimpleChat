@@ -6,10 +6,7 @@ package org.yang.zhang.socket;
  * @Date 2018 06 08 15:12
  */
 
-import java.util.List;
-
-import org.yang.zhang.entity.Contract;
-import org.yang.zhang.entity.MessageInfo;
+import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
 
@@ -18,7 +15,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import javafx.application.Platform;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;

@@ -8,15 +8,14 @@ import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
+
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-import org.yang.zhang.entity.MessageInfo;
+import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.JsonUtils;
 

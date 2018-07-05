@@ -1,4 +1,4 @@
-package org.yang.zhang.entity;
+package org.yang.zhang.utils;
 
 import org.apache.commons.lang3.time.DateUtils;
 

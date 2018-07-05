@@ -6,25 +6,14 @@ package org.yang.zhang.socket;
  * @Date 2018 06 08 15:10
  */
 
-import java.net.InetAddress;
 import java.util.Date;
-import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.util.CharsetUtil;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.stereotype.Component;
-import org.yang.zhang.entity.MessageInfo;
+import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.repository.ChatMessageRepository;
 import org.yang.zhang.utils.ChannelManager;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.SpringContextUtils;
-
 import com.fasterxml.jackson.core.type.TypeReference;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

@@ -2,7 +2,7 @@ package org.yang.zhang.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
-import org.yang.zhang.entity.User;
+import org.yang.zhang.module.User;
 
 import java.util.List;
 

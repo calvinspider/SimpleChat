@@ -1,13 +1,9 @@
 package org.yang.zhang.dto;
 
+import lombok.Data;
+
+@Data
 public class FindByUserDto {
-    private String userId;
+    private Integer userId;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }
