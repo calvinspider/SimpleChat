@@ -11,10 +11,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 
-<?import javafx.scene.layout.FlowPane?>
-<Pane maxHeight="700.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
+<FlowPane maxHeight="700.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
    <children>
       <Pane maxHeight="110.0" maxWidth="280.0" minHeight="110.0" minWidth="280.0" prefHeight="110.0" prefWidth="280.0">
          <children>
@@ -31,22 +31,16 @@
             </Pane>
          </children></Pane>
       <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" />
-      <MenuBar layoutY="666.0" prefHeight="35.0" prefWidth="280.0">
-        <menus>
-          <Menu fx:id="addFriendMenu" onAction="#openAddFriend" mnemonicParsing="false" text="添加好友"/>
-          <Menu fx:id="systemMenu" onAction="#openSystemConfig" mnemonicParsing="false" text="系统配置"/>
-        </menus>
-      </MenuBar>
+
       <TabPane layoutY="140.0" prefHeight="526.0" prefWidth="280.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab id="groupTab" closable="false" style="-fx-pref-Width: 90; -fx-text-alignment: center;" text="联系人">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="379.0" prefWidth="280.0">
                      <children>
-                        <FlowPane fx:id="groupPane">
-
-                        </FlowPane>
-                     </children></AnchorPane>
+                        <TreeView fx:id="contractTree" prefHeight="499.0" prefWidth="280.0" />
+                     </children>
+              </AnchorPane>
             </content>
           </Tab>
             <Tab fx:id="messageTab" closable="false" style="-fx-pref-Width: 90;" text="消息">
@@ -67,5 +61,11 @@
             </Tab>
         </tabs>
       </TabPane>
+       <MenuBar layoutY="666.0" prefHeight="35.0" prefWidth="280.0">
+           <menus>
+               <Menu fx:id="addFriendMenu" mnemonicParsing="false" onAction="#openAddFriend" text="添加好友" />
+               <Menu fx:id="systemMenu" mnemonicParsing="false" onAction="#openSystemConfig" text="系统配置" />
+           </menus>
+       </MenuBar>
    </children>
-</Pane>
+</FlowPane>

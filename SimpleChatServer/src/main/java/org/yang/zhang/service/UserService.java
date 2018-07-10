@@ -1,6 +1,7 @@
 package org.yang.zhang.service;
 
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.User;
 
 /**
  * @Author calvin.zhang
@@ -9,5 +10,5 @@ import org.yang.zhang.entity.Result;
  */
 
 public interface UserService {
-    Result login(String userName, String passWord);
+    Result<User> login(String userName, String passWord);
 }

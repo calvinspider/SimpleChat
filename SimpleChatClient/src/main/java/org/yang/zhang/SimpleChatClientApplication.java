@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.StageStyle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.config.CustomSplash;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.enums.StageType;
 import org.yang.zhang.utils.StageManager;
@@ -24,7 +25,7 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
 
     //启动应用弹出登陆框
     public static void main(String[] args) {
-        launch(SimpleChatClientApplication.class,LoginView.class,args);
+        launch(SimpleChatClientApplication.class,LoginView.class,new CustomSplash(),args);
     }
 
     @Override

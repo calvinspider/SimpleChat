@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.dto.LoginDto;
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.User;
 import org.yang.zhang.service.LoginService;
 import org.yang.zhang.utils.JsonUtils;
 
@@ -18,8 +19,8 @@ public class LoginServiceImpl implements LoginService {
     private RestTemplate restTemplate;
 
     @Override
-    public Result login(String userName, String passWord) {
-        TypeReference type = new TypeReference<Result>(){};
+    public Result<User> login(String userName, String passWord) {
+        TypeReference type = new TypeReference<Result<User>>(){};
         LoginDto loginDto=new LoginDto();
         loginDto.setUserName(userName);
         loginDto.setPassWord(passWord);
@@ -29,6 +30,6 @@ public class LoginServiceImpl implements LoginService {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return Result.errorMessage("",null);
+        return Result.errorMessage("登陆失败");
     }
 }

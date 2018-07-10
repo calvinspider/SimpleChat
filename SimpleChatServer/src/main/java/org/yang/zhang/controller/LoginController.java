@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.yang.zhang.dto.LoginDto;
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.User;
 import org.yang.zhang.service.UserService;
 import org.yang.zhang.utils.JsonUtils;
 
@@ -22,7 +23,7 @@ public class LoginController {
 
     @RequestMapping("/login")
     public String login(@RequestBody LoginDto loginDto) {
-        Result result= userService.login(loginDto.getUserName(),loginDto.getPassWord());
+        Result<User> result= userService.login(loginDto.getUserName(),loginDto.getPassWord());
         System.out.println(JsonUtils.toJson(result));
         return JsonUtils.toJson(result);
     }

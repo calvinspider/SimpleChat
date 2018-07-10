@@ -62,7 +62,7 @@ public class LoginController  implements Initializable {
         loginButton.setText("登录中...");
         String name=userName.getText();
         String pwd=passWord.getText();
-        Result result=loginService.login(name,pwd);
+        Result<User> result=loginService.login(name,pwd);
         if(ResultConstants.RESULT_FAILED.equals(result.getCode())){
             //登陆失败显示失败框
             SimpleChatClientApplication.showView(LoginErrorView.class);
@@ -71,7 +71,7 @@ public class LoginController  implements Initializable {
             passWord.setText("");
             return;
         }
-        User user=(User) result.getData();
+        User user= (User) result.getData();
         ClientContextUtils.setCurrentUser(user);
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
@@ -80,7 +80,7 @@ public class LoginController  implements Initializable {
         //弹出主页面
         Parent main=mainView.getView();
         Label label=mainController.getNameLabel();
-        label.setText(user.getNickName());
+        label.setText(String.valueOf(user.getId()));
         //设置用户头像
         ImageView userIcon=mainController.getUserIcon();
         Label personWord=mainController.getPersonWord();

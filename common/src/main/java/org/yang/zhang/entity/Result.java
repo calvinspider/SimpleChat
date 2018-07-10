@@ -8,13 +8,13 @@ import java.io.Serializable;
  * @Date 2018 04 28 10:56
  */
 
-public class Result implements Serializable {
+public class Result<T> implements Serializable {
 
     private String code;
     private String message;
-    private Object data;
+    private T data;
 
-    public Result(String code, String message, Object data) {
+    public Result(String code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
@@ -24,32 +24,32 @@ public class Result implements Serializable {
 
     }
 
-    public static Result create(String code, String message, Object data){
+    public static <T> Result<T> create(String code, String message, T data){
         return new Result(code,message,data);
     }
 
-    public static Result create(String code,String message){
+    public static <T> Result<T> create(String code,String message){
         return new Result(code,message,null);
     }
 
-    public static Result successData(Object data)
+    public static <T> Result<T> successData(T data)
     {
         return create(ResultConstants.RESULT_SUCCESS,null,data);
     }
 
-    public static Result successData(String message,Object data)
+    public static <T> Result<T> successData(String message,T data)
     {
         return create(ResultConstants.RESULT_SUCCESS,message,data);
     }
 
-    public static Result errorData(String message,Object data)
+    public static <T> Result<T> errorData(String message,T data)
     {
         return create(ResultConstants.RESULT_FAILED,message,data);
     }
 
-    public static Result errorMessage(String message,Object data)
+    public static <T> Result<T> errorMessage(String message)
     {
-        return create(ResultConstants.RESULT_FAILED,message,data);
+        return create(ResultConstants.RESULT_FAILED,message);
     }
 
     public String getCode() {
@@ -72,7 +72,7 @@ public class Result implements Serializable {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

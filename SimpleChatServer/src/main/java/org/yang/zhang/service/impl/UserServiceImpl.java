@@ -22,18 +22,18 @@ public class UserServiceImpl implements UserService {
     private UserRepository userMapper;
 
     @Override
-    public Result login(String userName, String passWord) {
+    public Result<User> login(String userName, String passWord) {
         try {
-            User user=userMapper.getOne(1);
+            User user=userMapper.getOne(Integer.valueOf(userName));
             User newUser=new User();
             BeanUtils.copyProperties(user,newUser);
             if(newUser.getPassword().equals(passWord)){
                 return Result.successData(newUser);
             }
         }catch (Exception e){
-            return Result.errorMessage("用户登陆失败",null);
+            return Result.errorMessage("用户登陆失败");
         }
 
-        return Result.errorMessage("用户登陆失败",null);
+        return Result.errorMessage("用户登陆失败");
     }
 }
