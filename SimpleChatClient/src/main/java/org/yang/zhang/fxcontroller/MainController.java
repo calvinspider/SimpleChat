@@ -3,6 +3,8 @@ package org.yang.zhang.fxcontroller;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,12 +17,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -28,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
+import org.yang.zhang.dto.RecentChatLogDto;
+import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
@@ -52,12 +60,13 @@ public class MainController  implements Initializable {
     @FXML
     public Tab messageTab;
     @FXML
-    public ListView<Label> messageList;
+    public ListView<Pane> messageList;
     @FXML
     public Tab spaceTab;
     @FXML
     public ListView<Label> spaceList;
-
+    @FXML
+    public TabPane tabPane;
     @FXML
     public ImageView userIcon;
     @FXML
@@ -90,15 +99,67 @@ public class MainController  implements Initializable {
     }
 
     public void init(Integer id){
+        regesterChannel();
         initContract(id);
         initRecentMessage(id);
+        initTabPane(id);
+    }
+
+    private void regesterChannel() {
+        //向服务器注册当前channel
+        MessageInfo messageInfo=new MessageInfo();
+        messageInfo.setSourceclientid(nameLabel.getText());
+        messageInfo.setMsgcontent(Constant.REGEIST);
+        messageInfo.setTime(new Date());
+        NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
+
+    }
+
+    private void initTabPane(Integer id) {
+        tabPane.setOnMouseClicked(click->{
+           int index=tabPane.getSelectionModel().getSelectedIndex();
+            System.out.println(index);
+           //联系人
+           if(index==0){
+               initContract(id);
+            //最近消息
+           }else if (index==1){
+               initRecentMessage(id);
+           //空间列表
+           }else if(index==2){
+
+           }
+        });
     }
 
     private void initRecentMessage(Integer id) {
+        ObservableList<Pane> items =FXCollections.observableArrayList ();
+        List<RecentContract> recentChatLogDtos= chatService.getrecentContract(id);
+        try {
+            for (RecentContract recentContract:recentChatLogDtos){
+                Pane pane=FXMLLoader.load(getClass().getResource("/fxml/RecentContract.fxml"));
+                Label namelabel = (Label)pane.lookup("#namelabel");
+                namelabel.setText(recentContract.getUserId());
+                Label messagelabel = (Label)pane.lookup("#messagelabel");
+                messagelabel.setText(recentContract.getLastMessage());
+                Label timelabel = (Label)pane.lookup("#timelabel");
+                timelabel.setText(DateUtils.formatDate(recentContract.getLastMessageDate(),"YYYY-MM-dd"));
+                ImageView contracticon=(ImageView)pane.lookup("#contracticon");
+                contracticon.setImage(new Image("images/personIcon.jpg"));
+                contracticon.setFitWidth(45);
+                contracticon.setFitHeight(45);
+                items.add(pane);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        messageList.setItems(items);
 
     }
 
     public void initContract(Integer id){
+
         //获取当前用户联系人列表
         FindByUserDto findByUserDto=new FindByUserDto();
         findByUserDto.setUserId(id);
@@ -130,25 +191,16 @@ public class MainController  implements Initializable {
             }
         }
 
-        //为每一个分组绑定点击时间
-        contractTree.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue,Object newValue) {
-                TreeItem<Label> selectedItem = (TreeItem<Label>) newValue;
-                String id=selectedItem.getValue().getId();
-                if(id!=null){
-                    openChatWindow(id);
+        contractTree.setOnMouseClicked(click -> {
+            if (click.getClickCount() == 2) {
+                TreeItem<Label> selectedItem = contractTree.getSelectionModel().getSelectedItem();
+                String userid = selectedItem.getValue().getId();
+                if (userid != null) {
+                    openChatWindow(userid);
                 }
+
             }
         });
-
-        //向服务器注册当前channel
-        MessageInfo messageInfo=new MessageInfo();
-        messageInfo.setSourceclientid(nameLabel.getText());
-        messageInfo.setMsgcontent(Constant.REGEIST);
-        messageInfo.setTime(new Date());
-        NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
-
     }
 
 
@@ -185,7 +237,9 @@ public class MainController  implements Initializable {
             String sourceId=sourceNameLabel.getText();
             //聊天记录框
             VBox chatHistory = (VBox)scene.lookup("#chatHistory");
-
+            //TODO 滚动条置底 没反应
+            ScrollPane chatPane = (ScrollPane)scene.lookup("#chatPane");
+            chatPane.setVvalue(chatPane.getMaxHeight());
             //获取近一天的聊天记录
             List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,sourceId);
             for (MessageInfo messageInfo:messageInfos){
@@ -253,7 +307,7 @@ public class MainController  implements Initializable {
         return addFriendMenu;
     }
 
-    public ListView<Label> getMessageList() {
+    public ListView<Pane> getMessageList() {
         return messageList;
     }
 

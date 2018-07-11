@@ -2,6 +2,8 @@ package org.yang.zhang.service;
 
 import java.util.List;
 
+import org.yang.zhang.dto.RecentChatLogDto;
+import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.module.MessageInfo;
 
 /**
@@ -12,4 +14,6 @@ import org.yang.zhang.module.MessageInfo;
 
 public interface ChatService {
     List<MessageInfo> getOneDayRecentChatLog(String id1, String id2);
+
+    List<RecentContract> getrecentContract(Integer id);
 }

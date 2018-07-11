@@ -11,5 +11,6 @@ public class Constant {
     public static final String LoginUrl=serverHost+"/login";
     public static final String ContractUrl=serverHost+"/chat/contract";
     public static final String ONEDAYCHATLOGURL=serverHost+"/chat/oneDayChatLog";
+    public static final String ONEMONTHCONTRACT=serverHost+"/chat/oneMonthContract";
     public static final String REGEIST="REGEIST";
 }

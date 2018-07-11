@@ -3,6 +3,7 @@ package org.yang.zhang.controller;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
+import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.service.ChatService;
@@ -34,5 +35,10 @@ public class ChatController {
     @RequestMapping(value = "/oneDayChatLog")
     public Result<List<MessageInfo>> oneDayChatLog(@RequestBody RecentChatLogDto chatLogDto){
         return Result.successData(chatService.oneDayChatLog(chatLogDto));
+    }
+
+    @RequestMapping(value = "/oneMonthContract")
+    public Result<List<RecentContract>> oneMonthContract(@RequestBody FindByUserDto userDto){
+        return Result.successData(chatService.oneMonthContract(userDto));
     }
 }

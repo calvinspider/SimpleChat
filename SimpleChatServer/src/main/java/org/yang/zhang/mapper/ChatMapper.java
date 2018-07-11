@@ -1,11 +1,14 @@
 package org.yang.zhang.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.yang.zhang.dto.RecentChatLogDto;
+import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.User;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,4 +21,6 @@ import java.util.List;
 public interface ChatMapper{
 
     List<MessageInfo> oneDayChatLog(RecentChatLogDto chatLogDto);
+
+    List<RecentContract> oneMonthContract(@Param("userid") Integer userId, @Param("start") Date start,@Param("end") Date end);
 }

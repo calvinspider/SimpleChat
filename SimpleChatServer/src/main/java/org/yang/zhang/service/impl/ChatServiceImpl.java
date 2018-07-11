@@ -3,6 +3,7 @@ package org.yang.zhang.service.impl;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
+import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.mapper.ChatMapper;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.GroupUser;
@@ -62,5 +63,12 @@ public class ChatServiceImpl implements ChatService {
         calendar.add(Calendar.DAY_OF_YEAR,-1);
         chatLogDto.setStart(calendar.getTime());
         return chatMapper.oneDayChatLog(chatLogDto);
+    }
+
+    @Override
+    public List<RecentContract> oneMonthContract(FindByUserDto userDto) {
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR,-30);
+        return chatMapper.oneMonthContract(userDto.getUserId(),calendar.getTime(),new Date());
     }
 }

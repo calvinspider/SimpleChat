@@ -5,12 +5,34 @@
     <select id="oneDayChatLog" parameterType="org.yang.zhang.dto.RecentChatLogDto" resultType="org.yang.zhang.module.MessageInfo">
       select * from t_chatinfo
       where
-      sendflag=1
-      and ((sourceclientid=#{id1} and targetclientid=#{id2})
+      ((sourceclientid=#{id1} and targetclientid=#{id2})
       or
       (sourceclientid=#{id2} and targetclientid=#{id1}))
       and
       time between #{start} and #{end}
       order by time asc
+    </select>
+
+    <select id="oneMonthContract" resultType="org.yang.zhang.dto.RecentContract">
+      SELECT
+        msgcontent as lastMessage,
+        time as lastMessageDate,
+        sourceclientid as userId
+        FROM
+        (
+            SELECT
+                *
+            FROM
+                `t_chatinfo`
+            where
+               (sourceclientid=#{userid} or targetclientid=#{userid})
+               and time between #{start} and #{end}
+               and msgcontent!='REGEIST'
+            ORDER BY
+                time DESC
+        ) t
+        GROUP BY
+            sourceclientid,
+            targetclientid
     </select>
 </mapper>
