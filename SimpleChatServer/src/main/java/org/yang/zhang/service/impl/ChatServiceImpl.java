@@ -67,8 +67,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<RecentContract> oneMonthContract(FindByUserDto userDto) {
-        Calendar calendar=Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR,-30);
-        return chatMapper.oneMonthContract(userDto.getUserId(),calendar.getTime(),new Date());
+        List<RecentContract> list= chatMapper.oneMonthContract(userDto.getUserId());
+        return list;
     }
 }

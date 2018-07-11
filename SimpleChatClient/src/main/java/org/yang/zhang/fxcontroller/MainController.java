@@ -139,7 +139,11 @@ public class MainController  implements Initializable {
             for (RecentContract recentContract:recentChatLogDtos){
                 Pane pane=FXMLLoader.load(getClass().getResource("/fxml/RecentContract.fxml"));
                 Label namelabel = (Label)pane.lookup("#namelabel");
-                namelabel.setText(recentContract.getUserId());
+                if(recentContract.getTargetUserid().equals(String.valueOf(id))){
+                    namelabel.setText(recentContract.getSourceUserid());
+                }else{
+                    namelabel.setText(recentContract.getTargetUserid());
+                }
                 Label messagelabel = (Label)pane.lookup("#messagelabel");
                 messagelabel.setText(recentContract.getLastMessage());
                 Label timelabel = (Label)pane.lookup("#timelabel");
