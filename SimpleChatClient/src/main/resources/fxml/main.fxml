@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Pane?>
 
-<FlowPane maxHeight="700.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
+<FlowPane maxHeight="700.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" style="-fx-background-color: #9BB7D6;" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
    <children>
-      <Pane maxHeight="110.0" maxWidth="280.0" minHeight="110.0" minWidth="280.0" prefHeight="110.0" prefWidth="280.0">
+      <Pane maxHeight="110.0" maxWidth="280.0" minHeight="110.0" minWidth="280.0" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: #9BB7D6;">
          <children>
             <Pane layoutX="21.0" layoutY="25.0" prefHeight="60.0" prefWidth="180.0">
                <children>
@@ -26,7 +26,7 @@
                      </image>
                   </ImageView>
                   <Label fx:id="nameLabel" layoutX="82.0" layoutY="-1.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
-                  <Label fx:id="personWord" layoutX="82.0" layoutY="30.0" prefHeight="30.0" prefWidth="102.0" text="编辑个性签名" />
+                  <TextField fx:id="personWord" layoutX="82.0" layoutY="34.0" promptText="编辑个性签名" />
                </children>
             </Pane>
          </children></Pane>
@@ -36,9 +36,9 @@
         <tabs>
           <Tab id="groupTab" closable="false" style="-fx-pref-Width: 90; -fx-text-alignment: center;" text="联系人">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="379.0" prefWidth="280.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="448.0" prefWidth="280.0">
                      <children>
-                        <TreeView fx:id="contractTree" prefHeight="499.0" prefWidth="280.0" />
+                        <TreeView fx:id="contractTree" prefHeight="498.0" prefWidth="280.0"/>
                      </children>
               </AnchorPane>
             </content>
@@ -61,7 +61,7 @@
             </Tab>
         </tabs>
       </TabPane>
-       <MenuBar layoutY="666.0" prefHeight="35.0" prefWidth="280.0">
+       <MenuBar layoutY="666.0" prefHeight="33.0" prefWidth="280.0" style="-fx-background-color: #9BB7D6;">
            <menus>
                <Menu fx:id="addFriendMenu" mnemonicParsing="false" onAction="#openAddFriend" text="添加好友" />
                <Menu fx:id="systemMenu" mnemonicParsing="false" onAction="#openSystemConfig" text="系统配置" />

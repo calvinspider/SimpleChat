@@ -2,6 +2,9 @@ package org.yang.zhang.controller;
 
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
+import org.yang.zhang.dto.RecentChatLogDto;
+import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,5 +29,10 @@ public class ChatController {
     public List<ContractGroupDto> getContractList(@RequestBody FindByUserDto userId)
     {
         return chatService.getContractList(userId);
+    }
+
+    @RequestMapping(value = "/oneDayChatLog")
+    public Result<List<MessageInfo>> oneDayChatLog(@RequestBody RecentChatLogDto chatLogDto){
+        return Result.successData(chatService.oneDayChatLog(chatLogDto));
     }
 }

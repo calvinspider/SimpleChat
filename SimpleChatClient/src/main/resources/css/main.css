@@ -1,15 +1,15 @@
 #contractTree{
-    -fx-control-inner-background:#B9AFA0;
+    -fx-background-image: "images/loginBanner.jpg";
 }
 
 #contractTree .label{
     -fx-pref-width: 250;
     -fx-pref-height: 25;
-    -fx-background-color: #B9AFA0;
+    -fx-background-color: #D1EOEF;
 }
 
 #contractTree .label:hover{
-    -fx-background-color: #DDD0A3;
+    -fx-background-color: #D1EOEF;
     -fx-pref-height: 25;
     -fx-font-size: 14;
 }

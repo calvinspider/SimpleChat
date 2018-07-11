@@ -2,9 +2,11 @@ package org.yang.zhang.service.impl;
 
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
+import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.mapper.ChatMapper;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.GroupUser;
+import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.User;
 import org.yang.zhang.repository.ContractGroupRepository;
 import org.yang.zhang.repository.GroupUserRepository;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,5 +53,14 @@ public class ChatServiceImpl implements ChatService {
             result.add(groupDto);
         });
         return result;
+    }
+
+    @Override
+    public List<MessageInfo> oneDayChatLog(RecentChatLogDto chatLogDto) {
+        Calendar calendar=Calendar.getInstance();
+        chatLogDto.setEnd(new Date());
+        calendar.add(Calendar.DAY_OF_YEAR,-1);
+        chatLogDto.setStart(calendar.getTime());
+        return chatMapper.oneDayChatLog(chatLogDto);
     }
 }

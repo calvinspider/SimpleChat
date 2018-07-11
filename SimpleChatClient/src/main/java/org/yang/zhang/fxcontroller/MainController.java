@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -29,14 +30,17 @@ import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.User;
+import org.yang.zhang.service.ChatService;
 import org.yang.zhang.service.ContractService;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @FXMLController
 public class MainController  implements Initializable {
@@ -59,7 +63,7 @@ public class MainController  implements Initializable {
     @FXML
     public Label nameLabel;
     @FXML
-    public Label personWord;
+    public TextField personWord;
     @FXML
     public TextField searchField;
 
@@ -71,6 +75,9 @@ public class MainController  implements Initializable {
     @Autowired
     public ContractService contractService;
 
+    @Autowired
+    private ChatService chatService;
+
 
     /**
      * 主页面初始化
@@ -79,6 +86,15 @@ public class MainController  implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
+    public void init(Integer id){
+        initContract(id);
+        initRecentMessage(id);
+    }
+
+    private void initRecentMessage(Integer id) {
 
     }
 
@@ -110,6 +126,7 @@ public class MainController  implements Initializable {
                 sign.setId(String.valueOf(user.getId()));
                 i1.setValue(sign);
                 groupItem.getChildren().add(i1);
+                groupItem.setExpanded(true);
             }
         }
 
@@ -134,8 +151,14 @@ public class MainController  implements Initializable {
 
     }
 
+
+
     private void openChatWindow(String id) {
         try {
+            //不重复打开聊天框
+            if(StageManager.getStage(id)!=null){
+                return;
+            }
             //创建聊天框
             Stage chatStage=new Stage();
             Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
@@ -148,6 +171,7 @@ public class MainController  implements Initializable {
             //当前登陆用户
             Label sourceNameLabel = (Label)scene.lookup("#sourceNameLabel");
             sourceNameLabel.setText(nameLabel.getText());
+            sourceNameLabel.setVisible(false);
             chatStage.show();
             //注册聊天框
             StageManager.registerStage(id,chatStage);
@@ -158,6 +182,30 @@ public class MainController  implements Initializable {
                     StageManager.unregisterStage(id);
                 }
             });
+            String sourceId=sourceNameLabel.getText();
+            //聊天记录框
+            VBox chatHistory = (VBox)scene.lookup("#chatHistory");
+
+            //获取近一天的聊天记录
+            List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,sourceId);
+            for (MessageInfo messageInfo:messageInfos){
+                ImageView imageView=new ImageView("images/personIcon.jpg");
+                imageView.setFitWidth(25);
+                imageView.setFitHeight(25);
+                Label label=new Label(messageInfo.getMsgcontent(),imageView);
+                if(id.equals(messageInfo.getSourceclientid())){
+                    label.setAlignment(Pos.CENTER_LEFT);
+                }else{
+                    label.setAlignment(Pos.CENTER_RIGHT);
+                }
+                label.setPrefWidth(570);
+                label.setStyle("-fx-padding: 5 5 5 5");
+                Label time=new Label(DateUtils.formatDateTime(messageInfo.getTime()));
+                time.setPrefWidth(570);
+                time.setAlignment(Pos.CENTER);
+                chatHistory.getChildren().add(time);
+                chatHistory.getChildren().add(label);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -217,7 +265,7 @@ public class MainController  implements Initializable {
         return userIcon;
     }
 
-    public Label getPersonWord() {
+    public TextField getPersonWord() {
         return personWord;
     }
 }

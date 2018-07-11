@@ -71,7 +71,7 @@ public class LoginController  implements Initializable {
             passWord.setText("");
             return;
         }
-        User user= (User) result.getData();
+        User user= result.getData();
         ClientContextUtils.setCurrentUser(user);
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
@@ -83,14 +83,16 @@ public class LoginController  implements Initializable {
         label.setText(String.valueOf(user.getId()));
         //设置用户头像
         ImageView userIcon=mainController.getUserIcon();
-        Label personWord=mainController.getPersonWord();
+        TextField personWord=mainController.getPersonWord();
+        personWord.setFocusTraversable(false);
         //个性签名
         personWord.setText(user.getPersonWord());
-        mainController.initContract(user.getId());
+        mainController.init(user.getId());
         //显示主页面
         Stage mainStage=new Stage();
         mainStage.setScene(new Scene(main));
         mainStage.show();
+        mainStage.setResizable(false);
         //注册主页面
         StageManager.registerStage(StageCodes.MAIN,mainStage);
         StageManager.unregisterStage(StageCodes.LOGIN);

@@ -9,16 +9,20 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.JsonUtils;
 
 @FXMLController
@@ -31,7 +35,10 @@ public class ChatWindowController  implements Initializable {
     private Label sourceNameLabel;
 
     @FXML
-    private FlowPane chatHistory;
+    private VBox chatHistory;
+
+    @FXML
+    private ScrollPane chatPane;
 
     @FXML
     private TextArea chatArea;
@@ -64,14 +71,20 @@ public class ChatWindowController  implements Initializable {
         imageView.setFitWidth(25);
         imageView.setFitHeight(25);
         Label label=new Label(chatArea.getText(),imageView);
-        label.setAlignment(Pos.CENTER_LEFT);
+        label.setAlignment(Pos.CENTER_RIGHT);
         label.setPrefWidth(570);
+        label.setStyle("-fx-padding: 5 5 5 5");
+
+        Label time=new Label(DateUtils.formatDateTime(new Date()));
+        time.setPrefWidth(570);
+        time.setAlignment(Pos.CENTER);
+        chatHistory.getChildren().add(time);
         chatHistory.getChildren().add(label);
+        chatPane.setVvalue(chatPane.getVvalue()+25);
 
         //情况打字区
         chatArea.setText("");
         //发送消息
         NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
-
     }
 }
