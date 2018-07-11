@@ -8,5 +8,6 @@ package org.yang.zhang.enums;
 
 public enum StageType {
     login,
-    main;
+    main,
+    searchContract;
 }

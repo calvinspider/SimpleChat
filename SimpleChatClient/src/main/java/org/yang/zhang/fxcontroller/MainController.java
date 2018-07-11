@@ -13,16 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -32,10 +23,12 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.constants.Constant;
+import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.enums.StageType;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
@@ -77,9 +70,9 @@ public class MainController  implements Initializable {
     public TextField searchField;
 
     @FXML
-    public Menu addFriendMenu;
+    public Button addFriendBtn;
     @FXML
-    public Menu systemMenu;
+    public Button systemBtn;
 
     @Autowired
     public ContractService contractService;
@@ -103,6 +96,27 @@ public class MainController  implements Initializable {
         initContract(id);
         initRecentMessage(id);
         initTabPane(id);
+        initMenuBar(id);
+    }
+
+    private void initMenuBar(Integer id) {
+        addFriendBtn.setOnMouseClicked(click->{
+            try {
+                if(StageManager.getStage(StageCodes.SEARCHCONTRACT)==null){
+                    Stage searchContract=new Stage();
+                    Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/searchContract.fxml")));
+                    searchContract.setScene(scene);
+                    searchContract.setResizable(false);
+                    searchContract.show();
+                    StageManager.registerStage(StageCodes.SEARCHCONTRACT,searchContract);
+                }else{
+                    StageManager.getStage(StageCodes.SEARCHCONTRACT).show();
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        });
     }
 
     private void regesterChannel() {
@@ -154,12 +168,20 @@ public class MainController  implements Initializable {
                 contracticon.setFitHeight(45);
                 items.add(pane);
             }
+            messageList.setItems(items);
+            messageList.setOnMouseClicked(click->{
+                if (click.getClickCount() == 2) {
+                    Pane selectedItem = messageList.getSelectionModel().getSelectedItem();
+                    Label namelabel = (Label)selectedItem.lookup("#namelabel");
+                    String userid=namelabel.getText();
+                    if (userid != null) {
+                        openChatWindow(userid);
+                    }
+                }
+            });
         }catch (Exception e){
             e.printStackTrace();
         }
-
-        messageList.setItems(items);
-
     }
 
     public void initContract(Integer id){
@@ -305,10 +327,6 @@ public class MainController  implements Initializable {
 
     public TextField getSearchField() {
         return searchField;
-    }
-
-    public Menu getAddFriendMenu() {
-        return addFriendMenu;
     }
 
     public ListView<Pane> getMessageList() {

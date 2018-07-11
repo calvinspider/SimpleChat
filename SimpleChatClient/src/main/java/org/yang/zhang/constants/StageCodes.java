@@ -9,4 +9,5 @@ package org.yang.zhang.constants;
 public class StageCodes {
     public static final String LOGIN="login";
     public static final String MAIN="main";
+    public static final String SEARCHCONTRACT="searchContract";
 }
