@@ -1,9 +1,11 @@
 package org.yang.zhang.service.impl;
 
+import org.yang.zhang.dto.AddContractDto;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.mapper.ChatMapper;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.GroupUser;
@@ -71,4 +73,15 @@ public class ChatServiceImpl implements ChatService {
         return list;
     }
 
+    @Override
+    public List<AddContractDto> recommondContract(FindByUserDto userId) {
+        List<AddContractDto> list= chatMapper.recommondContract(userId.getUserId());
+        return list;
+    }
+
+    @Override
+    public List<AddContractDto> searchContractDto(SearchContractDto key) {
+        List<AddContractDto> list= chatMapper.searchContractDto(key);
+        return list;
+    }
 }

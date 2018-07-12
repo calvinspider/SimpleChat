@@ -28,4 +28,49 @@
         order by message_time desc
     </select>
 
+    <select id="recommondContract" resultType="org.yang.zhang.dto.AddContractDto">
+      SELECT
+        nick_name  as userName,
+        id  as userId,
+        0 as commonCount,
+        icon_url  as userIcon
+      FROM
+          t_user
+      WHERE
+        id !=#{userId}
+          AND id NOT IN (
+              SELECT
+                  tgu.user_id
+              FROM
+                  t_group_user tgu
+              LEFT JOIN t_contract_group tcg ON tgu.group_id = tcg.id
+              WHERE
+                  tcg.user_id = #{userId}
+          )
+    </select>
+
+    <select id="searchContractDto" resultType="org.yang.zhang.dto.AddContractDto">
+      SELECT
+        nick_name  as userName,
+        id  as userId,
+        0 as commonCount,
+        icon_url  as userIcon
+      FROM
+          t_user
+      WHERE
+        id !=#{id}
+          AND id NOT IN (
+              SELECT
+                  tgu.user_id
+              FROM
+                  t_group_user tgu
+              LEFT JOIN t_contract_group tcg ON tgu.group_id = tcg.id
+              WHERE
+                  tcg.user_id = #{id}
+          )
+          <if test="key!=null">
+              and (nick_name like concat('%',#{key},'%') or id=#{key})
+          </if>
+
+    </select>
 </mapper>

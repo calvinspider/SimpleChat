@@ -90,6 +90,8 @@ public class MainController  implements Initializable {
     private ChatService chatService;
     @Autowired
     private SearchContractView searchContractView;
+    @Autowired
+    private SearchContractController searchContractController;
 
     /**
      * 主页面初始化
@@ -125,9 +127,11 @@ public class MainController  implements Initializable {
                     searchContract.setScene(scene);
                     searchContract.setResizable(false);
                     searchContract.show();
+                    searchContractController.init(String.valueOf(ClientContextUtils.getCurrentUser().getId()));
                     StageManager.registerStage(StageCodes.SEARCHCONTRACT,searchContract);
                 }else{
                     StageManager.getStage(StageCodes.SEARCHCONTRACT).show();
+                    searchContractController.init(String.valueOf(ClientContextUtils.getCurrentUser().getId()));
                 }
 
             }catch (Exception e){

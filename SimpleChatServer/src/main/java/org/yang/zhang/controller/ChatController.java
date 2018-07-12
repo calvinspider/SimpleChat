@@ -1,9 +1,11 @@
 package org.yang.zhang.controller;
 
+import org.yang.zhang.dto.AddContractDto;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.service.ChatService;
@@ -41,6 +43,18 @@ public class ChatController {
     @RequestMapping(value = "/oneMonthContract")
     public Result<List<RecentContract>> oneMonthContract(@RequestBody FindByUserDto userDto){
         List<RecentContract> list=chatService.oneMonthContract(userDto);
+        return Result.successData(list);
+    }
+
+    @RequestMapping(value = "/recommondContract")
+    public Result<List<AddContractDto>> recommondContract(@RequestBody FindByUserDto userId){
+        List<AddContractDto> list=chatService.recommondContract(userId);
+        return Result.successData(list);
+    }
+
+    @RequestMapping(value = "/searchContractDto")
+    public Result<List<AddContractDto>> searchContractDto(@RequestBody SearchContractDto searchContractDto){
+        List<AddContractDto> list=chatService.searchContractDto(searchContractDto);
         return Result.successData(list);
     }
 }
