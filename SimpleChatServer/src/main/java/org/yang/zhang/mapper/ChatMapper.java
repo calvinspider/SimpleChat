@@ -23,4 +23,5 @@ public interface ChatMapper{
     List<MessageInfo> oneDayChatLog(RecentChatLogDto chatLogDto);
 
     List<RecentContract> oneMonthContract(@Param("userid") Integer userId);
+
 }

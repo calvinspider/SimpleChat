@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +40,7 @@ public class ChatController {
 
     @RequestMapping(value = "/oneMonthContract")
     public Result<List<RecentContract>> oneMonthContract(@RequestBody FindByUserDto userDto){
-        return Result.successData(chatService.oneMonthContract(userDto));
+        List<RecentContract> list=chatService.oneMonthContract(userDto);
+        return Result.successData(list);
     }
 }

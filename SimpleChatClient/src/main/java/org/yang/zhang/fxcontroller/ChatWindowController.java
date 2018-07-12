@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.ClientContextUtils;
 import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.JsonUtils;
 
@@ -61,7 +62,7 @@ public class ChatWindowController  implements Initializable {
         }
         String targetUser=nameLabel.getText();
         MessageInfo messageInfo=new MessageInfo();
-        messageInfo.setSourceclientid(sourceNameLabel.getText());
+        messageInfo.setSourceclientid(String.valueOf(ClientContextUtils.getCurrentUser().getId()));
         messageInfo.setTargetclientid(targetUser);
         messageInfo.setMsgcontent(chatArea.getText());
         messageInfo.setTime(new Date());

@@ -7,8 +7,10 @@ package org.yang.zhang.socket;
  */
 
 import org.yang.zhang.module.MessageInfo;
+import org.yang.zhang.utils.ChatViewManager;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
+import org.yang.zhang.view.ChatView;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -20,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -43,19 +46,18 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             throw new Exception("MessageInfo must not be NULL!");
         }
         String userName=info.getSourceclientid();
-        Stage chatWindow=StageManager.getStage(userName);
+        ChatView chatWindow=ChatViewManager.getStage(userName);
         //聊天框未打开,头像闪动
         if(chatWindow==null){
             System.out.println("聊天框未打开");
         }else{
             Platform.runLater(()->{
-                Scene scene=chatWindow.getScene();
-                Pane otherChat = (Pane) scene.lookup("#chatHistory");
+                VBox otherChat = chatWindow.getChatBox();
                 ImageView imageView=new ImageView("images/personIcon.jpg");
                 imageView.setFitWidth(25);
                 imageView.setFitHeight(25);
                 Label label=new Label(info.getMsgcontent(),imageView);
-                label.setAlignment(Pos.CENTER_RIGHT);
+                label.setAlignment(Pos.CENTER_LEFT);
                 label.setPrefWidth(570);
                 otherChat.getChildren().add(label);
             });

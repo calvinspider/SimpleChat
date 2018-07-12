@@ -11,26 +11,26 @@ import java.util.Date;
 
 public class RecentContract implements Serializable
 {
-    private String targetUserid;
-    private String sourceUserid;
+    private String userId;
+    private String contractId;
     private String nickName;
     private String lastMessage;
     private Date lastMessageDate;
 
-    public String getTargetUserid() {
-        return targetUserid;
+    public String getContractId() {
+        return contractId;
     }
 
-    public void setTargetUserid(String targetUserid) {
-        this.targetUserid = targetUserid;
+    public void setContractId(String contractId) {
+        this.contractId = contractId;
     }
 
-    public String getSourceUserid() {
-        return sourceUserid;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setSourceUserid(String sourceUserid) {
-        this.sourceUserid = sourceUserid;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getNickName() {

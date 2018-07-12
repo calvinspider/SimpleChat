@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -34,9 +35,17 @@ import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
 import org.yang.zhang.service.ContractService;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.ChatViewManager;
+import org.yang.zhang.utils.ClientContextUtils;
 import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
+import org.yang.zhang.view.ChatView;
+import org.yang.zhang.view.ContractItemView;
+import org.yang.zhang.view.GroupItemView;
+import org.yang.zhang.view.RecentContractView;
+import org.yang.zhang.view.SearchContractView;
+
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +58,7 @@ public class MainController  implements Initializable {
     @FXML
     public Tab groupTab;
     @FXML
-    public TreeView<Label> contractTree;
+    public TreeView<Pane> contractTree;
     @FXML
     public Tab messageTab;
     @FXML
@@ -79,7 +88,8 @@ public class MainController  implements Initializable {
 
     @Autowired
     private ChatService chatService;
-
+    @Autowired
+    private SearchContractView searchContractView;
 
     /**
      * 主页面初始化
@@ -91,12 +101,19 @@ public class MainController  implements Initializable {
 
     }
 
-    public void init(Integer id){
+    public void init(User user){
+        initMainPane(user);
         regesterChannel();
-        initContract(id);
-        initRecentMessage(id);
-        initTabPane(id);
-        initMenuBar(id);
+        initContract(user.getId());
+        initRecentMessage(user.getId());
+        initTabPane(user.getId());
+        initMenuBar(user.getId());
+    }
+
+    private void initMainPane(User user) {
+        nameLabel.setText(String.valueOf(user.getId()));
+        personWord.setFocusTraversable(false);
+        personWord.setText(user.getPersonWord());
     }
 
     private void initMenuBar(Integer id) {
@@ -104,7 +121,7 @@ public class MainController  implements Initializable {
             try {
                 if(StageManager.getStage(StageCodes.SEARCHCONTRACT)==null){
                     Stage searchContract=new Stage();
-                    Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/searchContract.fxml")));
+                    Scene scene=new Scene(searchContractView.getView());
                     searchContract.setScene(scene);
                     searchContract.setResizable(false);
                     searchContract.show();
@@ -151,29 +168,14 @@ public class MainController  implements Initializable {
         List<RecentContract> recentChatLogDtos= chatService.getrecentContract(id);
         try {
             for (RecentContract recentContract:recentChatLogDtos){
-                Pane pane=FXMLLoader.load(getClass().getResource("/fxml/RecentContract.fxml"));
-                Label namelabel = (Label)pane.lookup("#namelabel");
-                if(recentContract.getTargetUserid().equals(String.valueOf(id))){
-                    namelabel.setText(recentContract.getSourceUserid());
-                }else{
-                    namelabel.setText(recentContract.getTargetUserid());
-                }
-                Label messagelabel = (Label)pane.lookup("#messagelabel");
-                messagelabel.setText(recentContract.getLastMessage());
-                Label timelabel = (Label)pane.lookup("#timelabel");
-                timelabel.setText(DateUtils.formatDate(recentContract.getLastMessageDate(),"YYYY-MM-dd"));
-                ImageView contracticon=(ImageView)pane.lookup("#contracticon");
-                contracticon.setImage(new Image("images/personIcon.jpg"));
-                contracticon.setFitWidth(45);
-                contracticon.setFitHeight(45);
-                items.add(pane);
+                RecentContractView contractView=new RecentContractView(recentContract,String.valueOf(id));
+                items.add(contractView.getRecentContractPane());
             }
             messageList.setItems(items);
             messageList.setOnMouseClicked(click->{
                 if (click.getClickCount() == 2) {
                     Pane selectedItem = messageList.getSelectionModel().getSelectedItem();
-                    Label namelabel = (Label)selectedItem.lookup("#namelabel");
-                    String userid=namelabel.getText();
+                    String userid=selectedItem.getId();
                     if (userid != null) {
                         openChatWindow(userid);
                     }
@@ -185,111 +187,57 @@ public class MainController  implements Initializable {
     }
 
     public void initContract(Integer id){
-
         //获取当前用户联系人列表
         FindByUserDto findByUserDto=new FindByUserDto();
         findByUserDto.setUserId(id);
         List<ContractGroupDto> contracts= contractService.getContractList(findByUserDto);
-        final VBox vb = new VBox();
         //添加根节点
-        TreeItem<Label> rootItem = new TreeItem<Label>();
-        Label root=new Label();
-        rootItem.setValue(root);
+        TreeItem<Pane> rootItem = new TreeItem<Pane>();
+        rootItem.setValue(new Pane());
         rootItem.setExpanded(true);
         contractTree.setRoot(rootItem);
         contractTree.setShowRoot(false);
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
-            TreeItem<Label> groupItem = new TreeItem<Label>();
-            groupItem.setValue(new Label(contract.getGroupName()));
+            TreeItem<Pane> groupItem = new TreeItem<Pane>();
+            groupItem.setValue(new GroupItemView(contract.getGroupName()).getGroupItepane());
             rootItem.getChildren().add(groupItem);
             List<User> users = contract.getUserList();
             for (User user : users) {
-                TreeItem<Label> i1 = new TreeItem<Label>();
-                ImageView imageView = new ImageView("images/personIcon.jpg");
-                imageView.setFitWidth(25);
-                imageView.setFitHeight(25);
-                Label sign = new Label(user.getNickName(), imageView);
-                sign.setId(String.valueOf(user.getId()));
-                i1.setValue(sign);
-                groupItem.getChildren().add(i1);
+                TreeItem<Pane> item = new TreeItem<Pane>();
+                ContractItemView contractItemView=new ContractItemView("",String.valueOf(user.getId()),user.getPersonWord());
+                contractItemView.getItemPane().setId(String.valueOf(user.getId()));
+                item.setValue(contractItemView.getItemPane());
+                groupItem.getChildren().add(item);
                 groupItem.setExpanded(true);
             }
         }
 
         contractTree.setOnMouseClicked(click -> {
             if (click.getClickCount() == 2) {
-                TreeItem<Label> selectedItem = contractTree.getSelectionModel().getSelectedItem();
+                TreeItem<Pane> selectedItem = contractTree.getSelectionModel().getSelectedItem();
                 String userid = selectedItem.getValue().getId();
                 if (userid != null) {
                     openChatWindow(userid);
                 }
-
             }
         });
     }
 
-
-
     private void openChatWindow(String id) {
         try {
             //不重复打开聊天框
-            if(StageManager.getStage(id)!=null){
+            if(ChatViewManager.getStage(id)!=null){
                 return;
             }
-            //创建聊天框
-            Stage chatStage=new Stage();
-            Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
-            chatStage.setScene(scene);
-            //聊天框大小不可修改
-            chatStage.setResizable(false);
-            //目标联系人
-            Label nameLabel1 = (Label)scene.lookup("#nameLabel");
-            nameLabel1.setText(id);
-            //当前登陆用户
-            Label sourceNameLabel = (Label)scene.lookup("#sourceNameLabel");
-            sourceNameLabel.setText(nameLabel.getText());
-            sourceNameLabel.setVisible(false);
-            chatStage.show();
-            //注册聊天框
-            StageManager.registerStage(id,chatStage);
-
-            chatStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                    StageManager.unregisterStage(id);
-                }
-            });
-            String sourceId=sourceNameLabel.getText();
-            //聊天记录框
-            VBox chatHistory = (VBox)scene.lookup("#chatHistory");
-            //TODO 滚动条置底 没反应
-            ScrollPane chatPane = (ScrollPane)scene.lookup("#chatPane");
-            chatPane.setVvalue(chatPane.getMaxHeight());
-            //获取近一天的聊天记录
-            List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,sourceId);
-            for (MessageInfo messageInfo:messageInfos){
-                ImageView imageView=new ImageView("images/personIcon.jpg");
-                imageView.setFitWidth(25);
-                imageView.setFitHeight(25);
-                Label label=new Label(messageInfo.getMsgcontent(),imageView);
-                if(id.equals(messageInfo.getSourceclientid())){
-                    label.setAlignment(Pos.CENTER_LEFT);
-                }else{
-                    label.setAlignment(Pos.CENTER_RIGHT);
-                }
-                label.setPrefWidth(570);
-                label.setStyle("-fx-padding: 5 5 5 5");
-                Label time=new Label(DateUtils.formatDateTime(messageInfo.getTime()));
-                time.setPrefWidth(570);
-                time.setAlignment(Pos.CENTER);
-                chatHistory.getChildren().add(time);
-                chatHistory.getChildren().add(label);
-            }
+            List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,nameLabel.getText());
+            ChatView chatView= new ChatView(id,String.valueOf(ClientContextUtils.getCurrentUser().getId()),messageInfos);
+            ChatViewManager.registerStage(id,chatView);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
 
     /**
      * 系统设置
@@ -307,41 +255,5 @@ public class MainController  implements Initializable {
     @FXML
     public void openAddFriend(ActionEvent event){
 
-    }
-
-    public Tab getGroupTab() {
-        return groupTab;
-    }
-
-    public Tab getMessageTab() {
-        return messageTab;
-    }
-
-    public Tab getSpaceTab() {
-        return spaceTab;
-    }
-
-    public ListView<Label> getSpaceList() {
-        return spaceList;
-    }
-
-    public TextField getSearchField() {
-        return searchField;
-    }
-
-    public ListView<Pane> getMessageList() {
-        return messageList;
-    }
-
-    public Label getNameLabel() {
-        return nameLabel;
-    }
-
-    public ImageView getUserIcon() {
-        return userIcon;
-    }
-
-    public TextField getPersonWord() {
-        return personWord;
     }
 }

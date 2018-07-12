@@ -77,25 +77,14 @@ public class LoginController  implements Initializable {
         Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.close();
 
-        //弹出主页面
-        Parent main=mainView.getView();
-        Label label=mainController.getNameLabel();
-        label.setText(String.valueOf(user.getId()));
-        //设置用户头像
-        ImageView userIcon=mainController.getUserIcon();
-        TextField personWord=mainController.getPersonWord();
-        personWord.setFocusTraversable(false);
-        //个性签名
-        personWord.setText(user.getPersonWord());
-        mainController.init(user.getId());
-        //显示主页面
         Stage mainStage=new Stage();
-        mainStage.setScene(new Scene(main));
+        mainStage.setScene(new Scene(mainView.getView()));
+        mainController.init(user);
         mainStage.show();
         mainStage.setResizable(false);
-        //注册主页面
-        StageManager.registerStage(StageCodes.MAIN,mainStage);
-        StageManager.unregisterStage(StageCodes.LOGIN);
+        //初始化主界面
 
+        //注册主界面
+        StageManager.registerStage(StageCodes.MAIN,mainStage);
     }
 }

@@ -9,7 +9,9 @@ package org.yang.zhang.socket;
 import java.util.Date;
 
 import org.yang.zhang.module.MessageInfo;
+import org.yang.zhang.module.RecentContract;
 import org.yang.zhang.repository.ChatMessageRepository;
+import org.yang.zhang.repository.RecentContractRepository;
 import org.yang.zhang.utils.ChannelManager;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.SpringContextUtils;
@@ -31,10 +33,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         }
         String targetUser=info.getTargetclientid();
         String sourceUser=info.getSourceclientid();
-        if(targetUser==null&&info.getMsgcontent().equals("REGEIST")){
+        if(info.getMsgcontent().equals("REGEIST")){
             //注册channel
             ChannelManager.registerChannel(sourceUser,ctx);
-        }if(targetUser==null&&info.getMsgcontent().equals("loginOut")){
+        }else if(info.getMsgcontent().equals("loginOut")){
             //注销channel
             ChannelManager.unregisterChannel(sourceUser);
         }else{
@@ -50,6 +52,20 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             info.setTime(new Date());
             //本地存储消息
             ChatMessageRepository chatMessageRepository=SpringContextUtils.getBean("chatMessageRepository");
+            RecentContractRepository recentContractRepository=SpringContextUtils.getBean("recentContractRepository");
+            RecentContract recentContract=recentContractRepository.findByUserIdAndContractUserId(Integer.valueOf(info.getSourceclientid()),Integer.valueOf(info.getTargetclientid()));
+            if(recentContract!=null){
+                recentContract.setLastMessage(info.getMsgcontent());
+                recentContract.setMessageTime(info.getTime());
+                recentContractRepository.saveAndFlush(recentContract);
+            }else{
+                RecentContract recentContract1=new RecentContract();
+                recentContract1.setMessageTime(info.getTime());
+                recentContract1.setLastMessage(info.getMsgcontent());
+                recentContract1.setUserId(Integer.valueOf(info.getSourceclientid()));
+                recentContract1.setContractUserId(Integer.valueOf(info.getTargetclientid()));
+                recentContractRepository.save(recentContract1);
+            }
             chatMessageRepository.save(info);
         }
     }

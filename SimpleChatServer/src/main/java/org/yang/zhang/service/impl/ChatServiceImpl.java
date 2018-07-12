@@ -70,4 +70,5 @@ public class ChatServiceImpl implements ChatService {
         List<RecentContract> list= chatMapper.oneMonthContract(userDto.getUserId());
         return list;
     }
+
 }
