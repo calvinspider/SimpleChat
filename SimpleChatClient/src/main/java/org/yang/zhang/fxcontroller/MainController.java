@@ -6,7 +6,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,12 +19,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.TreeViewSample;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.dto.ContractGroupDto;
@@ -42,10 +49,30 @@ import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.ContractItemView;
-import org.yang.zhang.view.GroupItemView;
 import org.yang.zhang.view.RecentContractView;
 import org.yang.zhang.view.SearchContractView;
-
+import java.util.Arrays;
+import java.util.List;
+import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -204,12 +231,12 @@ public class MainController  implements Initializable {
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
             TreeItem<Pane> groupItem = new TreeItem<Pane>();
-            groupItem.setValue(new GroupItemView(contract.getGroupName()).getGroupItepane());
+            groupItem.setValue(new ContractItemView("",contract.getGroupName(),"",true).getItemPane());
             rootItem.getChildren().add(groupItem);
             List<User> users = contract.getUserList();
             for (User user : users) {
                 TreeItem<Pane> item = new TreeItem<Pane>();
-                ContractItemView contractItemView=new ContractItemView("",String.valueOf(user.getId()),user.getPersonWord());
+                ContractItemView contractItemView=new ContractItemView("",String.valueOf(user.getId()),user.getPersonWord(),false);
                 contractItemView.getItemPane().setId(String.valueOf(user.getId()));
                 item.setValue(contractItemView.getItemPane());
                 groupItem.getChildren().add(item);
@@ -218,14 +245,39 @@ public class MainController  implements Initializable {
         }
 
         contractTree.setOnMouseClicked(click -> {
-            if (click.getClickCount() == 2) {
+            //左键双击弹出聊天框
+            if (click.getButton()==MouseButton.PRIMARY&&click.getClickCount() == 2) {
                 TreeItem<Pane> selectedItem = contractTree.getSelectionModel().getSelectedItem();
-                String userid = selectedItem.getValue().getId();
-                if (userid != null) {
-                    openChatWindow(userid);
+                if(selectedItem!=null){
+                    String userid = selectedItem.getValue().getId();
+                    if (userid != null) {
+                        openChatWindow(userid);
+                    }else{
+                        //如果是分组，双击修改分组名称
+                        System.out.println("修改分组名称");
+                    }
                 }
             }
         });
+
+        ContextMenu addMenu = new ContextMenu();
+        MenuItem addMenuItem = new MenuItem("添加分组");
+        MenuItem deleteMenu = new MenuItem("删除分组");
+        addMenu.getItems().add(addMenuItem);
+        addMenu.getItems().add(deleteMenu);
+        addMenuItem.setOnAction(new EventHandler() {
+            public void handle(Event t) {
+                TreeItem<Pane> newGroup = new TreeItem<Pane>();
+                ContractItemView itemView=new ContractItemView("","","",true);
+                TextField textField=itemView.getGroupName();
+                textField.setEditable(true);
+                textField.setFocusTraversable(true);
+                newGroup.setValue(itemView.getItemPane());
+                //新分组都挂在根节点下
+                contractTree.getRoot().getChildren().add(newGroup);
+            }
+        });
+        contractTree.setContextMenu(addMenu);
     }
 
     private void openChatWindow(String id) {

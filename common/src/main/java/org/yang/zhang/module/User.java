@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -16,13 +17,13 @@ import lombok.Data;
 @Table(name = "t_user")
 public class User{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nickName;
     private String personWord;
     private String sex;
-    private Integer age;
-    private Date birthday;
+    private String age;
+    private String birthday;
     private String zodiac;
     private String constellation;
     private String bloodType;
@@ -66,20 +67,21 @@ public class User{
         this.sex = sex;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
+    }
+
+    public String getAge() {
+
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
     }
 
     public String getZodiac() {

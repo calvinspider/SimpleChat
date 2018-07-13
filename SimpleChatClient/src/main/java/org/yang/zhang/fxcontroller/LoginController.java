@@ -23,6 +23,7 @@ import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.LoginErrorView;
 import org.yang.zhang.view.LoginView;
 import org.yang.zhang.view.MainView;
+import org.yang.zhang.view.RegisterView;
 
 @FXMLController
 public class LoginController  implements Initializable {
@@ -39,6 +40,8 @@ public class LoginController  implements Initializable {
     private TextField passWord;
     @FXML
     private ImageView userIcon;
+    @FXML
+    private Label userRegister;
     @Autowired
     private LoginServiceImpl loginService;
     @Autowired
@@ -47,6 +50,8 @@ public class LoginController  implements Initializable {
     private LoginView loginView;
     @Autowired
     private MainView mainView;
+    @Autowired
+    private RegisterView registerView;
 
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -86,5 +91,15 @@ public class LoginController  implements Initializable {
 
         //注册主界面
         StageManager.registerStage(StageCodes.MAIN,mainStage);
+    }
+
+    @FXML
+    public void userRegister(){
+        if(StageManager.getStage(StageCodes.REGISTER)==null){
+            Stage registerStage=new Stage();
+            registerStage.setScene(new Scene(registerView.getView()));
+            registerStage.show();
+            StageManager.registerStage(StageCodes.REGISTER,registerStage);
+        }
     }
 }

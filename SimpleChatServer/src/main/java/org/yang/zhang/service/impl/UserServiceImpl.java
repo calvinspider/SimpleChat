@@ -19,12 +19,12 @@ import org.yang.zhang.service.UserService;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userMapper;
+    private UserRepository userRepository;
 
     @Override
     public Result<User> login(String userName, String passWord) {
         try {
-            User user=userMapper.getOne(Integer.valueOf(userName));
+            User user=userRepository.getOne(Integer.valueOf(userName));
             User newUser=new User();
             BeanUtils.copyProperties(user,newUser);
             if(newUser.getPassword().equals(passWord)){
@@ -35,5 +35,10 @@ public class UserServiceImpl implements UserService {
         }
 
         return Result.errorMessage("用户登陆失败");
+    }
+
+    @Override
+    public User register(User user) {
+        return userRepository.save(user);
     }
 }

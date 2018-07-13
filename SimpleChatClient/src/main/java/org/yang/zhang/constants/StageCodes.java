@@ -10,4 +10,5 @@ public class StageCodes {
     public static final String LOGIN="login";
     public static final String MAIN="main";
     public static final String SEARCHCONTRACT="searchContract";
+    public static final String REGISTER="register";
 }

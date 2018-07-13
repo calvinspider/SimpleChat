@@ -52,7 +52,7 @@ public class ChatController {
         return Result.successData(list);
     }
 
-    @RequestMapping(value = "/searchContractDto")
+    @RequestMapping(value = "/searchContract")
     public Result<List<AddContractDto>> searchContractDto(@RequestBody SearchContractDto searchContractDto){
         List<AddContractDto> list=chatService.searchContractDto(searchContractDto);
         return Result.successData(list);

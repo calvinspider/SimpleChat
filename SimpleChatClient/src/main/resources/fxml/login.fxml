@@ -22,7 +22,7 @@
          </image></ImageView>
       <TextField fx:id="userName" layoutX="135.0" layoutY="195.0" minHeight="30.0" minWidth="200.0" />
       <TextField fx:id="passWord" layoutX="135.0" layoutY="225.0" minHeight="30.0" minWidth="200.0" />
-      <Label layoutX="340.0" layoutY="195.0" minHeight="30.0" minWidth="75.0" text="注册账号" />
+      <Label fx:id="userRegister" layoutX="340.0" layoutY="195.0" minHeight="30.0" minWidth="75.0" onMousePressed="#userRegister" text="注册账号" />
       <Label layoutX="340.0" layoutY="225.0" minHeight="30.0" minWidth="75.0" text="忘记密码" />
       <CheckBox fx:id="autoLogin" layoutX="266.0" layoutY="258.0" minHeight="15.0" minWidth="15.0" mnemonicParsing="false" opacity="0.8" text="自动登陆" />
    </children>

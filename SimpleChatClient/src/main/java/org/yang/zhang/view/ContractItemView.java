@@ -2,6 +2,7 @@ package org.yang.zhang.view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -18,16 +19,25 @@ public class ContractItemView {
     private String userIcon;
     private String userName;
     private String personWord;
+    private TextField groupName;
 
-    public ContractItemView(String userIcon, String userName, String personWord) {
+    public ContractItemView(String userIcon, String userName, String personWord,Boolean group) {
+        Pane pane;
         try {
-            Pane pane=FXMLLoader.load(getClass().getResource("/fxml/contractItem.fxml"));
-            ImageView usericon = (ImageView)pane.lookup("#usericon");
-            usericon.setImage(new Image("images/personIcon.jpg"));
-            Label username = (Label) pane.lookup("#username");
-            Label personword = (Label) pane.lookup("#personword");
-            username.setText(userName);
-            personword.setText(personWord);
+            if(!group){
+                pane=FXMLLoader.load(getClass().getResource("/fxml/contractItem.fxml"));
+                ImageView usericon = (ImageView)pane.lookup("#usericon");
+                usericon.setImage(new Image("images/personIcon.jpg"));
+                Label username = (Label) pane.lookup("#username");
+                Label personword = (Label) pane.lookup("#personword");
+                username.setText(userName);
+                personword.setText(personWord);
+            }else{
+                pane=FXMLLoader.load(getClass().getResource("/fxml/groupItem.fxml"));
+                groupName=(TextField) pane.lookup("#groupName");
+                groupName.setEditable(false);
+                groupName.setText(userName);
+            }
             this.itemPane=pane;
             this.userIcon = userIcon;
             this.userName = userName;
@@ -67,5 +77,13 @@ public class ContractItemView {
 
     public void setPersonWord(String personWord) {
         this.personWord = personWord;
+    }
+
+    public TextField getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(TextField groupName) {
+        this.groupName = groupName;
     }
 }

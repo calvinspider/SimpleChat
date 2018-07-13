@@ -4,9 +4,11 @@ import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -55,8 +57,15 @@ public class SearchContractController implements Initializable {
 
     @FXML
     public void searchFriend(ActionEvent event){
+        friendList.getChildren().clear();
         if(StringUtils.isNotBlank(searchField.getText())){
             List<AddContractDto> list=contractService.searchContract(ClientContextUtils.getCurrentUser().getId(),searchField.getText());
+            if(list.size()==0){
+                Label label=new Label("未找到符合条件的用户!");
+                friendList.add(label,0,0);
+                friendList.setAlignment(Pos.CENTER);
+                return;
+            }
             int j=0;
             for (int i=0;i<list.size();i++){
                 AddContractView contractView=new AddContractView("",list.get(i).getUserName(),list.get(i).getCommonCount());
@@ -70,6 +79,7 @@ public class SearchContractController implements Initializable {
     }
 
     public void init(String userName){
+      friendList.getChildren().clear();
       List<AddContractDto> list=contractService.getRecommendContract(userName);
       int j=0;
       for (int i=0;i<list.size();i++){
