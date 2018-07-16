@@ -6,6 +6,7 @@ import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.dto.SearchContractDto;
+import org.yang.zhang.entity.Result;
 import org.yang.zhang.mapper.ChatMapper;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.GroupUser;
@@ -83,5 +84,14 @@ public class ChatServiceImpl implements ChatService {
     public List<AddContractDto> searchContractDto(SearchContractDto key) {
         List<AddContractDto> list= chatMapper.searchContractDto(key);
         return list;
+    }
+
+    @Override
+    public Result<Void> newGroup(ContractGroupDto contractGroupDto) {
+        ContractGroup contractGroup=new ContractGroup();
+        contractGroup.setGroupName(contractGroupDto.getGroupName());
+        contractGroup.setUserId(contractGroupDto.getUserId());
+        contractGroupRepository.save(contractGroup);
+        return Result.success();
     }
 }

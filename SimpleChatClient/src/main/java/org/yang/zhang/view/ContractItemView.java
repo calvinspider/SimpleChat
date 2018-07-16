@@ -37,6 +37,8 @@ public class ContractItemView {
                 groupName=(TextField) pane.lookup("#groupName");
                 groupName.setEditable(false);
                 groupName.setText(userName);
+                groupName.setStyle("-fx-background-color: #A1BBD8;");
+                pane.setStyle("-fx-background-color: #A1BBD8;");
             }
             this.itemPane=pane;
             this.userIcon = userIcon;

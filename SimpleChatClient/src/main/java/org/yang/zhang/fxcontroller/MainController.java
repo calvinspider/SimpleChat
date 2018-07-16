@@ -1,6 +1,7 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -19,15 +20,24 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.TreeViewSample;
 import org.yang.zhang.constants.Constant;
@@ -51,7 +61,10 @@ import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.ContractItemView;
 import org.yang.zhang.view.RecentContractView;
 import org.yang.zhang.view.SearchContractView;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javafx.application.Application;
 import javafx.event.Event;
@@ -76,8 +89,11 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import com.sun.deploy.uitoolkit.DragListener;
 
 @FXMLController
 public class MainController  implements Initializable {
@@ -120,6 +136,8 @@ public class MainController  implements Initializable {
     @Autowired
     private SearchContractController searchContractController;
 
+    private List<TreeItem<Pane>> groupList=new ArrayList<>();
+    private Map<String,TreeItem<Pane>> contractList=new HashMap<>();
     /**
      * 主页面初始化
      * @param location
@@ -228,10 +246,15 @@ public class MainController  implements Initializable {
         rootItem.setExpanded(true);
         contractTree.setRoot(rootItem);
         contractTree.setShowRoot(false);
+        groupList.clear();
+        contracts.clear();
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
             TreeItem<Pane> groupItem = new TreeItem<Pane>();
-            groupItem.setValue(new ContractItemView("",contract.getGroupName(),"",true).getItemPane());
+            Pane pane=new ContractItemView("",contract.getGroupName(),"",true).getItemPane();
+            pane.setId("GROUP"+contract.getGroupId());
+            groupItem.setValue(pane);
+            groupList.add(groupItem);
             rootItem.getChildren().add(groupItem);
             List<User> users = contract.getUserList();
             for (User user : users) {
@@ -239,10 +262,18 @@ public class MainController  implements Initializable {
                 ContractItemView contractItemView=new ContractItemView("",String.valueOf(user.getId()),user.getPersonWord(),false);
                 contractItemView.getItemPane().setId(String.valueOf(user.getId()));
                 item.setValue(contractItemView.getItemPane());
+                contractList.put(,item);
                 groupItem.getChildren().add(item);
                 groupItem.setExpanded(true);
             }
         }
+
+        contractTree.setCellFactory(new Callback<TreeView<Pane>,TreeCell<Pane>>(){
+            @Override
+            public TreeCell<Pane> call(TreeView<Pane> pane) {
+                return new ContractTreeCellImpl();
+            }
+        });
 
         contractTree.setOnMouseClicked(click -> {
             //左键双击弹出聊天框
@@ -250,7 +281,7 @@ public class MainController  implements Initializable {
                 TreeItem<Pane> selectedItem = contractTree.getSelectionModel().getSelectedItem();
                 if(selectedItem!=null){
                     String userid = selectedItem.getValue().getId();
-                    if (userid != null) {
+                    if (!userid.contains("GROUP")) {
                         openChatWindow(userid);
                     }else{
                         //如果是分组，双击修改分组名称
@@ -271,14 +302,39 @@ public class MainController  implements Initializable {
                 ContractItemView itemView=new ContractItemView("","","",true);
                 TextField textField=itemView.getGroupName();
                 textField.setEditable(true);
-                textField.setFocusTraversable(true);
+                Platform.runLater(()->{
+                    textField.setFocusTraversable(true);
+                    textField.requestFocus();
+                    textField.focusTraversableProperty().setValue(true);
+                });
+
+                textField.focusedProperty().addListener(new ChangeListener<Boolean>()
+                {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                    {
+                        if(!newPropertyValue)
+                        {
+                            if(StringUtils.isBlank(textField.getText())){
+                                textField.setText("未命名");
+                            }
+                            if(textField.isEditable()){
+                                chatService.createNewGroup(textField.getText());
+                            }
+                            textField.setEditable(false);
+                        }
+                    }
+                });
                 newGroup.setValue(itemView.getItemPane());
                 //新分组都挂在根节点下
                 contractTree.getRoot().getChildren().add(newGroup);
             }
         });
+        contractTree.setEditable(true);
         contractTree.setContextMenu(addMenu);
     }
+
+
 
     private void openChatWindow(String id) {
         try {
@@ -310,6 +366,70 @@ public class MainController  implements Initializable {
      */
     @FXML
     public void openAddFriend(ActionEvent event){
+
+    }
+
+    private final class ContractTreeCellImpl extends TreeCell<Pane> {
+
+        public ContractTreeCellImpl() {
+            setOnDragEntered(e -> {
+                System.out.println(" Entered ");
+                //收缩分组
+                for(TreeItem<Pane> paneTreeItem:groupList){
+                    paneTreeItem.setExpanded(false);
+                }
+                ClipboardContent content = new ClipboardContent();
+                content.putString();
+                e.getDragboard().setContent(content);
+                e.consume();
+            });
+            setOnDragDetected(e -> {
+                System.out.println(" Detected ");
+                Dragboard db = startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString( "Hello!" );
+                db.setContent(content);
+                e.consume();
+            });
+            setOnDragDone(e -> {
+                System.out.println(" Done ");
+                e.consume();
+            });
+            setOnDragDropped(e -> {
+                System.out.println(" Dropped ");
+                //将用户移动到目标分组中
+                Dragboard dragboard=e.getDragboard();
+
+                e.setDropCompleted(true);
+                e.consume();
+            });
+            setOnDragExited(e -> {
+                System.out.println(" Exited ");
+                for(TreeItem<Pane> paneTreeItem:groupList){
+                    paneTreeItem.setExpanded(true);
+                }
+                e.consume();
+            });
+            setOnDragOver(event -> {
+                System.out.println(" Over ");
+                if (event.getGestureSource() != this && event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                }
+                event.consume();
+            });
+        }
+
+        @Override
+        public void updateItem(Pane pane, boolean empty) {
+            super.updateItem(pane,empty);
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                setGraphic(pane);
+            }
+        }
+
 
     }
 }

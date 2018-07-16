@@ -11,8 +11,10 @@ import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.service.ChatService;
+import org.yang.zhang.utils.ClientContextUtils;
 import org.yang.zhang.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -48,5 +50,13 @@ public class ChatServiceImpl implements ChatService {
         String result=restTemplate.postForObject(Constant.ONEMONTHCONTRACT,findByUserDto,String.class);
         Result<List<RecentContract>> listResult=JsonUtils.fromJson(result,type);
         return listResult.getData();
+    }
+
+    @Override
+    public void createNewGroup(String text) {
+        ContractGroupDto contractGroupDto=new ContractGroupDto();
+        contractGroupDto.setGroupName(text);
+        contractGroupDto.setUserId(Integer.valueOf(ClientContextUtils.getCurrentUser().getId()));
+        restTemplate.postForObject(Constant.NEWGROUP,contractGroupDto,String.class);
     }
 }

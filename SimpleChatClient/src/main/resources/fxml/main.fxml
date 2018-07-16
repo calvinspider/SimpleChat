@@ -33,11 +33,7 @@
         <tabs>
           <Tab id="groupTab" closable="false" style="-fx-pref-Width: 90; -fx-text-alignment: center;" text="联系人">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="448.0" prefWidth="280.0">
-                     <children>
-                        <TreeView fx:id="contractTree" prefHeight="498.0" prefWidth="280.0" />
-                     </children>
-              </AnchorPane>
+                <TreeView fx:id="contractTree" prefHeight="498.0" prefWidth="280.0" />
             </content>
           </Tab>
             <Tab fx:id="messageTab" closable="false" style="-fx-pref-Width: 90;" text="消息">

@@ -16,4 +16,6 @@ public interface ChatService {
     List<MessageInfo> getOneDayRecentChatLog(String id1, String id2);
 
     List<RecentContract> getrecentContract(Integer id);
+
+    void createNewGroup(String text);
 }

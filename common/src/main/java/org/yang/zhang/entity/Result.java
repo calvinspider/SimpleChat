@@ -52,6 +52,10 @@ public class Result<T> implements Serializable {
         return create(ResultConstants.RESULT_FAILED,message);
     }
 
+    public static Result<Void> success() {
+        return create(ResultConstants.RESULT_SUCCESS,null,null);
+    }
+
     public String getCode() {
         return code;
     }

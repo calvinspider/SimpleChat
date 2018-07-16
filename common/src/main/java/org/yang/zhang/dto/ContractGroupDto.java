@@ -15,7 +15,16 @@ import lombok.Data;
 public class ContractGroupDto {
     private Integer groupId;
     private String groupName;
+    private Integer userId;
     private List<User> userList;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public Integer getGroupId() {
         return groupId;

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.yang.zhang.utils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,5 +57,10 @@ public class ChatController {
     public Result<List<AddContractDto>> searchContractDto(@RequestBody SearchContractDto searchContractDto){
         List<AddContractDto> list=chatService.searchContractDto(searchContractDto);
         return Result.successData(list);
+    }
+
+    @RequestMapping(value = "/newGroup")
+    public String  newGroup(@RequestBody ContractGroupDto contractGroupDto){
+        return JsonUtils.toJson(chatService.newGroup(contractGroupDto));
     }
 }
