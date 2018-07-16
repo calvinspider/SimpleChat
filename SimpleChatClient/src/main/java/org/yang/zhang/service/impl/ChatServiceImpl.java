@@ -59,4 +59,13 @@ public class ChatServiceImpl implements ChatService {
         contractGroupDto.setUserId(Integer.valueOf(ClientContextUtils.getCurrentUser().getId()));
         restTemplate.postForObject(Constant.NEWGROUP,contractGroupDto,String.class);
     }
+
+    @Override
+    public void updateContractGroup(String itemId, String oldGroupId, String newGroupId) {
+        ContractGroupDto contractGroupDto=new ContractGroupDto();
+        contractGroupDto.setUserId(Integer.valueOf(itemId));
+        contractGroupDto.setOldGroupId(oldGroupId);
+        contractGroupDto.setNewGroupId(newGroupId);
+        restTemplate.postForObject(Constant.UPDATECONTRACTGROUP,contractGroupDto,String.class);
+    }
 }

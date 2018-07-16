@@ -8,6 +8,7 @@ import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.mapper.ChatMapper;
+import org.yang.zhang.mapper.GroupUserMapper;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.GroupUser;
 import org.yang.zhang.module.MessageInfo;
@@ -35,6 +36,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Autowired
     private ChatMapper chatMapper;
+    @Autowired
+    private GroupUserMapper groupUserMapper;
     @Autowired
     private ContractGroupRepository contractGroupRepository;
     @Autowired
@@ -92,6 +95,16 @@ public class ChatServiceImpl implements ChatService {
         contractGroup.setGroupName(contractGroupDto.getGroupName());
         contractGroup.setUserId(contractGroupDto.getUserId());
         contractGroupRepository.save(contractGroup);
+        return Result.success();
+    }
+
+    @Override
+    public Result<Void> updateContractGroup(ContractGroupDto contractGroupDto) {
+        GroupUser groupUser=new GroupUser();
+        groupUser.setUserId(contractGroupDto.getUserId());
+        groupUser.setGroupId(Integer.valueOf(contractGroupDto.getNewGroupId()));
+        groupUserMapper.deleteByUserIdAndGroupId(contractGroupDto.getUserId(),Integer.valueOf(contractGroupDto.getOldGroupId()));
+        groupUserRepository.save(groupUser);
         return Result.success();
     }
 }

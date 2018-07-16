@@ -17,6 +17,24 @@ public class ContractGroupDto {
     private String groupName;
     private Integer userId;
     private List<User> userList;
+    private String oldGroupId;
+    private String newGroupId;
+
+    public String getOldGroupId() {
+        return oldGroupId;
+    }
+
+    public void setOldGroupId(String oldGroupId) {
+        this.oldGroupId = oldGroupId;
+    }
+
+    public String getNewGroupId() {
+        return newGroupId;
+    }
+
+    public void setNewGroupId(String newGroupId) {
+        this.newGroupId = newGroupId;
+    }
 
     public Integer getUserId() {
         return userId;

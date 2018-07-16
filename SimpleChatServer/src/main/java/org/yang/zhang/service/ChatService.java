@@ -30,4 +30,6 @@ public interface ChatService {
     List<AddContractDto> searchContractDto(SearchContractDto key);
 
     Result<Void> newGroup(ContractGroupDto contractGroupDto);
+
+    Result<Void> updateContractGroup(ContractGroupDto contractGroupDto);
 }

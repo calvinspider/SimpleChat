@@ -14,4 +14,6 @@ import org.yang.zhang.module.User;
 
 public interface GroupUserRepository extends CrudRepository<GroupUser,Integer> {
     List<GroupUser> findByGroupId(Integer id);
+
+    void deleteByUserIdAndGroupId(Integer userId, Integer oldGroupId);
 }

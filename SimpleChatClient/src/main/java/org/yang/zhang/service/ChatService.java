@@ -18,4 +18,6 @@ public interface ChatService {
     List<RecentContract> getrecentContract(Integer id);
 
     void createNewGroup(String text);
+
+    void updateContractGroup(String itemId, String oldGroupId, String newGroupId);
 }

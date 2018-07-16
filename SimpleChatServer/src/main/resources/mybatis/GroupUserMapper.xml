@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.yang.zhang.mapper.GroupUserMapper">
+
+    <delete id="deleteByUserIdAndGroupId">
+        delete from t_group_user where user_id=#{userId} and group_id=#{groupId}
+    </delete>
+
+</mapper>

@@ -63,4 +63,11 @@ public class ChatController {
     public String  newGroup(@RequestBody ContractGroupDto contractGroupDto){
         return JsonUtils.toJson(chatService.newGroup(contractGroupDto));
     }
+
+    @RequestMapping(value = "/updateContractGroup")
+    public String  updateContractGroup(@RequestBody ContractGroupDto contractGroupDto){
+        return JsonUtils.toJson(chatService.updateContractGroup(contractGroupDto));
+    }
+
+
 }

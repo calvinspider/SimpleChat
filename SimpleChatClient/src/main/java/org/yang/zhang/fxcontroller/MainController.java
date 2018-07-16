@@ -137,7 +137,7 @@ public class MainController  implements Initializable {
     private SearchContractController searchContractController;
 
     private List<TreeItem<Pane>> groupList=new ArrayList<>();
-    private Map<String,TreeItem<Pane>> contractList=new HashMap<>();
+    private Map<String,TreeItem<Pane>> contractMap=new HashMap<>();
     /**
      * 主页面初始化
      * @param location
@@ -247,7 +247,7 @@ public class MainController  implements Initializable {
         contractTree.setRoot(rootItem);
         contractTree.setShowRoot(false);
         groupList.clear();
-        contracts.clear();
+        contractMap.clear();
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
             TreeItem<Pane> groupItem = new TreeItem<Pane>();
@@ -262,7 +262,7 @@ public class MainController  implements Initializable {
                 ContractItemView contractItemView=new ContractItemView("",String.valueOf(user.getId()),user.getPersonWord(),false);
                 contractItemView.getItemPane().setId(String.valueOf(user.getId()));
                 item.setValue(contractItemView.getItemPane());
-                contractList.put(,item);
+                contractMap.put(String.valueOf(user.getId()),item);
                 groupItem.getChildren().add(item);
                 groupItem.setExpanded(true);
             }
@@ -371,20 +371,23 @@ public class MainController  implements Initializable {
 
     private final class ContractTreeCellImpl extends TreeCell<Pane> {
 
+        private String cellId;
+
         public ContractTreeCellImpl() {
+
             setOnDragEntered(e -> {
-                System.out.println(" Entered ");
+
                 //收缩分组
                 for(TreeItem<Pane> paneTreeItem:groupList){
                     paneTreeItem.setExpanded(false);
                 }
                 ClipboardContent content = new ClipboardContent();
-                content.putString();
+                content.putString(this.cellId);
                 e.getDragboard().setContent(content);
                 e.consume();
             });
             setOnDragDetected(e -> {
-                System.out.println(" Detected ");
+
                 Dragboard db = startDragAndDrop(TransferMode.MOVE);
                 ClipboardContent content = new ClipboardContent();
                 content.putString( "Hello!" );
@@ -392,31 +395,36 @@ public class MainController  implements Initializable {
                 e.consume();
             });
             setOnDragDone(e -> {
-                System.out.println(" Done ");
+
                 e.consume();
             });
             setOnDragDropped(e -> {
-                System.out.println(" Dropped ");
+
                 //将用户移动到目标分组中
                 Dragboard dragboard=e.getDragboard();
-
+                String itemId=dragboard.getString();
+                String newGroupId=this.cellId;
+                String oldGroupId=contractMap.get(itemId).getParent().getValue().getId();
+                chatService.updateContractGroup(itemId,oldGroupId.substring(oldGroupId.indexOf("P")+1,oldGroupId.length()),
+                        newGroupId.substring(newGroupId.indexOf("P")+1,newGroupId.length()));
                 e.setDropCompleted(true);
                 e.consume();
+                initContract(ClientContextUtils.getCurrentUser().getId());
             });
             setOnDragExited(e -> {
-                System.out.println(" Exited ");
+
                 for(TreeItem<Pane> paneTreeItem:groupList){
                     paneTreeItem.setExpanded(true);
                 }
                 e.consume();
             });
             setOnDragOver(event -> {
-                System.out.println(" Over ");
-                if (event.getGestureSource() != this && event.getDragboard().hasString()) {
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                }
+
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 event.consume();
             });
+
+
         }
 
         @Override
@@ -426,6 +434,7 @@ public class MainController  implements Initializable {
                 setText(null);
                 setGraphic(null);
             } else {
+                this.cellId=pane.getId();
                 setGraphic(pane);
             }
         }

@@ -15,6 +15,7 @@ public class Constant {
     public static final String RECOMMONDCONTRACT=serverHost+"/chat/recommondContract";
     public static final String SEARCHCONTRACT=serverHost+"/chat/searchContract";
     public static final String NEWGROUP=serverHost+"/chat/newGroup";
+    public static final String UPDATECONTRACTGROUP=serverHost+"/chat/updateContractGroup";
     public static final String USERREGISTER=serverHost+"/user/register";
     public static final String REGEIST="REGEIST";
 }
