@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.yang.zhang.fxcontroller.MainController;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.utils.ChatViewManager;
 import org.yang.zhang.utils.DateUtils;
@@ -15,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -31,7 +33,7 @@ public class ChatView {
     private String openUserId;
     private String mainUserId;
 
-    public ChatView(String openUserId,String mainUserId,List<MessageInfo> messageInfos) {
+    public ChatView(String openUserId, Image userIcon,String mainUserId, List<MessageInfo> messageInfos) {
         try {
 
             //创建聊天框
@@ -43,6 +45,8 @@ public class ChatView {
             //目标联系人
             Label nameLabel1 = (Label)scene.lookup("#nameLabel");
             nameLabel1.setText(openUserId);
+            ImageView userImage  = (ImageView)scene.lookup("#userIcon");
+            userImage.setImage(userIcon);
             //当前登陆用户
             Label sourceNameLabel = (Label)scene.lookup("#sourceNameLabel");
             sourceNameLabel.setText(mainUserId);
@@ -64,13 +68,18 @@ public class ChatView {
             //获取近一天的聊天记录
 
             for (MessageInfo messageInfo:messageInfos){
-                ImageView imageView=new ImageView("images/personIcon.jpg");
-                imageView.setFitWidth(25);
-                imageView.setFitHeight(25);
-                Label label=new Label(messageInfo.getMsgcontent(),imageView);
+                Label label;
                 if(openUserId.equals(messageInfo.getSourceclientid())){
+                    ImageView imageView=new ImageView(MainController.userIconMap.get(openUserId));
+                    imageView.setFitWidth(25);
+                    imageView.setFitHeight(25);
+                    label=new Label(messageInfo.getMsgcontent(),imageView);
                     label.setAlignment(Pos.CENTER_LEFT);
                 }else{
+                    ImageView imageView=new ImageView(MainController.userIconMap.get(mainUserId));
+                    imageView.setFitWidth(25);
+                    imageView.setFitHeight(25);
+                    label=new Label(messageInfo.getMsgcontent(),imageView);
                     label.setAlignment(Pos.CENTER_RIGHT);
                 }
                 label.setPrefWidth(570);

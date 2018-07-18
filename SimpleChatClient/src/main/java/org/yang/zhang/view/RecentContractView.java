@@ -2,8 +2,10 @@ package org.yang.zhang.view;
 
 import java.util.Date;
 
+import org.yang.zhang.constants.Constant;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.utils.DateUtils;
+import org.yang.zhang.utils.ImageUtiles;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -34,7 +36,7 @@ public class RecentContractView {
             Label timelabel = (Label)pane.lookup("#timelabel");
             timelabel.setText(DateUtils.formatDate(recentContract.getLastMessageDate(),"YYYY-MM-dd"));
             ImageView contracticon=(ImageView)pane.lookup("#contracticon");
-            contracticon.setImage(new Image("images/personIcon.jpg"));
+            contracticon.setImage(ImageUtiles.getHttpImage(Constant.serverHost+"/static/images/userIcon/"+recentContract.getIcon()));
             contracticon.setFitWidth(45);
             contracticon.setFitHeight(45);
             this.messageTime = recentContract.getLastMessageDate();

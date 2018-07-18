@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.ClientContextUtils;
@@ -36,6 +37,9 @@ public class ChatWindowController  implements Initializable {
     private Label sourceNameLabel;
 
     @FXML
+    private ImageView userIcon;
+
+    @FXML
     private VBox chatHistory;
 
     @FXML
@@ -49,6 +53,9 @@ public class ChatWindowController  implements Initializable {
 
     @FXML
     private Button sendBtn;
+
+    @Autowired
+    private MainController mainController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,9 +75,9 @@ public class ChatWindowController  implements Initializable {
         messageInfo.setTime(new Date());
 
         //向聊天框中添加聊天内容
-        ImageView imageView=new ImageView("images/personIcon.jpg");
-        imageView.setFitWidth(25);
-        imageView.setFitHeight(25);
+        ImageView imageView= new ImageView(MainController.userIconMap.get(String.valueOf(ClientContextUtils.getCurrentUser().getId())));
+        imageView.setFitWidth(35);
+        imageView.setFitHeight(35);
         Label label=new Label(chatArea.getText(),imageView);
         label.setAlignment(Pos.CENTER_RIGHT);
         label.setPrefWidth(570);

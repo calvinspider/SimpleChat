@@ -16,6 +16,15 @@ public class RecentContract implements Serializable
     private String nickName;
     private String lastMessage;
     private Date lastMessageDate;
+    private String icon;
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
     public String getContractId() {
         return contractId;

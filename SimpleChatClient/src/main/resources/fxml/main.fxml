@@ -19,9 +19,7 @@
             <Pane layoutX="21.0" layoutY="25.0" prefHeight="60.0" prefWidth="180.0">
                <children>
                   <ImageView fx:id="userIcon" fitHeight="60.0" fitWidth="72.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/personIcon.jpg" />
-                     </image>
+
                   </ImageView>
                   <Label fx:id="nameLabel" layoutX="82.0" layoutY="-1.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
                   <TextField fx:id="personWord" layoutX="82.0" layoutY="34.0" promptText="编辑个性签名" />

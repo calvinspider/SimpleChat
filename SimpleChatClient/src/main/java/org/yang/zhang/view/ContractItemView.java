@@ -1,5 +1,8 @@
 package org.yang.zhang.view;
 
+import org.yang.zhang.constants.Constant;
+import org.yang.zhang.utils.ImageUtiles;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -16,7 +19,7 @@ import javafx.scene.layout.Pane;
 public class ContractItemView {
 
     private Pane itemPane;
-    private String userIcon;
+    private Image userImage;
     private String userName;
     private String personWord;
     private TextField groupName;
@@ -27,7 +30,9 @@ public class ContractItemView {
             if(!group){
                 pane=FXMLLoader.load(getClass().getResource("/fxml/contractItem.fxml"));
                 ImageView usericon = (ImageView)pane.lookup("#usericon");
-                usericon.setImage(new Image("images/personIcon.jpg"));
+                userImage=ImageUtiles.getHttpImage(Constant.serverHost+"/static/images/userIcon/"+userIcon);
+                usericon.setImage(userImage);
+
                 Label username = (Label) pane.lookup("#username");
                 Label personword = (Label) pane.lookup("#personword");
                 username.setText(userName);
@@ -41,7 +46,6 @@ public class ContractItemView {
                 pane.setStyle("-fx-background-color: #A1BBD8;");
             }
             this.itemPane=pane;
-            this.userIcon = userIcon;
             this.userName = userName;
             this.personWord = personWord;
         }catch (Exception e){
@@ -57,12 +61,12 @@ public class ContractItemView {
         this.itemPane = itemPane;
     }
 
-    public String getUserIcon() {
-        return userIcon;
+    public Image getUserImage() {
+        return userImage;
     }
 
-    public void setUserIcon(String userIcon) {
-        this.userIcon = userIcon;
+    public void setUserImage(Image userImage) {
+        this.userImage = userImage;
     }
 
     public String getUserName() {

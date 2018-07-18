@@ -55,6 +55,7 @@ import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.ChatViewManager;
 import org.yang.zhang.utils.ClientContextUtils;
 import org.yang.zhang.utils.DateUtils;
+import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.ChatView;
@@ -62,6 +63,8 @@ import org.yang.zhang.view.ContractItemView;
 import org.yang.zhang.view.RecentContractView;
 import org.yang.zhang.view.SearchContractView;
 
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,6 +95,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 import com.sun.deploy.uitoolkit.DragListener;
 
@@ -137,7 +142,8 @@ public class MainController  implements Initializable {
     private SearchContractController searchContractController;
 
     private List<TreeItem<Pane>> groupList=new ArrayList<>();
-    private Map<String,TreeItem<Pane>> contractMap=new HashMap<>();
+    public static Map<String,TreeItem<Pane>> contractMap=new HashMap<>();
+    public static Map<String,Image> userIconMap=new HashMap<>();
     /**
      * 主页面初始化
      * @param location
@@ -158,6 +164,7 @@ public class MainController  implements Initializable {
     }
 
     private void initMainPane(User user) {
+        userIcon.setImage(ImageUtiles.getHttpImage(Constant.serverHost+"/static/images/userIcon/"+user.getIconUrl()));
         nameLabel.setText(String.valueOf(user.getId()));
         personWord.setFocusTraversable(false);
         personWord.setText(user.getPersonWord());
@@ -225,8 +232,9 @@ public class MainController  implements Initializable {
                 if (click.getClickCount() == 2) {
                     Pane selectedItem = messageList.getSelectionModel().getSelectedItem();
                     String userid=selectedItem.getId();
+                    ImageView imageView=(ImageView) selectedItem.lookup("#userIcon");
                     if (userid != null) {
-                        openChatWindow(userid);
+                        openChatWindow(userid,imageView.getImage());
                     }
                 }
             });
@@ -248,6 +256,8 @@ public class MainController  implements Initializable {
         contractTree.setShowRoot(false);
         groupList.clear();
         contractMap.clear();
+        userIconMap.clear();
+        userIconMap.put(String.valueOf(id),userIcon.getImage());
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
             TreeItem<Pane> groupItem = new TreeItem<Pane>();
@@ -259,10 +269,11 @@ public class MainController  implements Initializable {
             List<User> users = contract.getUserList();
             for (User user : users) {
                 TreeItem<Pane> item = new TreeItem<Pane>();
-                ContractItemView contractItemView=new ContractItemView("",String.valueOf(user.getId()),user.getPersonWord(),false);
+                ContractItemView contractItemView=new ContractItemView(user.getIconUrl(),String.valueOf(user.getId()),user.getPersonWord(),false);
                 contractItemView.getItemPane().setId(String.valueOf(user.getId()));
                 item.setValue(contractItemView.getItemPane());
                 contractMap.put(String.valueOf(user.getId()),item);
+                userIconMap.put(String.valueOf(user.getId()),contractItemView.getUserImage());
                 groupItem.getChildren().add(item);
                 groupItem.setExpanded(true);
             }
@@ -282,7 +293,7 @@ public class MainController  implements Initializable {
                 if(selectedItem!=null){
                     String userid = selectedItem.getValue().getId();
                     if (!userid.contains("GROUP")) {
-                        openChatWindow(userid);
+                        openChatWindow(userid,userIconMap.get(userid));
                     }else{
                         //如果是分组，双击修改分组名称
                         System.out.println("修改分组名称");
@@ -335,15 +346,14 @@ public class MainController  implements Initializable {
     }
 
 
-
-    private void openChatWindow(String id) {
+    private void openChatWindow(String id,Image userIcon) {
         try {
             //不重复打开聊天框
             if(ChatViewManager.getStage(id)!=null){
                 return;
             }
             List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,nameLabel.getText());
-            ChatView chatView= new ChatView(id,String.valueOf(ClientContextUtils.getCurrentUser().getId()),messageInfos);
+            ChatView chatView= new ChatView(id,userIcon,String.valueOf(ClientContextUtils.getCurrentUser().getId()),messageInfos);
             ChatViewManager.registerStage(id,chatView);
         }catch (Exception e){
             e.printStackTrace();

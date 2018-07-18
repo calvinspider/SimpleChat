@@ -19,7 +19,8 @@
         trc.contract_user_id as contractId,
         tu.nick_name as nickName,
         last_message as lastMessage,
-        message_time as lastMessageDate
+        message_time as lastMessageDate,
+        tu.icon_url as icon
       FROM
         `t_recent_contract` trc
         LEFT JOIN t_user tu ON trc.user_id=tu.id
