@@ -13,8 +13,8 @@
       <Pane prefHeight="59.0" prefWidth="600.0" style="-fx-background-color: #E4E9F5;">
          <children>
             <Label fx:id="nameLabel" layoutX="78.0" layoutY="5.0" prefHeight="30.0" prefWidth="158.0" style="-fx-background-color: #E4E9F5;" text="Label" />
-            <Label fx:id="sourceNameLabel" layoutX="313.0" layoutY="13.0" prefHeight="0.0" prefWidth="0.0" />
             <ImageView fx:id="userIcon" fitHeight="50.0" fitWidth="50.0" layoutX="4.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="userId" layoutX="535.0" layoutY="13.0" text="Label" />
          </children>
       </Pane>
       <ScrollPane fx:id="chatPane" hbarPolicy="NEVER" layoutY="60.0" prefHeight="300.0" prefWidth="600.0" vbarPolicy="AS_NEEDED">

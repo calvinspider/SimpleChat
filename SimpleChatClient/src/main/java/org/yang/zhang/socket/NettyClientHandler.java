@@ -10,6 +10,7 @@ import org.yang.zhang.fxcontroller.MainController;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.utils.ChatViewManager;
 import org.yang.zhang.utils.DateUtils;
+import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.ChatView;
@@ -47,17 +48,17 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         if(info==null){
             throw new Exception("MessageInfo must not be NULL!");
         }
-        String userId=info.getSourceclientid();
-        ChatView chatWindow=ChatViewManager.getStage(userId);
+        Integer userId=info.getSourceclientid();
+        ChatView chatWindow=ChatViewManager.getStage(String.valueOf(userId));
         //聊天框未打开,头像闪动
         if(chatWindow==null){
             System.out.println("聊天框未打开");
         }else{
             Platform.runLater(()->{
                 VBox otherChat = chatWindow.getChatBox();
-                ImageView imageView=new ImageView(MainController.userIconMap.get(userId));
-                imageView.setFitWidth(25);
-                imageView.setFitHeight(25);
+                ImageView imageView=new ImageView(ImageUtiles.getUserIcon(userId));
+                imageView.setFitWidth(35);
+                imageView.setFitHeight(35);
                 Label label=new Label(info.getMsgcontent(),imageView);
                 label.setAlignment(Pos.CENTER_LEFT);
                 label.setPrefWidth(570);
@@ -67,7 +68,6 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                 otherChat.getChildren().add(time);
                 otherChat.getChildren().add(label);
             });
-
         }
     }
 

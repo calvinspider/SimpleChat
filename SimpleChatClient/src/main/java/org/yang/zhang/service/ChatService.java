@@ -13,7 +13,7 @@ import org.yang.zhang.module.MessageInfo;
  */
 
 public interface ChatService {
-    List<MessageInfo> getOneDayRecentChatLog(String id1, String id2);
+    List<MessageInfo> getOneDayRecentChatLog(Integer id1, Integer id2);
 
     List<RecentContract> getrecentContract(Integer id);
 

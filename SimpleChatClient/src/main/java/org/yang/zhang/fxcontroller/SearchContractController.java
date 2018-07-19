@@ -20,9 +20,8 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.dto.AddContractDto;
-import org.yang.zhang.module.User;
 import org.yang.zhang.service.ContractService;
-import org.yang.zhang.utils.ClientContextUtils;
+import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.view.AddContractView;
 
 @FXMLController
@@ -59,7 +58,7 @@ public class SearchContractController implements Initializable {
     public void searchFriend(ActionEvent event){
         friendList.getChildren().clear();
         if(StringUtils.isNotBlank(searchField.getText())){
-            List<AddContractDto> list=contractService.searchContract(ClientContextUtils.getCurrentUser().getId(),searchField.getText());
+            List<AddContractDto> list=contractService.searchContract(UserUtils.getCurrentUserId(),searchField.getText());
             if(list.size()==0){
                 Label label=new Label("未找到符合条件的用户!");
                 friendList.add(label,0,0);

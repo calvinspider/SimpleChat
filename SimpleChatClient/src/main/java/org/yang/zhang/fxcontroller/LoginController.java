@@ -4,13 +4,14 @@ import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.stage.Stage;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.SimpleChatClientApplication;
 import org.yang.zhang.constants.StageCodes;
@@ -18,7 +19,7 @@ import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
-import org.yang.zhang.utils.ClientContextUtils;
+import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.LoginErrorView;
 import org.yang.zhang.view.LoginView;
@@ -67,6 +68,9 @@ public class LoginController  implements Initializable {
         loginButton.setText("登录中...");
         String name=userName.getText();
         String pwd=passWord.getText();
+        if(StringUtils.isBlank(name)||StringUtils.isBlank(pwd)){
+            return;
+        }
         Result<User> result=loginService.login(name,pwd);
         if(ResultConstants.RESULT_FAILED.equals(result.getCode())){
             //登陆失败显示失败框
@@ -77,17 +81,17 @@ public class LoginController  implements Initializable {
             return;
         }
         User user= result.getData();
-        ClientContextUtils.setCurrentUser(user);
+        UserUtils.setCurrentUser(user);
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.close();
 
         Stage mainStage=new Stage();
         mainStage.setScene(new Scene(mainView.getView()));
+        //初始化主界面
         mainController.init(user);
         mainStage.show();
         mainStage.setResizable(false);
-        //初始化主界面
 
         //注册主界面
         StageManager.registerStage(StageCodes.MAIN,mainStage);

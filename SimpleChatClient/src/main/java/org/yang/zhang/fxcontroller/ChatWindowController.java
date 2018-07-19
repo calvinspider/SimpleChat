@@ -4,26 +4,22 @@ import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.socket.NettyClient;
-import org.yang.zhang.utils.ClientContextUtils;
+import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.JsonUtils;
 
@@ -34,7 +30,7 @@ public class ChatWindowController  implements Initializable {
     private Label nameLabel;
 
     @FXML
-    private Label sourceNameLabel;
+    private Label userId;
 
     @FXML
     private ImageView userIcon;
@@ -67,15 +63,15 @@ public class ChatWindowController  implements Initializable {
         if("".equals(chatArea.getText())){
             return;
         }
-        String targetUser=nameLabel.getText();
+        String targetUser=userId.getText();
         MessageInfo messageInfo=new MessageInfo();
-        messageInfo.setSourceclientid(String.valueOf(ClientContextUtils.getCurrentUser().getId()));
-        messageInfo.setTargetclientid(targetUser);
+        messageInfo.setSourceclientid(UserUtils.getCurrentUserId());
+        messageInfo.setTargetclientid(Integer.valueOf(targetUser));
         messageInfo.setMsgcontent(chatArea.getText());
         messageInfo.setTime(new Date());
 
         //向聊天框中添加聊天内容
-        ImageView imageView= new ImageView(MainController.userIconMap.get(String.valueOf(ClientContextUtils.getCurrentUser().getId())));
+        ImageView imageView= new ImageView(UserUtils.getUserIcon());
         imageView.setFitWidth(35);
         imageView.setFitHeight(35);
         Label label=new Label(chatArea.getText(),imageView);

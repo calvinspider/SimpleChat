@@ -11,10 +11,9 @@ import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.entity.Result;
-import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.service.ChatService;
-import org.yang.zhang.utils.ClientContextUtils;
+import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.JsonUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -32,7 +31,7 @@ public class ChatServiceImpl implements ChatService {
     private RestTemplate restTemplate;
 
     @Override
-    public List<MessageInfo> getOneDayRecentChatLog(String id1, String id2) {
+    public List<MessageInfo> getOneDayRecentChatLog(Integer id1, Integer id2) {
         TypeReference type=new TypeReference<Result<List<MessageInfo>>>(){};
         RecentChatLogDto chatLogDto=new RecentChatLogDto();
         chatLogDto.setId1(id1);
@@ -56,7 +55,7 @@ public class ChatServiceImpl implements ChatService {
     public void createNewGroup(String text) {
         ContractGroupDto contractGroupDto=new ContractGroupDto();
         contractGroupDto.setGroupName(text);
-        contractGroupDto.setUserId(Integer.valueOf(ClientContextUtils.getCurrentUser().getId()));
+        contractGroupDto.setUserId(UserUtils.getCurrentUserId());
         restTemplate.postForObject(Constant.NEWGROUP,contractGroupDto,String.class);
     }
 

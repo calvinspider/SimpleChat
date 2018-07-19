@@ -31,17 +31,17 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         if(info==null){
             throw new Exception("MessageInfo must not be NULL!");
         }
-        String targetUser=info.getTargetclientid();
-        String sourceUser=info.getSourceclientid();
+        Integer targetUser=info.getTargetclientid();
+        Integer sourceUser=info.getSourceclientid();
         if(info.getMsgcontent().equals("REGEIST")){
             //注册channel
-            ChannelManager.registerChannel(sourceUser,ctx);
+            ChannelManager.registerChannel(String.valueOf(sourceUser),ctx);
         }else if(info.getMsgcontent().equals("loginOut")){
             //注销channel
-            ChannelManager.unregisterChannel(sourceUser);
+            ChannelManager.unregisterChannel(String.valueOf(sourceUser));
         }else{
             //转发消息
-            ChannelHandlerContext targetChannel=ChannelManager.getChannel(targetUser);
+            ChannelHandlerContext targetChannel=ChannelManager.getChannel(String.valueOf(targetUser));
             //未找到接收方的channel,将该消息记为离线消息
             if(targetChannel==null){
                 info.setSendflag(0);

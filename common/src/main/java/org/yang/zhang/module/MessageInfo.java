@@ -23,8 +23,8 @@ public class MessageInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String sourceclientid;
-    private String targetclientid;
+    private Integer sourceclientid;
+    private Integer targetclientid;
     private Integer msgtype;
     private String msgcontent;
     private Integer sendflag;
@@ -38,19 +38,19 @@ public class MessageInfo {
         this.id = id;
     }
 
-    public String getSourceclientid() {
+    public Integer getSourceclientid() {
         return sourceclientid;
     }
 
-    public void setSourceclientid(String sourceclientid) {
+    public void setSourceclientid(Integer sourceclientid) {
         this.sourceclientid = sourceclientid;
     }
 
-    public String getTargetclientid() {
+    public Integer getTargetclientid() {
         return targetclientid;
     }
 
-    public void setTargetclientid(String targetclientid) {
+    public void setTargetclientid(Integer targetclientid) {
         this.targetclientid = targetclientid;
     }
 

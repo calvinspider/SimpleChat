@@ -9,6 +9,7 @@ import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.utils.ChatViewManager;
 import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.StageManager;
+import org.yang.zhang.utils.UserUtils;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -30,12 +31,10 @@ import javafx.stage.WindowEvent;
 
 public class ChatView {
     private Stage chatStage;
-    private String openUserId;
-    private String mainUserId;
-
-    public ChatView(String openUserId, Image userIcon,String mainUserId, List<MessageInfo> messageInfos) {
+    private Integer userId;
+    private Image userIcon;
+    public ChatView(Integer openUserId,Image userIcon,List<MessageInfo> messageInfos) {
         try {
-
             //创建聊天框
             Stage chatStage=new Stage();
             Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
@@ -44,39 +43,35 @@ public class ChatView {
             chatStage.setResizable(false);
             //目标联系人
             Label nameLabel1 = (Label)scene.lookup("#nameLabel");
-            nameLabel1.setText(openUserId);
+            nameLabel1.setText(UserUtils.getUser(openUserId).getNickName());
+            Label  userIdLabel= (Label)scene.lookup("#userId");
+            userIdLabel.setVisible(false);
+            userIdLabel.setText(String.valueOf(openUserId));
             ImageView userImage  = (ImageView)scene.lookup("#userIcon");
             userImage.setImage(userIcon);
-            //当前登陆用户
-            Label sourceNameLabel = (Label)scene.lookup("#sourceNameLabel");
-            sourceNameLabel.setText(mainUserId);
-            sourceNameLabel.setVisible(false);
             chatStage.show();
 
             chatStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent event) {
-                    ChatViewManager.unregisterStage(openUserId);
+                    ChatViewManager.unregisterStage(String.valueOf(openUserId));
                 }
             });
-            String sourceId=sourceNameLabel.getText();
+
             //聊天记录框
             VBox chatHistory = (VBox)scene.lookup("#chatHistory");
-            //TODO 滚动条置底 没反应
-            ScrollPane chatPane = (ScrollPane)scene.lookup("#chatPane");
-            chatPane.setVvalue(chatPane.getMaxHeight());
-            //获取近一天的聊天记录
 
+            //获取近一天的聊天记录
             for (MessageInfo messageInfo:messageInfos){
                 Label label;
                 if(openUserId.equals(messageInfo.getSourceclientid())){
-                    ImageView imageView=new ImageView(MainController.userIconMap.get(openUserId));
+                    ImageView imageView=new ImageView(userIcon);
                     imageView.setFitWidth(25);
                     imageView.setFitHeight(25);
                     label=new Label(messageInfo.getMsgcontent(),imageView);
                     label.setAlignment(Pos.CENTER_LEFT);
                 }else{
-                    ImageView imageView=new ImageView(MainController.userIconMap.get(mainUserId));
+                    ImageView imageView=new ImageView(UserUtils.getUserIcon());
                     imageView.setFitWidth(25);
                     imageView.setFitHeight(25);
                     label=new Label(messageInfo.getMsgcontent(),imageView);
@@ -90,17 +85,12 @@ public class ChatView {
                 chatHistory.getChildren().add(time);
                 chatHistory.getChildren().add(label);
             }
-            //set value
             this.chatStage=chatStage;
-            this.mainUserId=mainUserId;
-            this.openUserId=openUserId;
+            this.userId=openUserId;
+            this.userIcon=userIcon;
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    public Stage getChatStage() {
-        return chatStage;
     }
 
     public VBox getChatBox(){
@@ -108,27 +98,15 @@ public class ChatView {
         return chatHistory;
     }
 
-    public void setChatStage(Stage chatStage) {
-        this.chatStage = chatStage;
+    public Stage getChatStage() {
+        return chatStage;
     }
 
-    public String getOpenUserId() {
-        return openUserId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setOpenUserId(String openUserId) {
-        this.openUserId = openUserId;
-    }
-
-    public String getMainUserId() {
-        return mainUserId;
-    }
-
-    public void setMainUserId(String mainUserId) {
-        this.mainUserId = mainUserId;
-    }
-
-    public void show() {
-        this.chatStage.show();
+    public Image getUserIcon() {
+        return userIcon;
     }
 }

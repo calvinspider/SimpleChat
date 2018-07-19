@@ -25,7 +25,7 @@ public class RecentContractView {
     private String lastMessage;
     private String userIcon;
 
-    public RecentContractView(RecentContract recentContract,String mainId) {
+    public RecentContractView(RecentContract recentContract,Integer mainId) {
         try {
             Pane pane=FXMLLoader.load(getClass().getResource("/fxml/RecentContract.fxml"));
             Label namelabel = (Label)pane.lookup("#namelabel");
