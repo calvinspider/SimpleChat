@@ -11,12 +11,15 @@ import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.utils.UserUtils;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -49,6 +52,15 @@ public class ChatView {
             userIdLabel.setText(String.valueOf(openUserId));
             ImageView userImage  = (ImageView)scene.lookup("#userIcon");
             userImage.setImage(userIcon);
+            TextArea chatArea=(TextArea) scene.lookup("#chatArea");
+            chatArea.textProperty().addListener(new ChangeListener<Object>() {
+                @Override
+                public void changed(ObservableValue<?> observable, Object oldValue,
+                                    Object newValue) {
+                    chatArea.setScrollTop(Double.MAX_VALUE);
+                }
+            });
+            chatArea.wrapTextProperty().setValue(true);
             chatStage.show();
 
             chatStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -65,25 +77,24 @@ public class ChatView {
             for (MessageInfo messageInfo:messageInfos){
                 Label label;
                 if(openUserId.equals(messageInfo.getSourceclientid())){
-                    ImageView imageView=new ImageView(userIcon);
-                    imageView.setFitWidth(25);
-                    imageView.setFitHeight(25);
-                    label=new Label(messageInfo.getMsgcontent(),imageView);
-                    label.setAlignment(Pos.CENTER_LEFT);
+                    LeftMessageBubble leftMessageBubble=new LeftMessageBubble(messageInfo.getMsgcontent(),userIcon);
+                    Label time=new Label(DateUtils.formatDateTime(messageInfo.getTime()));
+                    time.setPrefWidth(570);
+                    time.setAlignment(Pos.CENTER);
+                    time.setPrefHeight(200);
+                    time.setStyle("-fx-padding: 10,10,10,10");
+                    chatHistory.getChildren().add(time);
+                    chatHistory.getChildren().add(leftMessageBubble.getPane());
                 }else{
-                    ImageView imageView=new ImageView(UserUtils.getUserIcon());
-                    imageView.setFitWidth(25);
-                    imageView.setFitHeight(25);
-                    label=new Label(messageInfo.getMsgcontent(),imageView);
-                    label.setAlignment(Pos.CENTER_RIGHT);
+                    RightMessageBubble rightMessageBubble=new RightMessageBubble(messageInfo.getMsgcontent(),UserUtils.getUserIcon());
+                    Label time=new Label(DateUtils.formatDateTime(messageInfo.getTime()));
+                    time.setPrefWidth(570);
+                    time.setAlignment(Pos.CENTER);
+                    time.setPrefHeight(200);
+                    time.setStyle("-fx-padding: 10,10,10,10");
+                    chatHistory.getChildren().add(time);
+                    chatHistory.getChildren().add(rightMessageBubble.getPane());
                 }
-                label.setPrefWidth(570);
-                label.setStyle("-fx-padding: 5 5 5 5");
-                Label time=new Label(DateUtils.formatDateTime(messageInfo.getTime()));
-                time.setPrefWidth(570);
-                time.setAlignment(Pos.CENTER);
-                chatHistory.getChildren().add(time);
-                chatHistory.getChildren().add(label);
             }
             this.chatStage=chatStage;
             this.userId=openUserId;

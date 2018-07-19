@@ -14,6 +14,7 @@ import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.ChatView;
+import org.yang.zhang.view.LeftMessageBubble;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -56,17 +57,14 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         }else{
             Platform.runLater(()->{
                 VBox otherChat = chatWindow.getChatBox();
-                ImageView imageView=new ImageView(ImageUtiles.getUserIcon(userId));
-                imageView.setFitWidth(35);
-                imageView.setFitHeight(35);
-                Label label=new Label(info.getMsgcontent(),imageView);
-                label.setAlignment(Pos.CENTER_LEFT);
-                label.setPrefWidth(570);
+                LeftMessageBubble leftMessageBubble=new LeftMessageBubble(info.getMsgcontent(),ImageUtiles.getUserIcon(userId));
                 Label time=new Label(DateUtils.formatDateTime(info.getTime()));
                 time.setPrefWidth(570);
                 time.setAlignment(Pos.CENTER);
+                time.setPrefHeight(200);
+                time.setStyle("-fx-padding: 10,10,10,10");
                 otherChat.getChildren().add(time);
-                otherChat.getChildren().add(label);
+                otherChat.getChildren().add(leftMessageBubble.getPane());
             });
         }
     }

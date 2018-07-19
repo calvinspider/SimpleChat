@@ -22,6 +22,7 @@ import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.JsonUtils;
+import org.yang.zhang.view.RightMessageBubble;
 
 @FXMLController
 public class ChatWindowController  implements Initializable {
@@ -71,19 +72,14 @@ public class ChatWindowController  implements Initializable {
         messageInfo.setTime(new Date());
 
         //向聊天框中添加聊天内容
-        ImageView imageView= new ImageView(UserUtils.getUserIcon());
-        imageView.setFitWidth(35);
-        imageView.setFitHeight(35);
-        Label label=new Label(chatArea.getText(),imageView);
-        label.setAlignment(Pos.CENTER_RIGHT);
-        label.setPrefWidth(570);
-        label.setStyle("-fx-padding: 5 5 5 5");
-
+        RightMessageBubble rightMessageBubble=new RightMessageBubble(chatArea.getText(),UserUtils.getUserIcon());
         Label time=new Label(DateUtils.formatDateTime(new Date()));
         time.setPrefWidth(570);
         time.setAlignment(Pos.CENTER);
+        time.setPrefHeight(200);
+        time.setStyle("-fx-padding: 10,10,10,10");
         chatHistory.getChildren().add(time);
-        chatHistory.getChildren().add(label);
+        chatHistory.getChildren().add(rightMessageBubble.getPane());
         chatPane.setVvalue(chatPane.getVvalue()+25);
 
         //情况打字区
