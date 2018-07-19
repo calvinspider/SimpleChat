@@ -25,7 +25,6 @@ public class LeftMessageBubble {
             TextArea textArea=(TextArea)pane.lookup("#messageTextLeft");
             textArea.wrapTextProperty().set(true);
             textArea.setEditable(false);
-            textArea.setStyle("-fx-hbar-policy : never;-fx-vbar-policy : never;-fx-background-color: #E4E9F5");
             textArea.textProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -33,6 +32,8 @@ public class LeftMessageBubble {
                     text.setWrappingWidth(textArea.getWidth());
                     text.setText((String)newValue);
                     Double height=text.getLayoutBounds().getHeight();
+                    Double width=text.getLayoutBounds().getWidth();
+                    textArea.setPrefWidth(width);
                     textArea.setPrefHeight(height+10);
                     pane.setPrefHeight(height+20);
 

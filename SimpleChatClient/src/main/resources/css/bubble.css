@@ -1,0 +1,19 @@
+.text-area {
+    -fx-background-color: #98E165;
+    -fx-border-radius: 15;
+    -fx-hbar-policy : never;
+    -fx-vbar-policy : never;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
+}
