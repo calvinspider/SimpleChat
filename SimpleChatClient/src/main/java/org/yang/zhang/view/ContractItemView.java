@@ -10,11 +10,13 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
@@ -32,6 +34,8 @@ public class ContractItemView {
     private Boolean blink;
     private ImageView userIconView;
     private Timeline timeline=new Timeline();
+    private Label nameLabel;
+    private Label personLabel;
 
     public ContractItemView(String text){
         try {
@@ -39,8 +43,8 @@ public class ContractItemView {
             groupName=(TextField) itemPane.lookup("#groupName");
             groupName.setEditable(false);
             groupName.setText(text);
-            groupName.setStyle("-fx-background-color: #A1BBD8;");
-            itemPane.setStyle("-fx-background-color: #A1BBD8;");
+            groupName.setStyle("-fx-background-color: #A1BBD8");
+            groupName.setCursor(Cursor.DEFAULT);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -53,6 +57,10 @@ public class ContractItemView {
             usericon.setImage(userImage);
             Label username = (Label) itemPane.lookup("#username");
             Label personword = (Label) itemPane.lookup("#personword");
+            nameLabel=username;
+            personLabel=personword;
+            username.setStyle("-fx-font-size:13");
+            personword.setStyle("-fx-font-size:13");
             username.setText(user.getNickName());
             personword.setText(user.getPersonWord());
             this.user=user;
@@ -63,12 +71,12 @@ public class ContractItemView {
             {
                 if (!this.blink)
                 {
-                    this.userIconView.setFitWidth(33);
-                    this.userIconView.setFitHeight(37);
+                    this.userIconView.setFitWidth(30);
+                    this.userIconView.setFitHeight(30);
                     this.blink=true;
                 }else {
-                    this.userIconView.setFitWidth(27);
-                    this.userIconView.setFitHeight(31);
+                    this.userIconView.setFitWidth(20);
+                    this.userIconView.setFitHeight(20);
                     this.blink=false;
                 }
             } ;
@@ -132,8 +140,36 @@ public class ContractItemView {
     }
 
     public void stopBlink(){
-        this.userIconView.setFitHeight(30);
-        this.userIconView.setFitWidth(34);
+        this.userIconView.setFitHeight(25);
+        this.userIconView.setFitWidth(25);
         timeline.stop();
+    }
+
+    public void setNoFocus() {
+        this.getItemPane().setPrefHeight(30);
+        this.userIconView.setFitHeight(25);
+        this.userIconView.setFitWidth(25);
+        this.userIconView.setLayoutX(this.userIconView.getLayoutX()-5);
+        this.userIconView.setLayoutY(this.userIconView.getLayoutY()-5);
+        this.nameLabel.setLayoutY(this.nameLabel.getLayoutY()-10);
+        this.personLabel.setLayoutY(this.personLabel.getLayoutY()-10);
+        this.nameLabel.setStyle("-fx-font-size:13");
+        this.personLabel.setStyle("-fx-font-size:13");
+        this.getItemPane().setStyle("-fx-background-color: #A1BBD8");
+    }
+
+    public void setFocus() {
+        this.getItemPane().setPrefHeight(50);
+        this.userIconView.setFitHeight(40);
+        this.userIconView.setFitWidth(40);
+        this.userIconView.setLayoutX(this.userIconView.getLayoutX()+5);
+        this.userIconView.setLayoutY(this.userIconView.getLayoutY()+5);
+        this.nameLabel.setLayoutY(this.nameLabel.getLayoutY()+10);
+        this.personLabel.setLayoutY(this.personLabel.getLayoutY()+10);
+        this.nameLabel.setStyle("-fx-font-size:15");
+        this.personLabel.setStyle("-fx-font-size:15");
+        this.nameLabel.setTextFill(Color.web("#000000"));
+        this.personLabel.setTextFill(Color.web("#000000"));
+        this.getItemPane().setStyle("-fx-background-color: #D3D6C1");
     }
 }

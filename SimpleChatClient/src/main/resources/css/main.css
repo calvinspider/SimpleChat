@@ -10,10 +10,6 @@
     -fx-background-color: #A1BBD8;
 }
 
-#contractTree .tree-cell:hover {
-    -fx-background-color: #D2D8CC;
-}
-
-#contractTree .:hover{
+#contractLabel:hover {
     -fx-background-color: #D2D8CC;
 }

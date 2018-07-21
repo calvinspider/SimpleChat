@@ -109,6 +109,7 @@ public class MainController  implements Initializable {
 
     private List<TreeItem<ContractItemView>> groupList=new ArrayList<>();
     public static Map<String,TreeItem<ContractItemView>> contractMap=new HashMap<>();
+    private ContractItemView focusItem;
 
     /**
      * 主页面初始化
@@ -269,6 +270,24 @@ public class MainController  implements Initializable {
                     }
                 }
             }
+            if (click.getButton()==MouseButton.PRIMARY&&click.getClickCount() == 1) {
+                TreeItem<ContractItemView> selectedItem = contractTree.getSelectionModel().getSelectedItem();
+                if(selectedItem!=null){
+                    String userid = selectedItem.getValue().getId();
+                    if (!userid.contains("GROUP")) {
+                        ContractItemView contractItemView=selectedItem.getValue();
+                        if(focusItem==null){
+                            contractItemView.setFocus();
+                            this.focusItem=contractItemView;
+                        }else if(focusItem!=contractItemView){
+                            this.focusItem.setNoFocus();
+                            contractItemView.setFocus();
+                            this.focusItem=contractItemView;
+                        }
+                    }
+                }
+            }
+
         });
 
         ContextMenu addMenu = new ContextMenu();
@@ -302,6 +321,7 @@ public class MainController  implements Initializable {
                                 chatService.createNewGroup(textField.getText());
                             }
                             textField.setEditable(false);
+
                         }
                     }
                 });
@@ -408,8 +428,13 @@ public class MainController  implements Initializable {
                 setText(null);
                 setGraphic(null);
             } else {
-                this.cellId=pane.getId();
-                setGraphic(pane.getItemPane());
+                if(pane==null||pane.getId()==null){
+                    setGraphic(null);
+                }else{
+                    this.cellId=pane.getId();
+                    setGraphic(pane.getItemPane());
+                }
+
             }
         }
     }
