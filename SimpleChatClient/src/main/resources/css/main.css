@@ -5,3 +5,7 @@
 #contractLabel:hover{
     -fx-background-color: #D1E0EF;
 }
+
+#contractTree .tree-cell {
+    -fx-background-color: #A1BBD8;
+}

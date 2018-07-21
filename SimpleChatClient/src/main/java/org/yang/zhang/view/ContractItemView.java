@@ -30,6 +30,7 @@ public class ContractItemView {
     private TextField groupName;
     private User user;
     private Boolean blink;
+    private ImageView userIconView;
     private Timeline timeline=new Timeline();
 
     public ContractItemView(String text){
@@ -55,16 +56,19 @@ public class ContractItemView {
             username.setText(user.getNickName());
             personword.setText(user.getPersonWord());
             this.user=user;
+            this.userIconView=usericon;
             timeline.setCycleCount( Animation.INDEFINITE ) ;
             this.blink=false;
             EventHandler<ActionEvent> on_finished = (ActionEvent event ) ->
             {
                 if (!this.blink)
                 {
-                    this.itemPane.setPrefHeight(32);
+                    this.userIconView.setFitWidth(33);
+                    this.userIconView.setFitHeight(37);
                     this.blink=true;
                 }else {
-                    this.itemPane.setPrefHeight(28);
+                    this.userIconView.setFitWidth(27);
+                    this.userIconView.setFitHeight(31);
                     this.blink=false;
                 }
             } ;
@@ -128,6 +132,8 @@ public class ContractItemView {
     }
 
     public void stopBlink(){
+        this.userIconView.setFitHeight(30);
+        this.userIconView.setFitWidth(34);
         timeline.stop();
     }
 }

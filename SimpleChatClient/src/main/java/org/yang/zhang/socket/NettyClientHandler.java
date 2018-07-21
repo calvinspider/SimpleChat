@@ -14,6 +14,7 @@ import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.ChatView;
+import org.yang.zhang.view.ContractItemView;
 import org.yang.zhang.view.LeftMessageBubble;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,6 +25,7 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -53,7 +55,9 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         ChatView chatWindow=ChatViewManager.getStage(String.valueOf(userId));
         //聊天框未打开,头像闪动
         if(chatWindow==null){
-            System.out.println("聊天框未打开");
+            TreeItem<ContractItemView> itemViewTreeItem= MainController.contractMap.get(String.valueOf(userId));
+            ContractItemView contractItemView=itemViewTreeItem.getValue();
+            contractItemView.startBlink();
         }else{
             Platform.runLater(()->{
                 VBox otherChat = chatWindow.getChatBox();

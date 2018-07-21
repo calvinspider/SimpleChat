@@ -108,7 +108,7 @@ public class MainController  implements Initializable {
     private SearchContractController searchContractController;
 
     private List<TreeItem<ContractItemView>> groupList=new ArrayList<>();
-    private Map<String,TreeItem<ContractItemView>> contractMap=new HashMap<>();
+    public static Map<String,TreeItem<ContractItemView>> contractMap=new HashMap<>();
 
     /**
      * 主页面初始化
@@ -237,7 +237,6 @@ public class MainController  implements Initializable {
                 TreeItem<ContractItemView> item = new TreeItem<ContractItemView>();
                 ContractItemView contractItemView=new ContractItemView(user);
                 contractItemView.setId(String.valueOf(user.getId()));
-                contractItemView.startBlink();
                 item.setValue(contractItemView);
                 contractMap.put(String.valueOf(user.getId()),item);
                 UserUtils.setUser(user.getId(),user);
@@ -262,7 +261,8 @@ public class MainController  implements Initializable {
                     String userid = selectedItem.getValue().getId();
                     if (!userid.contains("GROUP")) {
                         openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getUserImage());
-
+                        selectedItem.getValue().setBlink(false);
+                        selectedItem.getValue().stopBlink();
                     }else{
                         //如果是分组，双击修改分组名称
                         System.out.println("修改分组名称");
@@ -412,7 +412,9 @@ public class MainController  implements Initializable {
                 setGraphic(pane.getItemPane());
             }
         }
+    }
 
-
+    public Map<String, TreeItem<ContractItemView>> getContractMap() {
+        return contractMap;
     }
 }
