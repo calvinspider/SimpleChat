@@ -2,6 +2,7 @@ package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -10,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -19,6 +22,9 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.AnimationUtils;
+import org.yang.zhang.utils.ChatViewManager;
+import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.JsonUtils;
@@ -56,7 +62,14 @@ public class ChatWindowController  implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        chatArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            public void handle(final KeyEvent keyEvent) {
+                if (keyEvent.getCode() == KeyCode.ENTER) {
+                    sendMessage(null);
+                    keyEvent.consume();
+                }
+            }
+        });
     }
 
     @FXML
@@ -80,11 +93,17 @@ public class ChatWindowController  implements Initializable {
         time.setStyle("-fx-padding: 10,10,10,10");
         chatHistory.getChildren().add(time);
         chatHistory.getChildren().add(rightMessageBubble.getPane());
-        chatPane.setVvalue(chatPane.getVvalue()+25);
+        AnimationUtils.slowScrollToBottom(chatPane);
 
         //情况打字区
         chatArea.setText("");
         //发送消息
         NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
+    }
+
+    @FXML
+    public void closeChatWindow(){
+        ChatViewManager.getStage(userId.getText()).getChatStage().close();
+        ChatViewManager.unregisterStage(userId.getText());
     }
 }

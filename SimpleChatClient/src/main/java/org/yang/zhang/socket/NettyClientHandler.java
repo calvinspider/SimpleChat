@@ -8,6 +8,7 @@ package org.yang.zhang.socket;
 
 import org.yang.zhang.fxcontroller.MainController;
 import org.yang.zhang.module.MessageInfo;
+import org.yang.zhang.utils.AnimationUtils;
 import org.yang.zhang.utils.ChatViewManager;
 import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.ImageUtiles;
@@ -69,6 +70,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                 time.setStyle("-fx-padding: 10,10,10,10");
                 otherChat.getChildren().add(time);
                 otherChat.getChildren().add(leftMessageBubble.getPane());
+                AnimationUtils.slowScrollToBottom(chatWindow.getChatPane());
             });
         }
     }

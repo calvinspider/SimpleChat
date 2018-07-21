@@ -6,11 +6,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.yang.zhang.fxcontroller.MainController;
 import org.yang.zhang.module.MessageInfo;
+import org.yang.zhang.utils.AnimationUtils;
 import org.yang.zhang.utils.ChatViewManager;
 import org.yang.zhang.utils.DateUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.utils.UserUtils;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -22,6 +24,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -72,7 +75,7 @@ public class ChatView {
 
             //聊天记录框
             VBox chatHistory = (VBox)scene.lookup("#chatHistory");
-
+            ScrollPane chatPane = (ScrollPane)scene.lookup("#chatPane");
             //获取近一天的聊天记录
             for (MessageInfo messageInfo:messageInfos){
                 Label label;
@@ -85,6 +88,7 @@ public class ChatView {
                     time.setStyle("-fx-padding: 10,10,10,10");
                     chatHistory.getChildren().add(time);
                     chatHistory.getChildren().add(leftMessageBubble.getPane());
+
                 }else{
                     RightMessageBubble rightMessageBubble=new RightMessageBubble(messageInfo.getMsgcontent(),UserUtils.getUserIcon());
                     Label time=new Label(DateUtils.formatDateTime(messageInfo.getTime()));
@@ -99,6 +103,9 @@ public class ChatView {
             this.chatStage=chatStage;
             this.userId=openUserId;
             this.userIcon=userIcon;
+            Platform.runLater(()->{
+                chatPane.setVvalue(1.0);
+            });
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -106,6 +113,11 @@ public class ChatView {
 
     public VBox getChatBox(){
         VBox chatHistory = (VBox)this.chatStage.getScene().lookup("#chatHistory");
+        return chatHistory;
+    }
+
+    public ScrollPane getChatPane(){
+        ScrollPane chatHistory = (ScrollPane)this.chatStage.getScene().lookup("#chatPane");
         return chatHistory;
     }
 

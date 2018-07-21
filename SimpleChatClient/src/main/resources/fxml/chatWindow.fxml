@@ -22,7 +22,7 @@
             <VBox fx:id="chatHistory" prefHeight="300.0" prefWidth="599.0" style="-fx-background-color: #E4E9F5;" />
          </content></ScrollPane>
       <Button fx:id="sendBtn" layoutX="516.0" layoutY="469.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="26.0" prefWidth="70.0" text="发送" />
-      <Button fx:id="closeBtn" layoutX="434.0" layoutY="469.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="关闭" />
+      <Button fx:id="closeBtn" cancelButton="true" layoutX="434.0" layoutY="469.0" onAction="#closeChatWindow" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="关闭" />
       <TextArea fx:id="chatArea" layoutY="360.0" prefHeight="96.0" prefWidth="600.0" style="-fx-background-color: #E4E9F5;" />
    </children>
 </Pane>

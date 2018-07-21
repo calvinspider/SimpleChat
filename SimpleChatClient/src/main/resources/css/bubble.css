@@ -3,6 +3,7 @@
     -fx-border-radius: 15;
     -fx-hbar-policy : never;
     -fx-vbar-policy : never;
+    -fx-end-margin: 5;
 }
 
 .text-area .scroll-pane {

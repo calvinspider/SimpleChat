@@ -29,10 +29,12 @@ public class RightMessageBubble {
                     Text text = new Text();
                     text.setWrappingWidth(textArea.getWidth());
                     text.setText((String)newValue);
-                    Double height=text.getLayoutBounds().getHeight();
+                    double height=text.getLayoutBounds().getHeight();
+                    double width = text.getLayoutBounds().getWidth();
+                    double padding = 20 ;
+                    textArea.setMaxWidth(width+padding);
                     textArea.setPrefHeight(height);
-                    pane.setPrefHeight(height+20);
-
+                    pane.setPrefHeight(height+40);
                 }
             });
             textArea.appendText(message);
