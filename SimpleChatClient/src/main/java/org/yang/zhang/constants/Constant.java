@@ -7,7 +7,7 @@ package org.yang.zhang.constants;
  */
 
 public class Constant {
-    public static String serverHost="http://127.0.0.1:8888";
+    public static String serverHost="http://47.52.164.19:9888";
     public static final String LoginUrl=serverHost+"/login";
     public static final String ContractUrl=serverHost+"/chat/contract";
     public static final String ONEDAYCHATLOGURL=serverHost+"/chat/oneDayChatLog";

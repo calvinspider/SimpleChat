@@ -23,7 +23,6 @@ public class RightMessageBubble {
             TextArea textArea=(TextArea)pane.lookup("#messageTextRight");
             textArea.wrapTextProperty().set(true);
             textArea.setEditable(false);
-            textArea.appendText(message);
             textArea.textProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -31,15 +30,12 @@ public class RightMessageBubble {
                     text.setWrappingWidth(textArea.getWidth());
                     text.setText((String)newValue);
                     Double height=text.getLayoutBounds().getHeight();
-                    Double width=text.getLayoutBounds().getWidth();
-                    textArea.setPrefHeight(height+10);
-                    System.out.println(width);
-                    textArea.setPrefWidth(width);
+                    textArea.setPrefHeight(height);
                     pane.setPrefHeight(height+20);
 
                 }
             });
-            textArea.appendText("");
+            textArea.appendText(message);
             ImageView imageView=(ImageView)pane.lookup("#userIcon");
             imageView.setImage(icon);
         }catch (Exception e){

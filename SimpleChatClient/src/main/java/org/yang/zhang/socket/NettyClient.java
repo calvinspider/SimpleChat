@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
  */
 public class NettyClient{
 
-    private  static String host = "127.0.0.1";
+    private  static String host = "47.52.164.19";
     private  static int port = 6789;
     private  static Channel channel;
 

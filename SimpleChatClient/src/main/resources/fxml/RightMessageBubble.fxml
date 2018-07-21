@@ -4,9 +4,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="rightMessagePane" stylesheets="@../css/bubble.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="rightMessagePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="570.0" stylesheets="@../css/bubble.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fx:id="userIcon" fitHeight="35.0" fitWidth="35.0" layoutX="528.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
-      <TextArea fx:id="messageTextRight" layoutX="226.0" prefHeight="50.0" prefWidth="295.0" />
+      <TextArea fx:id="messageTextRight" layoutX="315.0" layoutY="7.0" prefHeight="25.0" prefWidth="200.0" />
    </children>
 </Pane>

@@ -32,9 +32,7 @@ public class LeftMessageBubble {
                     text.setWrappingWidth(textArea.getWidth());
                     text.setText((String)newValue);
                     Double height=text.getLayoutBounds().getHeight();
-                    Double width=text.getLayoutBounds().getWidth();
-                    textArea.setPrefWidth(width);
-                    textArea.setPrefHeight(height+10);
+                    textArea.setPrefHeight(height);
                     pane.setPrefHeight(height+20);
 
                 }

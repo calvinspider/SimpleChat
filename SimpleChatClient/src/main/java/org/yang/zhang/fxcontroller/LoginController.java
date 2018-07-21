@@ -2,6 +2,7 @@ package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -10,6 +11,7 @@ import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,10 +86,16 @@ public class LoginController  implements Initializable {
         UserUtils.setCurrentUser(user);
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
-        login.close();
+        login.hide();
 
         Stage mainStage=new Stage();
         mainStage.setScene(new Scene(mainView.getView()));
+        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                System.exit(0);
+            }
+        });
         //初始化主界面
         mainController.init(user);
         mainStage.show();
