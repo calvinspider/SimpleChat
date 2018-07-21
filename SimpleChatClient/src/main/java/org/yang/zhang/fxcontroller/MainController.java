@@ -1,6 +1,9 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,6 +23,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -55,6 +59,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.Date;
@@ -232,6 +237,7 @@ public class MainController  implements Initializable {
                 TreeItem<ContractItemView> item = new TreeItem<ContractItemView>();
                 ContractItemView contractItemView=new ContractItemView(user);
                 contractItemView.setId(String.valueOf(user.getId()));
+                contractItemView.startBlink();
                 item.setValue(contractItemView);
                 contractMap.put(String.valueOf(user.getId()),item);
                 UserUtils.setUser(user.getId(),user);
@@ -256,6 +262,7 @@ public class MainController  implements Initializable {
                     String userid = selectedItem.getValue().getId();
                     if (!userid.contains("GROUP")) {
                         openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getUserImage());
+
                     }else{
                         //如果是分组，双击修改分组名称
                         System.out.println("修改分组名称");

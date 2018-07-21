@@ -4,12 +4,18 @@ import org.yang.zhang.constants.Constant;
 import org.yang.zhang.module.User;
 import org.yang.zhang.utils.ImageUtiles;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 
 /**
  * @Author calvin.zhang
@@ -23,6 +29,8 @@ public class ContractItemView {
     private Image userImage;
     private TextField groupName;
     private User user;
+    private Boolean blink;
+    private Timeline timeline=new Timeline();
 
     public ContractItemView(String text){
         try {
@@ -47,6 +55,21 @@ public class ContractItemView {
             username.setText(user.getNickName());
             personword.setText(user.getPersonWord());
             this.user=user;
+            timeline.setCycleCount( Animation.INDEFINITE ) ;
+            this.blink=false;
+            EventHandler<ActionEvent> on_finished = (ActionEvent event ) ->
+            {
+                if (!this.blink)
+                {
+                    this.itemPane.setPrefHeight(32);
+                    this.blink=true;
+                }else {
+                    this.itemPane.setPrefHeight(28);
+                    this.blink=false;
+                }
+            } ;
+            KeyFrame keyframe = new KeyFrame( Duration.millis( 500 ), on_finished ) ;
+            timeline.getKeyFrames().add(keyframe);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -90,5 +113,21 @@ public class ContractItemView {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Boolean getBlink() {
+        return blink;
+    }
+
+    public void setBlink(Boolean blink) {
+        this.blink = blink;
+    }
+
+    public void startBlink(){
+        timeline.play();
+    }
+
+    public void stopBlink(){
+        timeline.stop();
     }
 }
