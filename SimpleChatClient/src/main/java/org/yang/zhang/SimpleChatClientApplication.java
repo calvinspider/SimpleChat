@@ -1,10 +1,10 @@
 package org.yang.zhang;
 
-
 import javafx.event.EventHandler;
 import javafx.stage.StageStyle;
 import org.yang.zhang.config.CustomSplash;
 import org.yang.zhang.constants.StageCodes;
+import org.yang.zhang.utils.ListenerManager;
 import org.yang.zhang.utils.StageManager;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import javafx.stage.Stage;
@@ -29,15 +29,9 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
         stage.setTitle("登录");
         //注册登陆页面
         StageManager.registerStage(StageCodes.LOGIN,stage);
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                System.exit(0);
-            }
-        });
+        ListenerManager.setOnCloseExistListener(stage);
         super.start(stage);
     }
-
 
 
 }
