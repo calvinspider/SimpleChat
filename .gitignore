@@ -6,3 +6,5 @@ SimpleChatServer/SimpleChatServer.iml
 SimpleChatClient/SimpleChatClient.iml
 common/common.iml
 SimpleChat.iml
+SimpleChatClient/src/main/java/META-INF/MANIFEST.MF
+out/artifacts/SimpleChatClient_jar/SimpleChatClient.jar
