@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.module.ContractGroup;
+import org.yang.zhang.module.GroupUser;
 import org.yang.zhang.module.MessageInfo;
 
 /**
@@ -17,7 +19,15 @@ public interface ChatService {
 
     List<RecentContract> getrecentContract(Integer id);
 
-    void createNewGroup(String text);
+    ContractGroup createNewGroup(String text);
 
     void updateContractGroup(String itemId, String oldGroupId, String newGroupId);
+
+    void updateGroup(String id, String text);
+
+    void deleteGroup(Integer currentUserId, Integer integer);
+
+    void deleteFriend(Integer currentUserId, Integer integer);
+
+    void addFriend(Integer userid, Integer friendId);
 }

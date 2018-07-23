@@ -10,6 +10,7 @@
       <ImageView fx:id="usericon" fitHeight="60.0" fitWidth="60.0" layoutX="14.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="userName" layoutX="83.0" layoutY="6.0" prefHeight="20.0" prefWidth="88.0" text="Label" />
       <Label fx:id="commoncount" layoutX="75.0" layoutY="29.0" prefHeight="20.0" prefWidth="104.0" text="Label" />
+      <Label fx:id="userId" visible="false"></Label>
       <Button fx:id="addBtn" layoutX="105.0" layoutY="53.0" mnemonicParsing="false" onAction="#addContract" text="添加" />
    </children>
 </Pane>

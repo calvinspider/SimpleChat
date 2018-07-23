@@ -69,5 +69,21 @@ public class ChatController {
         return JsonUtils.toJson(chatService.updateContractGroup(contractGroupDto));
     }
 
+    @RequestMapping(value = "/updateGroup")
+    public void  updateGroup(@RequestBody ContractGroupDto contractGroupDto){
+         chatService.updateGroup(contractGroupDto);
+    }
+    @RequestMapping(value = "/deleteGroup")
+    public void  deleteGroup(@RequestBody ContractGroupDto contractGroupDto){
+        chatService.deleteGroup(contractGroupDto);
+    }
+    @RequestMapping(value = "/deleteFriend")
+    public void  deleteFriend(@RequestBody ContractGroupDto contractGroupDto){
+        chatService.deleteFriend(contractGroupDto);
+    }
+    @RequestMapping(value = "/addFriend")
+    public void  addFriend(@RequestBody AddContractDto addContractDto){
+        chatService.addFriend(addContractDto);
+    }
 
 }

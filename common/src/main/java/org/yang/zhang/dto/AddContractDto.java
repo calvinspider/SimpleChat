@@ -11,6 +11,24 @@ public class AddContractDto {
     private String userId;
     private String commonCount;
     private String userIcon;
+    private Integer friendId;
+    private Integer currentUserId;
+
+    public Integer getFriendId() {
+        return friendId;
+    }
+
+    public void setFriendId(Integer friendId) {
+        this.friendId = friendId;
+    }
+
+    public Integer getCurrentUserId() {
+        return currentUserId;
+    }
+
+    public void setCurrentUserId(Integer currentUserId) {
+        this.currentUserId = currentUserId;
+    }
 
     public String getUserName() {
         return userName;

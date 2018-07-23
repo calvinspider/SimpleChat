@@ -3,6 +3,11 @@ package org.yang.zhang.fxcontroller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.service.ChatService;
+import org.yang.zhang.service.impl.ChatServiceImpl;
+import org.yang.zhang.utils.UserUtils;
+
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +32,14 @@ public class ContractItemController implements Initializable {
     Label commoncount;
     @FXML
     Button addBtn;
+    @FXML
+    Label userId;
+
+    @Autowired
+    private ChatService chatService;
+
+    @Autowired
+    private SearchContractController searchContractController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -35,6 +48,9 @@ public class ContractItemController implements Initializable {
 
     @FXML
     public void addContract(ActionEvent event){
-        System.out.println("添加好友");
+        Integer id=Integer.valueOf(userId.getText());
+        Integer userid=UserUtils.getCurrentUserId();
+        chatService.addFriend(userid,id);
+        searchContractController.init(String.valueOf(UserUtils.getCurrentUserId()));
     }
 }

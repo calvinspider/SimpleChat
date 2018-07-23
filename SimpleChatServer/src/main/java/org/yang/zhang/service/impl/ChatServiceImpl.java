@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -90,12 +91,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Result<Void> newGroup(ContractGroupDto contractGroupDto) {
+    public Result<ContractGroup> newGroup(ContractGroupDto contractGroupDto) {
         ContractGroup contractGroup=new ContractGroup();
         contractGroup.setGroupName(contractGroupDto.getGroupName());
         contractGroup.setUserId(contractGroupDto.getUserId());
         contractGroupRepository.save(contractGroup);
-        return Result.success();
+        return Result.successData(contractGroup);
     }
 
     @Override
@@ -106,5 +107,47 @@ public class ChatServiceImpl implements ChatService {
         groupUserMapper.deleteByUserIdAndGroupId(contractGroupDto.getUserId(),Integer.valueOf(contractGroupDto.getOldGroupId()));
         groupUserRepository.save(groupUser);
         return Result.success();
+    }
+
+    @Override
+    public void updateGroup(ContractGroupDto contractGroupDto) {
+        ContractGroup old=contractGroupRepository.getOne(contractGroupDto.getGroupId());
+        old.setGroupName(contractGroupDto.getGroupName());
+        contractGroupRepository.save(old);
+    }
+
+    @Override
+    public void deleteGroup(ContractGroupDto contractGroupDto) {
+        Integer groupId=contractGroupDto.getGroupId();
+        Integer userId=contractGroupDto.getUserId();
+        contractGroupRepository.deleteById(groupId);
+        List<ContractGroup> list=contractGroupRepository.findByUserId(userId);
+        if(list.size()>0){
+            ContractGroup group=list.get(0);
+            List<GroupUser> groupUsers=groupUserRepository.findByGroupId(groupId);
+            for (GroupUser groupUser:groupUsers){
+                groupUser.setGroupId(group.getId());
+                groupUserRepository.save(groupUser);
+            }
+        }
+    }
+
+    @Override
+    public void deleteFriend(ContractGroupDto contractGroupDto) {
+        Integer groupId=contractGroupDto.getGroupId();
+        Integer userId=contractGroupDto.getUserId();
+        groupUserMapper.deleteByUserIdAndGroupId(userId,groupId);
+    }
+
+    @Override
+    public void addFriend(AddContractDto addContractDto) {
+        List<ContractGroup> list=contractGroupRepository.findByUserId(addContractDto.getCurrentUserId());
+        if(list.size()>0){
+            ContractGroup group=list.get(0);
+            GroupUser groupUser=new GroupUser();
+            groupUser.setUserId(addContractDto.getFriendId());
+            groupUser.setGroupId(group.getId());
+            groupUserRepository.save(groupUser);
+        }
     }
 }

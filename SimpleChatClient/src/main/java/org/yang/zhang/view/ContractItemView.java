@@ -1,12 +1,16 @@
 package org.yang.zhang.view;
 
 import org.yang.zhang.constants.Constant;
+import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.User;
 import org.yang.zhang.utils.ImageUtiles;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -171,5 +175,27 @@ public class ContractItemView {
         this.nameLabel.setTextFill(Color.web("#000000"));
         this.personLabel.setTextFill(Color.web("#000000"));
         this.getItemPane().setStyle("-fx-background-color: #D3D6C1");
+    }
+
+    public void setGroupEditable(){
+
+        this.groupName.setEditable(true);
+        this.groupName.setStyle("-fx-background-color: #FFFFFF");
+        this.groupName.setFocusTraversable(true);
+    }
+
+    public void setGroupEditDisable(){
+        this.groupName.setEditable(false);
+        this.groupName.setStyle("-fx-background-color: #A1BBD8");
+    }
+
+    public void setGroupFocus() {
+        this.getItemPane().setStyle("-fx-background-color: #D3D6C1");
+        this.groupName.setStyle("-fx-background-color: #D3D6C1");
+    }
+
+    public void setGroupNoFocus() {
+        this.getItemPane().setStyle("-fx-background-color: #A1BBD8");
+        this.groupName.setStyle("-fx-background-color: #A1BBD8");
     }
 }

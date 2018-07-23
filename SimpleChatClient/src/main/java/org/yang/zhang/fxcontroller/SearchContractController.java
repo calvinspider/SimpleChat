@@ -67,7 +67,7 @@ public class SearchContractController implements Initializable {
             }
             int j=0;
             for (int i=0;i<list.size();i++){
-                AddContractView contractView=new AddContractView("",list.get(i).getUserName(),list.get(i).getCommonCount());
+                AddContractView contractView=new AddContractView(list.get(i));
                 Pane pane=contractView.getContractPane();
                 if(i!=0&&i%5==0){
                     j+=1;
@@ -82,7 +82,7 @@ public class SearchContractController implements Initializable {
       List<AddContractDto> list=contractService.getRecommendContract(userName);
       int j=0;
       for (int i=0;i<list.size();i++){
-          AddContractView contractView=new AddContractView("",list.get(i).getUserName(),list.get(i).getCommonCount());
+          AddContractView contractView=new AddContractView(list.get(i));
           Pane pane=contractView.getContractPane();
           if(i!=0&&i%5==0){
               j+=1;

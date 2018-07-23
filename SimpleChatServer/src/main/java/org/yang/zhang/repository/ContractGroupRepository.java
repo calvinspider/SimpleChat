@@ -2,6 +2,7 @@ package org.yang.zhang.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.yang.zhang.module.ContractGroup;
 
@@ -11,7 +12,7 @@ import org.yang.zhang.module.ContractGroup;
  * @Date 2018 07 05 15:23
  */
 
-public interface ContractGroupRepository extends CrudRepository<ContractGroup,Integer> {
+public interface ContractGroupRepository extends JpaRepository<ContractGroup,Integer> {
 
     List<ContractGroup> findByUserId(Integer userId);
 }

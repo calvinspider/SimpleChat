@@ -7,6 +7,7 @@ import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.MessageInfo;
 
 import java.util.List;
@@ -29,7 +30,15 @@ public interface ChatService {
 
     List<AddContractDto> searchContractDto(SearchContractDto key);
 
-    Result<Void> newGroup(ContractGroupDto contractGroupDto);
+    Result<ContractGroup> newGroup(ContractGroupDto contractGroupDto);
 
     Result<Void> updateContractGroup(ContractGroupDto contractGroupDto);
+
+    void updateGroup(ContractGroupDto contractGroupDto);
+
+    void deleteGroup(ContractGroupDto contractGroupDto);
+
+    void deleteFriend(ContractGroupDto contractGroupDto);
+
+    void addFriend(AddContractDto addContractDto);
 }

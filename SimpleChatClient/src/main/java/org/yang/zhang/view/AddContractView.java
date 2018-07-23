@@ -1,5 +1,8 @@
 package org.yang.zhang.view;
 
+import org.yang.zhang.dto.AddContractDto;
+import org.yang.zhang.utils.ImageUtiles;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,20 +20,24 @@ public class AddContractView {
     private String userIcon;
     private String userName;
     private String commonCount;
+    private Integer userId;
 
-    public AddContractView(String userIcon, String userName, String commonCount) {
+    public AddContractView(AddContractDto dto) {
      try {
          Pane pane=FXMLLoader.load(getClass().getResource("/fxml/addContractItem.fxml"));
          ImageView usericon=(ImageView)pane.lookup("#usericon");
-         usericon.setImage(new Image("images/personIcon.jpg"));
+         usericon.setImage(ImageUtiles.getUserIcon(dto.getUserIcon()));
          Label username=(Label)pane.lookup("#userName");
          username.setText(userName);
+         Label userId=(Label)pane.lookup("#userId");
+         userId.setText(dto.getUserId());
          Label commoncount=(Label)pane.lookup("#commoncount");
          commoncount.setText(commonCount+"位共同好友");
          this.contractPane=pane;
-         this.userIcon = userIcon;
-         this.userName = userName;
-         this.commonCount = commonCount;
+         this.userIcon = dto.getUserIcon();
+         this.userName = dto.getUserName();
+         this.commonCount = dto.getCommonCount();
+         this.userId=Integer.valueOf(dto.getUserId());
      }catch (Exception e){
          e.printStackTrace();
      }

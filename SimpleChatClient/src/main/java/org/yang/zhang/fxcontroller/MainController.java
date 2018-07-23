@@ -34,6 +34,7 @@ import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
@@ -110,6 +111,7 @@ public class MainController  implements Initializable {
     private List<TreeItem<ContractItemView>> groupList=new ArrayList<>();
     public static Map<String,TreeItem<ContractItemView>> contractMap=new HashMap<>();
     private ContractItemView focusItem;
+    private ContractItemView focusGroup;
 
     /**
      * 主页面初始化
@@ -264,9 +266,6 @@ public class MainController  implements Initializable {
                         openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getUserImage());
                         selectedItem.getValue().setBlink(false);
                         selectedItem.getValue().stopBlink();
-                    }else{
-                        //如果是分组，双击修改分组名称
-                        System.out.println("修改分组名称");
                     }
                 }
             }
@@ -274,8 +273,14 @@ public class MainController  implements Initializable {
                 TreeItem<ContractItemView> selectedItem = contractTree.getSelectionModel().getSelectedItem();
                 if(selectedItem!=null){
                     String userid = selectedItem.getValue().getId();
+                    if(userid==null){
+                        return;
+                    }
+                    ContractItemView contractItemView=selectedItem.getValue();
                     if (!userid.contains("GROUP")) {
-                        ContractItemView contractItemView=selectedItem.getValue();
+                        if(this.focusGroup!=null){
+                            this.focusGroup.setGroupNoFocus();
+                        }
                         if(focusItem==null){
                             contractItemView.setFocus();
                             this.focusItem=contractItemView;
@@ -287,26 +292,44 @@ public class MainController  implements Initializable {
                     }
                 }
             }
+            if (click.getButton()==MouseButton.SECONDARY&&click.getClickCount() == 1) {
+                TreeItem<ContractItemView> selectedItem = contractTree.getSelectionModel().getSelectedItem();
+                if(selectedItem!=null){
+                    String userid = selectedItem.getValue().getId();
+                    if(userid==null){
+                        return;
+                    }
+                    ContractItemView contractItemView=selectedItem.getValue();
+                    if (userid.contains("GROUP")) {
+                        if(focusGroup==null){
+                            contractItemView.setGroupFocus();
+                            this.focusGroup=contractItemView;
+                        }else if(focusGroup!=contractItemView){
+                            this.focusGroup.setGroupNoFocus();
+                            contractItemView.setGroupFocus();
+                            this.focusGroup=contractItemView;
+                        }
+                    }
+                }
+            }
 
         });
 
         ContextMenu addMenu = new ContextMenu();
         MenuItem addMenuItem = new MenuItem("添加分组");
-        MenuItem deleteMenu = new MenuItem("删除分组");
+        MenuItem edit = new MenuItem("修改");
+        MenuItem deleteMenu = new MenuItem("删除");
         addMenu.getItems().add(addMenuItem);
         addMenu.getItems().add(deleteMenu);
+        addMenu.getItems().add(edit);
         addMenuItem.setOnAction(new EventHandler() {
             public void handle(Event t) {
                 TreeItem<ContractItemView> newGroup = new TreeItem<ContractItemView>();
                 ContractItemView itemView=new ContractItemView("");
                 TextField textField=itemView.getGroupName();
-                textField.setEditable(true);
-                Platform.runLater(()->{
-                    textField.setFocusTraversable(true);
-                    textField.requestFocus();
-                    textField.focusTraversableProperty().setValue(true);
-                });
-
+                textField.setText("未命名");
+                itemView.setId("未命名");
+                itemView.setGroupEditable();
                 textField.focusedProperty().addListener(new ChangeListener<Boolean>()
                 {
                     @Override
@@ -314,20 +337,71 @@ public class MainController  implements Initializable {
                     {
                         if(!newPropertyValue)
                         {
-                            if(StringUtils.isBlank(textField.getText())){
-                                textField.setText("未命名");
-                            }
                             if(textField.isEditable()){
-                                chatService.createNewGroup(textField.getText());
+                                ContractGroup contractGroup= chatService.createNewGroup(textField.getText());
+                                textField.setEditable(false);
+                                itemView.setGroupEditDisable();
+                                itemView.setId("GROUP"+contractGroup.getId());
                             }
-                            textField.setEditable(false);
-
                         }
                     }
                 });
                 newGroup.setValue(itemView);
                 //新分组都挂在根节点下
                 contractTree.getRoot().getChildren().add(newGroup);
+            }
+        });
+        deleteMenu.setOnAction(new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
+                if(item==null){
+                    return;
+                }
+                ContractItemView contractItemView=item.getValue();
+                if(contractItemView.getId().contains("GROUP")){
+                    //删除分组,原分组下的人移到默认的分组中
+                    String groupId=contractItemView.getId();
+                    chatService.deleteGroup(UserUtils.getCurrentUserId(),Integer.valueOf(groupId.substring(groupId.indexOf("P")+1,groupId.length())));
+                    initContract(UserUtils.getCurrentUser());
+                }else{
+                    //删除用户
+                    String parentId=item.getParent().getValue().getId();
+                    Integer pid=Integer.valueOf(parentId.substring(parentId.indexOf("P")+1,parentId.length()));
+                    chatService.deleteFriend(pid,Integer.valueOf(contractItemView.getId()));
+                    initContract(UserUtils.getCurrentUser());
+                }
+            }
+        });
+        edit.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
+                if(item==null){
+                    return;
+                }
+                ContractItemView contractItemView=item.getValue();
+                if(contractItemView.getId().contains("GROUP")){
+                    TextField textField=contractItemView.getGroupName();
+                    contractItemView.setGroupEditable();
+                    textField.focusedProperty().addListener(new ChangeListener<Boolean>()
+                    {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                        {
+                            if(!newPropertyValue)
+                            {
+                                if(textField.isEditable()){
+                                    chatService.updateGroup(contractItemView.getId(),textField.getText());
+                                    textField.setEditable(false);
+                                    contractItemView.setGroupEditDisable();
+                                }
+                            }
+                        }
+                    });
+                }else{
+
+                }
             }
         });
         contractTree.setEditable(true);
