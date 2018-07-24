@@ -35,12 +35,12 @@
       <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" style="-fx-background-color: #8096AF" />
       <TabPane fx:id="tabPane" style="-fx-background-color:#A1BBD8" layoutY="140.0" prefHeight="526.0" prefWidth="280.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab id="groupTab" closable="false" style="-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/contract.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 90; -fx-text-alignment: center;">
+          <Tab id="groupTab" closable="false" style="-fx-background-position:center;-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/contract.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 90; -fx-text-alignment: center;">
             <content>
                 <TreeView fx:id="contractTree" prefHeight="515.0" prefWidth="280.0" />
             </content>
           </Tab>
-            <Tab fx:id="messageTab" closable="false" style="-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/recentmessage.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 90;">
+            <Tab fx:id="messageTab" closable="false" style="-fx-background-position:center;-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/recentmessage.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 90;">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -48,7 +48,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab fx:id="spaceTab" closable="false" style="-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/space.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 80;">
+            <Tab fx:id="spaceTab" closable="false" style="-fx-background-position:center;-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/space.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 80;">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
