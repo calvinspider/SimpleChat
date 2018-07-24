@@ -13,3 +13,14 @@
 #contractLabel:hover {
     -fx-background-color: #D2D8CC;
 }
+
+.tab-pane .headers-region {
+    -fx-background-color: #A1BBD8;
+}
+.tab-pane .tab-header-background {
+    -fx-background-color: #A1BBD8;
+}
+.tab-pane .tab-selected-line {
+    -fx-stroke: #A1BBD8;
+    -fx-stroke-width: 3pt;
+}
