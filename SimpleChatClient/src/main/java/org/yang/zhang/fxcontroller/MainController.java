@@ -242,17 +242,16 @@ public class MainController  implements Initializable {
         //添加根节点
         TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
         rootItem.setValue(null);
-        rootItem.setExpanded(true);
+//        rootItem.setExpanded(true);
         contractTree.setRoot(rootItem);
         contractTree.setShowRoot(false);
         groupList.clear();
         contractMap.clear();
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
-            TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>();
             ContractItemView pane=new ContractItemView(contract.getGroupName());
             pane.setId("GROUP"+contract.getGroupId());
-            groupItem.setValue(pane);
+            TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
             groupList.add(groupItem);
             rootItem.getChildren().add(groupItem);
             List<User> users = contract.getUserList();
@@ -265,7 +264,7 @@ public class MainController  implements Initializable {
                 UserUtils.setUser(user.getId(),user);
                 ImageUtiles.setUserIcon(user.getId(),contractItemView.getUserImage());
                 groupItem.getChildren().add(item);
-                groupItem.setExpanded(true);
+//                groupItem.setExpanded(true);
             }
         }
 
@@ -286,6 +285,8 @@ public class MainController  implements Initializable {
                         openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getUserImage());
                         selectedItem.getValue().setBlink(false);
                         selectedItem.getValue().stopBlink();
+                    }else{
+                        return;
                     }
                 }
             }
@@ -309,30 +310,16 @@ public class MainController  implements Initializable {
                             contractItemView.setFocus();
                             this.focusItem=contractItemView;
                         }
-                    }
-                }
-            }
-            if (click.getButton()==MouseButton.SECONDARY&&click.getClickCount() == 1) {
-                TreeItem<ContractItemView> selectedItem = contractTree.getSelectionModel().getSelectedItem();
-                if(selectedItem!=null){
-                    String userid = selectedItem.getValue().getId();
-                    if(userid==null){
-                        return;
-                    }
-                    ContractItemView contractItemView=selectedItem.getValue();
-                    if (userid.contains("GROUP")) {
-                        if(focusGroup==null){
-                            contractItemView.setGroupFocus();
-                            this.focusGroup=contractItemView;
-                        }else if(focusGroup!=contractItemView){
-                            this.focusGroup.setGroupNoFocus();
-                            contractItemView.setGroupFocus();
-                            this.focusGroup=contractItemView;
+                    }else{
+                        //收缩或者展开分组
+                        if(selectedItem.isExpanded()){
+                            selectedItem.setExpanded(false);
+                        }else{
+                            selectedItem.setExpanded(true);
                         }
                     }
                 }
             }
-
         });
 
         ContextMenu addMenu = new ContextMenu();
@@ -502,9 +489,9 @@ public class MainController  implements Initializable {
                 initContract(UserUtils.getCurrentUser());
             });
             setOnDragExited(e -> {
-                for(TreeItem<ContractItemView> paneTreeItem:groupList){
-                    paneTreeItem.setExpanded(true);
-                }
+//                for(TreeItem<ContractItemView> paneTreeItem:groupList){
+//                    paneTreeItem.setExpanded(true);
+//                }
                 e.consume();
             });
             setOnDragOver(event -> {
