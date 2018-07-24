@@ -1,7 +1,11 @@
 package org.yang.zhang;
 
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.StageStyle;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.config.CustomSplash;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.utils.ListenerManager;
@@ -23,7 +27,7 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
 
     @Override
     public void start(Stage stage) throws Exception {
-        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setResizable(false);
         stage.setIconified(false);
         stage.setTitle("登录");

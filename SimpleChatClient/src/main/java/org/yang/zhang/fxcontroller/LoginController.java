@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,7 @@ public class LoginController  implements Initializable {
 
         Stage mainStage=new Stage();
         mainStage.setScene(new Scene(mainView.getView()));
+        mainStage.initStyle(StageStyle.UNDECORATED);
         ListenerManager.setOnCloseExistListener(mainStage);
         //初始化主界面
         mainController.init(user);

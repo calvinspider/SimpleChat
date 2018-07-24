@@ -26,7 +26,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * @Description
  * @Date 2018 07 11 12:09
  */
-@Service
+@Service("chatService")
 public class ChatServiceImpl implements ChatService {
 
     @Autowired

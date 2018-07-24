@@ -81,6 +81,12 @@ public class SearchContractController implements Initializable {
       friendList.getChildren().clear();
       List<AddContractDto> list=contractService.getRecommendContract(userName);
       int j=0;
+      if(list.size()==0){
+          Label label=new Label("未找到符合条件的用户!");
+          friendList.add(label,0,0);
+          friendList.setAlignment(Pos.CENTER);
+          return;
+      }
       for (int i=0;i<list.size();i++){
           AddContractView contractView=new AddContractView(list.get(i));
           Pane pane=contractView.getContractPane();

@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.service.ChatService;
 import org.yang.zhang.service.impl.ChatServiceImpl;
+import org.yang.zhang.utils.SpringContextUtils;
 import org.yang.zhang.utils.UserUtils;
 
 import de.felixroske.jfxsupport.FXMLController;
@@ -35,10 +36,8 @@ public class ContractItemController implements Initializable {
     @FXML
     Label userId;
 
-    @Autowired
     private ChatService chatService;
 
-    @Autowired
     private SearchContractController searchContractController;
 
     @Override
@@ -48,6 +47,8 @@ public class ContractItemController implements Initializable {
 
     @FXML
     public void addContract(ActionEvent event){
+        chatService=SpringContextUtils.getBean("chatService");
+        searchContractController=SpringContextUtils.getBean("searchContractController");
         Integer id=Integer.valueOf(userId.getText());
         Integer userid=UserUtils.getCurrentUserId();
         chatService.addFriend(userid,id);

@@ -14,6 +14,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -21,9 +22,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -73,6 +76,8 @@ import javax.jws.soap.SOAPBinding;
 public class MainController  implements Initializable {
 
     @FXML
+    public Pane root;
+    @FXML
     public Tab groupTab;
     @FXML
     public TreeView<ContractItemView> contractTree;
@@ -112,7 +117,8 @@ public class MainController  implements Initializable {
     public static Map<String,TreeItem<ContractItemView>> contractMap=new HashMap<>();
     private ContractItemView focusItem;
     private ContractItemView focusGroup;
-
+    private double xOffset = 0;
+    private double yOffset = 0;
     /**
      * 主页面初始化
      * @param location
@@ -139,6 +145,20 @@ public class MainController  implements Initializable {
         nameLabel.setText(user.getNickName());
         personWord.setText(user.getPersonWord());
         personWord.setFocusTraversable(false);
+        root.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            }
+        });
+        root.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                StageManager.getStage(StageCodes.MAIN).setX(event.getScreenX() - xOffset);
+                StageManager.getStage(StageCodes.MAIN).setY(event.getScreenY() - yOffset);
+            }
+        });
     }
 
     private void initMenuBar(User user) {
@@ -511,6 +531,17 @@ public class MainController  implements Initializable {
 
             }
         }
+    }
+
+    @FXML
+    public void minsize(){
+        Stage primaryStage=StageManager.getStage(StageCodes.MAIN);
+        primaryStage.setIconified(true);
+    }
+
+    @FXML
+    public void closeApp(){
+        System.exit(0);
     }
 
     public Map<String, TreeItem<ContractItemView>> getContractMap() {

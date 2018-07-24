@@ -6,32 +6,38 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="731.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" style="-fx-background-color: #9BB7D6;" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
+<Pane fx:id="root" maxHeight="731.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" style="-fx-border-radius:10;-fx-background-color: #9BB7D6;" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
    <children>
       <Pane maxHeight="110.0" maxWidth="280.0" minHeight="110.0" minWidth="280.0" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: #9BB7D6;">
          <children>
             <Pane layoutX="21.0" layoutY="25.0" prefHeight="60.0" prefWidth="180.0">
                <children>
-                  <ImageView fx:id="userIcon" fitHeight="60.0" fitWidth="72.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="userIcon" fitHeight="60.0" fitWidth="72.0" layoutX="-12.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 10">
 
                   </ImageView>
-                  <Label fx:id="nameLabel" layoutX="82.0" layoutY="-1.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
-                  <TextField fx:id="personWord" layoutX="82.0" layoutY="34.0" promptText="编辑个性签名" />
+                  <Label fx:id="nameLabel" layoutX="65.0" layoutY="17.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
+                  <TextField fx:id="personWord" layoutX="65.0" layoutY="53.0" promptText="编辑个性签名" style="-fx-background-color: #9BB7D6" />
                </children>
             </Pane>
+            <ToolBar layoutX="208.0" layoutY="1.0" prefHeight="35.0" prefWidth="72.0" style="-fx-background-color: #9BB7D6">
+               <items>
+                  <Button mnemonicParsing="false" onAction="#minsize" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#9BB7D6;-fx-background-image:url(images/icon/min.jpg)" />
+                  <Button mnemonicParsing="false" onAction="#closeApp" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#9BB7D6;-fx-background-image:url(images/icon/close.jpg)" />
+               </items>
+            </ToolBar>
          </children></Pane>
-      <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" />
+      <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" style="-fx-background-color: #8096AF" />
       <TabPane fx:id="tabPane" layoutY="140.0" prefHeight="526.0" prefWidth="280.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab id="groupTab" closable="false" style="-fx-pref-Width: 90; -fx-text-alignment: center;" text="联系人">
             <content>
-                <TreeView fx:id="contractTree" prefHeight="498.0" prefWidth="280.0" />
+                <TreeView fx:id="contractTree" prefHeight="515.0" prefWidth="280.0" />
             </content>
           </Tab>
             <Tab fx:id="messageTab" closable="false" style="-fx-pref-Width: 90;" text="消息">
@@ -52,7 +58,9 @@
             </Tab>
         </tabs>
       </TabPane>
-       <Button fx:id="addFriendBtn" layoutX="4.0" layoutY="672.0" mnemonicParsing="false" text="添加好友" />
-       <Button fx:id="systemBtn" layoutX="73.0" layoutY="671.0" mnemonicParsing="false" text="系统设置" />
+       <ToolBar layoutX="1.0" layoutY="662.0" prefHeight="43.0" prefWidth="280.0" style="-fx-background-color:#A1BBD8;">
+           <Button fx:id="addFriendBtn" layoutX="4.0" layoutY="672.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#A1BBD8;-fx-background-image: url(images/icon/system.jpg)" />
+           <Button fx:id="systemBtn" layoutX="73.0" layoutY="671.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#A1BBD8;-fx-background-image: url(images/icon/addfriend.jpg)" />
+       </ToolBar>
    </children>
 </Pane>
