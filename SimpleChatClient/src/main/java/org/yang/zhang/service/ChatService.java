@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.GroupUser;
 import org.yang.zhang.module.MessageInfo;
@@ -30,4 +31,6 @@ public interface ChatService {
     void deleteFriend(Integer currentUserId, Integer integer);
 
     void addFriend(Integer userid, Integer friendId);
+
+    List<ChatRoom> getUserChatRoom(Integer id);
 }

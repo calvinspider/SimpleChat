@@ -24,6 +24,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
@@ -37,6 +38,7 @@ import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.User;
@@ -48,6 +50,7 @@ import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
+import org.yang.zhang.view.ChatRoomView;
 import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.ContractItemView;
 import org.yang.zhang.view.RecentContractView;
@@ -78,17 +81,15 @@ public class MainController  implements Initializable {
     @FXML
     public Pane root;
     @FXML
-    public Tab groupTab;
-    @FXML
     public TreeView<ContractItemView> contractTree;
     @FXML
     public Tab messageTab;
     @FXML
     public ListView<Pane> messageList;
     @FXML
-    public Tab spaceTab;
+    public Tab chatRoomTab;
     @FXML
-    public ListView<Label> spaceList;
+    public ListView<ChatRoomView> chatRoomList;
     @FXML
     public TabPane tabPane;
     @FXML
@@ -133,7 +134,6 @@ public class MainController  implements Initializable {
         initMainPane(user);
         regesterChannel(user);
         initContract(user);
-        initRecentMessage(user);
         initTabPane(user);
         initMenuBar(user);
     }
@@ -201,36 +201,64 @@ public class MainController  implements Initializable {
             //最近消息
            }else if (index==1){
                initRecentMessage(user);
-           //空间列表
+           //聊天室
            }else if(index==2){
-
+               initChatRoom(user);
            }
         });
     }
+
+    private void initChatRoom(User user) {
+        Integer id=user.getId();
+        ObservableList<ChatRoomView> items =FXCollections.observableArrayList();
+        List<ChatRoom> chatRooms= chatService.getUserChatRoom(id);
+        for (ChatRoom chatRoom:chatRooms){
+            ChatRoomView chatRoomView=new ChatRoomView(chatRoom);
+            chatRoomView.setId(String.valueOf(chatRoom.getId()));
+            items.add(chatRoomView);
+        }
+        chatRoomList.setItems(items);
+        chatRoomList.setItems(items);
+        chatRoomList.setOnMouseClicked(click->{
+            if (click.getClickCount() == 2) {
+                ChatRoomView selectedItem = chatRoomList.getSelectionModel().getSelectedItem();
+                String chatRoomId=selectedItem.getId();
+                if (chatRoomId != null) {
+                    System.out.println("打开群");
+                    openChatRoom(chatRoomId,selectedItem.getIcon());
+                }
+            }
+        });
+
+
+        chatRoomList.setCellFactory(new Callback<ListView<ChatRoomView>,ListCell<ChatRoomView>>(){
+            @Override
+            public ListCell<ChatRoomView> call(ListView<ChatRoomView> param) {
+               return new ChatRoomViewCellImpl();
+            }
+        });
+    }
+
+
 
     private void initRecentMessage(User user) {
         Integer id=user.getId();
         ObservableList<Pane> items =FXCollections.observableArrayList();
         List<RecentContract> recentChatLogDtos= chatService.getrecentContract(id);
-        try {
-            for (RecentContract recentContract:recentChatLogDtos){
-                RecentContractView contractView=new RecentContractView(recentContract,id);
-                items.add(contractView.getRecentContractPane());
-            }
-            messageList.setItems(items);
-            messageList.setOnMouseClicked(click->{
-                if (click.getClickCount() == 2) {
-                    Pane selectedItem = messageList.getSelectionModel().getSelectedItem();
-                    String userid=selectedItem.getId();
-                    ImageView imageView=(ImageView) selectedItem.lookup("#userIcon");
-                    if (userid != null) {
-                        openChatWindow(Integer.valueOf(userid),imageView.getImage());
-                    }
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
+        for (RecentContract recentContract:recentChatLogDtos){
+            RecentContractView contractView=new RecentContractView(recentContract);
+            items.add(contractView.getRecentContractPane());
         }
+        messageList.setItems(items);
+        messageList.setOnMouseClicked(click->{
+            if (click.getClickCount() == 2) {
+                Pane selectedItem = messageList.getSelectionModel().getSelectedItem();
+                String userid=selectedItem.getId();
+                if (userid != null) {
+                    openChatWindow(Integer.valueOf(userid),ImageUtiles.getUserIcon(Integer.valueOf(userid)));
+                }
+            }
+        });
     }
 
     public void initContract(User loginUser){
@@ -415,6 +443,10 @@ public class MainController  implements Initializable {
         contractTree.setContextMenu(addMenu);
     }
 
+    private void openChatRoom(String chatRoomId, Image icon) {
+
+    }
+
     private void openChatWindow(Integer id,Image userIcon) {
         try {
             //不重复打开聊天框
@@ -448,6 +480,19 @@ public class MainController  implements Initializable {
 
     }
 
+
+    private final class ChatRoomViewCellImpl extends ListCell<ChatRoomView>{
+        @Override
+        public void updateItem(ChatRoomView pane, boolean empty) {
+            super.updateItem(pane,empty);
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                    setGraphic(pane.getRoomPane());
+            }
+        }
+    }
     private final class ContractTreeCellImpl extends TreeCell<ContractItemView> {
 
         private String cellId;

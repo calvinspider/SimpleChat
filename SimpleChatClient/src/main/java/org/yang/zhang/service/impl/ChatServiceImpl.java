@@ -1,17 +1,21 @@
 package org.yang.zhang.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.dto.AddContractDto;
+import org.yang.zhang.dto.ChatRoomDto;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.service.ChatService;
@@ -61,6 +65,16 @@ public class ChatServiceImpl implements ChatService {
         contractGroupDto.setUserId(UserUtils.getCurrentUserId());
         String result=restTemplate.postForObject(Constant.NEWGROUP,contractGroupDto,String.class);
         Result<ContractGroup> result1=JsonUtils.fromJson(result,typeReference);
+        return result1.getData();
+    }
+
+    @Override
+    public List<ChatRoom> getUserChatRoom(Integer id) {
+        TypeReference type=new TypeReference<Result<List<ChatRoom>>>() {};
+        ChatRoomDto chatRoomDto=new ChatRoomDto();
+        chatRoomDto.setId(id);
+        String result=restTemplate.postForObject(Constant.USERCHATROOMS,chatRoomDto,String.class);
+        Result<List<ChatRoom>> result1=JsonUtils.fromJson(result,type);
         return result1.getData();
     }
 

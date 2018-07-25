@@ -23,7 +23,7 @@
         tu.icon_url as icon
       FROM
         `t_recent_contract` trc
-        LEFT JOIN t_user tu ON trc.user_id=tu.id
+        LEFT JOIN t_user tu ON trc.contract_user_id=tu.id
       WHERE
         user_id = #{userid}
         order by message_time desc

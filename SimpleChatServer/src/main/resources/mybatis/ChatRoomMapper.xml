@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.yang.zhang.mapper.ChatRoomMapper">
+
+    <select id="getUerChatRooms" resultType="org.yang.zhang.module.ChatRoom">
+      SELECT
+        tc.*
+        FROM
+            t_chatroom tc
+        LEFT JOIN t_chatroom_user tcu ON tc.id = tcu.room_id
+        WHERE
+            tcu.user_id = #{id}
+    </select>
+
+</mapper>

@@ -7,6 +7,7 @@ import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.MessageInfo;
 
@@ -41,4 +42,6 @@ public interface ChatService {
     void deleteFriend(ContractGroupDto contractGroupDto);
 
     void addFriend(AddContractDto addContractDto);
+
+    List<ChatRoom> getUerChatRooms(Integer id);
 }

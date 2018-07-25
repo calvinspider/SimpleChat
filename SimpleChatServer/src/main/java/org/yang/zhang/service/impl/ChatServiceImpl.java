@@ -1,5 +1,6 @@
 package org.yang.zhang.service.impl;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.yang.zhang.dto.AddContractDto;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
@@ -8,7 +9,9 @@ import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.mapper.ChatMapper;
+import org.yang.zhang.mapper.ChatRoomMapper;
 import org.yang.zhang.mapper.GroupUserMapper;
+import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.GroupUser;
 import org.yang.zhang.module.MessageInfo;
@@ -45,6 +48,8 @@ public class ChatServiceImpl implements ChatService {
     private GroupUserRepository groupUserRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ChatRoomMapper chatRoomMapper;
 
     @Override
     public List<ContractGroupDto> getContractList(FindByUserDto parma) {
@@ -149,5 +154,11 @@ public class ChatServiceImpl implements ChatService {
             groupUser.setGroupId(group.getId());
             groupUserRepository.save(groupUser);
         }
+    }
+
+    @Override
+    public List<ChatRoom> getUerChatRooms(@RequestBody  Integer id) {
+        List<ChatRoom> list= chatRoomMapper.getUerChatRooms(id);
+        return list;
     }
 }

@@ -1,12 +1,14 @@
 package org.yang.zhang.controller;
 
 import org.yang.zhang.dto.AddContractDto;
+import org.yang.zhang.dto.ChatRoomDto;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,9 +83,15 @@ public class ChatController {
     public void  deleteFriend(@RequestBody ContractGroupDto contractGroupDto){
         chatService.deleteFriend(contractGroupDto);
     }
+
     @RequestMapping(value = "/addFriend")
     public void  addFriend(@RequestBody AddContractDto addContractDto){
         chatService.addFriend(addContractDto);
+    }
+
+    @RequestMapping(value = "/getUerChatRooms")
+    public Result<List<ChatRoom>>  getUerChatRooms(@RequestBody ChatRoomDto chatRoomDto){
+        return Result.successData(chatService.getUerChatRooms(chatRoomDto.getId()));
     }
 
 }

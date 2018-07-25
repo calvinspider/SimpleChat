@@ -22,5 +22,6 @@ public class Constant {
     public static final String DELETEFRIEND=serverHost+"/chat/deleteFriend";
     public static final String ADDFRIEND=serverHost+"/chat/addFriend";
     public static final String USERREGISTER=serverHost+"/user/register";
+    public static final String USERCHATROOMS=serverHost+"/chat/getUerChatRooms";
     public static final String REGEIST="REGEIST";
 }

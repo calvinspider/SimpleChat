@@ -25,18 +25,18 @@ public class RecentContractView {
     private String lastMessage;
     private String userIcon;
 
-    public RecentContractView(RecentContract recentContract,Integer mainId) {
+    public RecentContractView(RecentContract recentContract) {
         try {
             Pane pane=FXMLLoader.load(getClass().getResource("/fxml/RecentContract.fxml"));
             Label namelabel = (Label)pane.lookup("#namelabel");
-            namelabel.setText(recentContract.getContractId());
+            namelabel.setText(recentContract.getNickName());
             pane.setId(recentContract.getContractId());
             Label messagelabel = (Label)pane.lookup("#messagelabel");
             messagelabel.setText(recentContract.getLastMessage());
             Label timelabel = (Label)pane.lookup("#timelabel");
             timelabel.setText(DateUtils.formatDate(recentContract.getLastMessageDate(),"YYYY-MM-dd"));
             ImageView contracticon=(ImageView)pane.lookup("#contracticon");
-            contracticon.setImage(ImageUtiles.getHttpImage(Constant.serverHost+"/static/images/userIcon/"+recentContract.getIcon()));
+            contracticon.setImage(ImageUtiles.getUserIcon(recentContract.getIcon()));
             contracticon.setFitWidth(45);
             contracticon.setFitHeight(45);
             this.messageTime = recentContract.getLastMessageDate();

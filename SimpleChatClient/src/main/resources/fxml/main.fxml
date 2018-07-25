@@ -48,12 +48,13 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab fx:id="spaceTab" closable="false" style="-fx-background-position:center;-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/space.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 80;">
+            <Tab fx:id="chatRoomTab" closable="false" style="-fx-background-position:center;-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/contractgroup.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 80;">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="spaceList" layoutX="-4.0" layoutY="6.0" prefHeight="492.0" prefWidth="287.0" />
-                     </children></AnchorPane>
+                        <ListView fx:id="chatRoomList" layoutX="-4.0" layoutY="6.0" prefHeight="492.0" prefWidth="287.0" />
+                     </children>
+                </AnchorPane>
               </content>
             </Tab>
         </tabs>
