@@ -12,4 +12,31 @@
             tcu.user_id = #{id}
     </select>
 
+    <select id="getChatRoomUsers" resultType="org.yang.zhang.module.User">
+      SELECT
+	  *
+    FROM
+        t_user
+    WHERE
+        id IN (
+            SELECT
+                user_id
+            FROM
+                t_chatroom_member
+            WHERE
+                room_id = #{id}
+        )
+    </select>
+
+    <select id="getRecentMessage" resultType="org.yang.zhang.module.RoomChatInfo">
+      SELECT
+        *
+        FROM
+            t_room_chatinfo
+        WHERE
+            room_id = #{id}
+        ORDER BY
+            message_time ASC
+        LIMIT 0,100
+    </select>
 </mapper>

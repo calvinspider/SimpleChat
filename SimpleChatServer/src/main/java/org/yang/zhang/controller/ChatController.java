@@ -94,4 +94,9 @@ public class ChatController {
         return Result.successData(chatService.getUerChatRooms(chatRoomDto.getId()));
     }
 
+    @RequestMapping(value = "/getRoomDetail")
+    public Result<ChatRoomDto> getRoomDetail(@RequestBody ChatRoomDto chatRoomDto){
+        return Result.successData(chatService.getRoomDetail(chatRoomDto.getId()));
+    }
+
 }

@@ -2,6 +2,7 @@ package org.yang.zhang.service.impl;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.yang.zhang.dto.AddContractDto;
+import org.yang.zhang.dto.ChatRoomDto;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
@@ -15,7 +16,9 @@ import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.GroupUser;
 import org.yang.zhang.module.MessageInfo;
+import org.yang.zhang.module.RoomChatInfo;
 import org.yang.zhang.module.User;
+import org.yang.zhang.repository.ChatRoomRepository;
 import org.yang.zhang.repository.ContractGroupRepository;
 import org.yang.zhang.repository.GroupUserRepository;
 import org.yang.zhang.repository.UserRepository;
@@ -50,6 +53,8 @@ public class ChatServiceImpl implements ChatService {
     private UserRepository userRepository;
     @Autowired
     private ChatRoomMapper chatRoomMapper;
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
 
     @Override
     public List<ContractGroupDto> getContractList(FindByUserDto parma) {
@@ -160,5 +165,17 @@ public class ChatServiceImpl implements ChatService {
     public List<ChatRoom> getUerChatRooms(@RequestBody  Integer id) {
         List<ChatRoom> list= chatRoomMapper.getUerChatRooms(id);
         return list;
+    }
+
+    @Override
+    public ChatRoomDto getRoomDetail(Integer id) {
+        ChatRoomDto chatRoomDto=new ChatRoomDto();
+        ChatRoom chatRoom=chatRoomRepository.getOne(id);
+        chatRoomDto.setChatRoom(chatRoom);
+        List<User> users=chatRoomMapper.getChatRoomUsers(id);
+        chatRoomDto.setUsers(users);
+        List<RoomChatInfo> recentMessage=chatRoomMapper.getRecentMessage(id);
+        chatRoomDto.setRecentMessage(recentMessage);
+        return chatRoomDto;
     }
 }

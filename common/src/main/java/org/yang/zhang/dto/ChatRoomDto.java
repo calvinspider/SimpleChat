@@ -1,6 +1,12 @@
 package org.yang.zhang.dto;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.yang.zhang.module.ChatRoom;
+import org.yang.zhang.module.MessageInfo;
+import org.yang.zhang.module.RoomChatInfo;
+import org.yang.zhang.module.User;
 
 import lombok.Data;
 
@@ -12,12 +18,8 @@ import lombok.Data;
 @Data
 public class ChatRoomDto implements Serializable {
     private Integer id;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private ChatRoom chatRoom;
+    private List<User> users;
+    private List<String> publicMsg;
+    private List<RoomChatInfo> recentMessage;
 }

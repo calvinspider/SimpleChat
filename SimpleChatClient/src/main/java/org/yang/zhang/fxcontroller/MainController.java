@@ -1,10 +1,6 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -14,7 +10,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -24,14 +19,10 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
@@ -50,6 +41,7 @@ import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.utils.StageManager;
+import org.yang.zhang.view.ChatRoomItemView;
 import org.yang.zhang.view.ChatRoomView;
 import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.ContractItemView;
@@ -66,14 +58,11 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import javax.jws.soap.SOAPBinding;
 
 @FXMLController
 public class MainController  implements Initializable {
@@ -89,7 +78,7 @@ public class MainController  implements Initializable {
     @FXML
     public Tab chatRoomTab;
     @FXML
-    public ListView<ChatRoomView> chatRoomList;
+    public ListView<ChatRoomItemView> chatRoomList;
     @FXML
     public TabPane tabPane;
     @FXML
@@ -210,10 +199,10 @@ public class MainController  implements Initializable {
 
     private void initChatRoom(User user) {
         Integer id=user.getId();
-        ObservableList<ChatRoomView> items =FXCollections.observableArrayList();
+        ObservableList<ChatRoomItemView> items =FXCollections.observableArrayList();
         List<ChatRoom> chatRooms= chatService.getUserChatRoom(id);
         for (ChatRoom chatRoom:chatRooms){
-            ChatRoomView chatRoomView=new ChatRoomView(chatRoom);
+            ChatRoomItemView chatRoomView=new ChatRoomItemView(chatRoom);
             chatRoomView.setId(String.valueOf(chatRoom.getId()));
             items.add(chatRoomView);
         }
@@ -221,7 +210,7 @@ public class MainController  implements Initializable {
         chatRoomList.setItems(items);
         chatRoomList.setOnMouseClicked(click->{
             if (click.getClickCount() == 2) {
-                ChatRoomView selectedItem = chatRoomList.getSelectionModel().getSelectedItem();
+                ChatRoomItemView selectedItem = chatRoomList.getSelectionModel().getSelectedItem();
                 String chatRoomId=selectedItem.getId();
                 if (chatRoomId != null) {
                     System.out.println("打开群");
@@ -231,9 +220,9 @@ public class MainController  implements Initializable {
         });
 
 
-        chatRoomList.setCellFactory(new Callback<ListView<ChatRoomView>,ListCell<ChatRoomView>>(){
+        chatRoomList.setCellFactory(new Callback<ListView<ChatRoomItemView>,ListCell<ChatRoomItemView>>(){
             @Override
-            public ListCell<ChatRoomView> call(ListView<ChatRoomView> param) {
+            public ListCell<ChatRoomItemView> call(ListView<ChatRoomItemView> param) {
                return new ChatRoomViewCellImpl();
             }
         });
@@ -444,7 +433,11 @@ public class MainController  implements Initializable {
     }
 
     private void openChatRoom(String chatRoomId, Image icon) {
-
+        //不重复打开
+        if(ChatViewManager.getStage("CHATROOM"+chatRoomId)!=null){
+            return;
+        }
+        ChatRoomView chatView= new ChatRoomView(chatRoomId,icon);
     }
 
     private void openChatWindow(Integer id,Image userIcon) {
@@ -481,9 +474,9 @@ public class MainController  implements Initializable {
     }
 
 
-    private final class ChatRoomViewCellImpl extends ListCell<ChatRoomView>{
+    private final class ChatRoomViewCellImpl extends ListCell<ChatRoomItemView>{
         @Override
-        public void updateItem(ChatRoomView pane, boolean empty) {
+        public void updateItem(ChatRoomItemView pane, boolean empty) {
             super.updateItem(pane,empty);
             if (empty) {
                 setText(null);

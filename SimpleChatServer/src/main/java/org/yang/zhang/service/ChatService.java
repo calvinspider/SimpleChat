@@ -1,6 +1,7 @@
 package org.yang.zhang.service;
 
 import org.yang.zhang.dto.AddContractDto;
+import org.yang.zhang.dto.ChatRoomDto;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
@@ -44,4 +45,6 @@ public interface ChatService {
     void addFriend(AddContractDto addContractDto);
 
     List<ChatRoom> getUerChatRooms(Integer id);
+
+    ChatRoomDto getRoomDetail(Integer id);
 }

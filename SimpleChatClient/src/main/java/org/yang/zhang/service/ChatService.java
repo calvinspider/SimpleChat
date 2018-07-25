@@ -2,6 +2,7 @@ package org.yang.zhang.service;
 
 import java.util.List;
 
+import org.yang.zhang.dto.ChatRoomDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.module.ChatRoom;
@@ -33,4 +34,6 @@ public interface ChatService {
     void addFriend(Integer userid, Integer friendId);
 
     List<ChatRoom> getUserChatRoom(Integer id);
+
+    ChatRoomDto getRoomDetail(Integer integer);
 }

@@ -118,4 +118,16 @@ public class ChatServiceImpl implements ChatService {
         addContractDto.setCurrentUserId(userid);
         restTemplate.postForObject(Constant.ADDFRIEND,addContractDto,String.class);
     }
+
+    @Override
+    public ChatRoomDto getRoomDetail(Integer roomId) {
+        ChatRoomDto input=new ChatRoomDto();
+        input.setId(roomId);
+        TypeReference type=new TypeReference<Result<ChatRoomDto>>() {};
+        String result=restTemplate.postForObject(Constant.GETCHATROOMDETAIL,input,String.class);
+        Result<ChatRoomDto> result1= JsonUtils.fromJson(result,type);
+        return result1.getData();
+    }
+
+
 }
