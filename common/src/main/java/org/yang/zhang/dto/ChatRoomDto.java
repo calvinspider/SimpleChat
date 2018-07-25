@@ -22,4 +22,44 @@ public class ChatRoomDto implements Serializable {
     private List<User> users;
     private List<String> publicMsg;
     private List<RoomChatInfo> recentMessage;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public ChatRoom getChatRoom() {
+        return chatRoom;
+    }
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public List<String> getPublicMsg() {
+        return publicMsg;
+    }
+
+    public void setPublicMsg(List<String> publicMsg) {
+        this.publicMsg = publicMsg;
+    }
+
+    public List<RoomChatInfo> getRecentMessage() {
+        return recentMessage;
+    }
+
+    public void setRecentMessage(List<RoomChatInfo> recentMessage) {
+        this.recentMessage = recentMessage;
+    }
 }

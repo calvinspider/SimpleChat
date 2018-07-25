@@ -95,8 +95,10 @@ public class ChatController {
     }
 
     @RequestMapping(value = "/getRoomDetail")
-    public Result<ChatRoomDto> getRoomDetail(@RequestBody ChatRoomDto chatRoomDto){
-        return Result.successData(chatService.getRoomDetail(chatRoomDto.getId()));
+    public String getRoomDetail(@RequestBody ChatRoomDto chatRoomDto){
+         Result<ChatRoomDto> chatRoomDtoResult=Result.successData(chatService.getRoomDetail(chatRoomDto.getId()));
+        System.out.println(JsonUtils.toJson(chatRoomDtoResult));
+         return JsonUtils.toJson(chatRoomDtoResult);
     }
 
 }
