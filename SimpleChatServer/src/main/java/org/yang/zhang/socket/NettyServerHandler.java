@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.yang.zhang.enums.MessageType;
 import org.yang.zhang.mapper.ChatRoomMapper;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.RecentContract;
@@ -43,11 +44,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         ChatRoomMessageRepository chatRoomMessageRepository=SpringContextUtils.getBean("chatRoomMessageRepository");
         Integer targetUser=info.getTargetclientid();
         Integer sourceUser=info.getSourceclientid();
-        if(1==info.getMsgtype()){//注册channel
+        if(info.getMsgtype()==MessageType.REGISTER){//注册channel
             ChannelManager.registerChannel(String.valueOf(sourceUser),ctx);
-        }else if(2==info.getMsgtype()){//注销channel
+        }else if(MessageType.UNREGISTER==info.getMsgtype()){//注销channel
             ChannelManager.unregisterChannel(String.valueOf(sourceUser));
-        }else if(3==info.getMsgtype()){//群发消息
+        }else if(MessageType.ROOM==info.getMsgtype()){//群发消息
             List<User> member=chatRoomMapper.getChatRoomUsers(targetUser);
             List<Integer> userIds=member.stream().map(item->item.getId()).collect(Collectors.toList());
             for (Integer id:userIds){
@@ -76,7 +77,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             }
             info.setTime(new Date());
             //本地存储消息
-
             RecentContract recentContract=recentContractRepository.findByUserIdAndContractUserId(Integer.valueOf(info.getSourceclientid()),Integer.valueOf(info.getTargetclientid()));
             if(recentContract!=null){
                 recentContract.setLastMessage(info.getMsgcontent());

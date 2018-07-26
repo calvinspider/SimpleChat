@@ -85,7 +85,7 @@ public class PersonChatController implements Initializable {
 
     @FXML
     public void closeChatWindow(){
-        Stage stage=ChatViewManager.getStage(IDUtils.formatID(userId.getText(),IDType.ID)).getChatStage();
+        Stage stage=StageManager.getStage(IDUtils.formatID(userId.getText(),IDType.CHATWINDOW));
         if(stage!=null){
             stage.close();
             ChatViewManager.unregisterStage(IDUtils.formatID(userId.getText(),IDType.ID));

@@ -8,13 +8,8 @@ import org.yang.zhang.enums.BubbleType;
 import org.yang.zhang.enums.IDType;
 import org.yang.zhang.fxcontroller.MainController;
 import org.yang.zhang.module.MessageInfo;
-import org.yang.zhang.utils.AnimationUtils;
-import org.yang.zhang.utils.ChatUtils;
-import org.yang.zhang.utils.ChatViewManager;
-import org.yang.zhang.utils.DateUtils;
-import org.yang.zhang.utils.IDUtils;
-import org.yang.zhang.utils.StageManager;
-import org.yang.zhang.utils.UserUtils;
+import org.yang.zhang.service.ChatService;
+import org.yang.zhang.utils.*;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -40,41 +35,35 @@ import javafx.stage.WindowEvent;
  */
 
 public class ChatView {
-    Label nameLabel;
-    Label  userIdLabel;
-    ImageView userImage;
-    TextArea chatArea;
-    VBox chatHistory;
-    ScrollPane chatPane;
+    private Label nameLabel;
+    private Label  userIdLabel;
+    private ImageView userImage;
+    private TextArea chatArea;
+    private VBox chatHistory;
+    private ScrollPane chatPane;
 
-    public ChatView(Integer openUserId,String openUserName,Image userIcon,List<MessageInfo> messageInfos) {
+    public ChatView(Integer openUserId,String openUserName,Image userIcon) {
         try {
             Stage chatStage=new Stage();
             Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
             chatStage.setScene(scene);
             chatStage.setResizable(false);
-
             initMember(scene);
-            setMemberValue();
-
-
+            setMemberValue(openUserId,openUserName,userIcon);
             chatArea.textProperty().addListener(new ChangeListener<Object>() {
                 @Override
-                public void changed(ObservableValue<?> observable, Object oldValue,
-                                    Object newValue) {
+                public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
                     chatArea.setScrollTop(Double.MAX_VALUE);
                 }
             });
             chatArea.wrapTextProperty().setValue(true);
             StageManager.registerStage(IDUtils.formatID(openUserId,IDType.CHATWINDOW),chatStage);
             chatStage.show();
-            chatStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
+            chatStage.setOnCloseRequest(event ->  {
                     ChatViewManager.unregisterStage(String.valueOf(openUserId));
-                }
             });
-
+            ChatService chatService=SpringContextUtils.getBean("chatService");
+            List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(openUserId,UserUtils.getCurrentUserId());
             //获取近一天的聊天记录
             for (MessageInfo messageInfo:messageInfos){
                 Label label;
@@ -85,16 +74,14 @@ public class ChatView {
                     ChatUtils.appendBubble(chatPane,BubbleType.RIGHT,messageInfo.getMsgcontent(),UserUtils.getUserIcon(),570D);
                 }
             }
-            this.chatStage=chatStage;
-            this.userId=openUserId;
-            this.userIcon=userIcon;
+            StageManager.registerStage(IDUtils.formatID(openUserId,IDType.CHATWINDOW),chatStage);
         }catch (Exception e){
             e.printStackTrace();
         }
 
     }
 
-    private void setMemberValue() {
+    private void setMemberValue(Integer openUserId,String openUserName,Image userIcon) {
         nameLabel.setText(openUserName);
         userIdLabel.setVisible(false);
         userIdLabel.setText(String.valueOf(openUserId));
@@ -110,25 +97,11 @@ public class ChatView {
         chatPane = (ScrollPane)scene.lookup("#chatPane");
     }
 
-    public VBox getChatBox(){
-        VBox chatHistory = (VBox)this.chatStage.getScene().lookup("#chatHistory");
+    public VBox getChatHistory() {
         return chatHistory;
     }
 
-    public ScrollPane getChatPane(){
-        ScrollPane chatHistory = (ScrollPane)this.chatStage.getScene().lookup("#chatPane");
-        return chatHistory;
-    }
-
-    public Stage getChatStage() {
-        return chatStage;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public Image getUserIcon() {
-        return userIcon;
+    public ScrollPane getChatPane() {
+        return chatPane;
     }
 }

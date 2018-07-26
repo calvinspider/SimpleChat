@@ -8,12 +8,7 @@ package org.yang.zhang.socket;
 
 import org.yang.zhang.fxcontroller.MainController;
 import org.yang.zhang.module.MessageInfo;
-import org.yang.zhang.utils.AnimationUtils;
-import org.yang.zhang.utils.ChatViewManager;
-import org.yang.zhang.utils.DateUtils;
-import org.yang.zhang.utils.ImageUtiles;
-import org.yang.zhang.utils.JsonUtils;
-import org.yang.zhang.utils.StageManager;
+import org.yang.zhang.utils.*;
 import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.ContractItemView;
 import org.yang.zhang.view.LeftMessageBubble;
@@ -57,12 +52,12 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         ChatView chatWindow=ChatViewManager.getStage(String.valueOf(userId));
         //聊天框未打开,头像闪动
         if(chatWindow==null){
-            TreeItem<ContractItemView> itemViewTreeItem= MainController.contractMap.get(String.valueOf(userId));
+            TreeItem<ContractItemView> itemViewTreeItem= ClientCache.getContractMap().get(String.valueOf(userId));
             ContractItemView contractItemView=itemViewTreeItem.getValue();
             contractItemView.startBlink();
         }else{
             Platform.runLater(()->{
-                VBox otherChat = chatWindow.getChatBox();
+                VBox otherChat = chatWindow.getChatHistory();
                 LeftMessageBubble leftMessageBubble=new LeftMessageBubble(info.getMsgcontent(),ImageUtiles.getUserIcon(userId));
                 Label time=new Label(DateUtils.formatDateTime(info.getTime()));
                 time.setPrefWidth(570);

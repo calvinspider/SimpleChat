@@ -24,6 +24,9 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.cellimpl.ChatRoomViewCellImpl;
+import org.yang.zhang.cellimpl.ContractTreeCellImpl;
+import org.yang.zhang.cellimpl.RecentContractViewCellImpl;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.dto.ContractGroupDto;
@@ -38,13 +41,7 @@ import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
 import org.yang.zhang.service.ContractService;
 import org.yang.zhang.socket.NettyClient;
-import org.yang.zhang.utils.ChatUtils;
-import org.yang.zhang.utils.ChatViewManager;
-import org.yang.zhang.utils.IDUtils;
-import org.yang.zhang.utils.UserUtils;
-import org.yang.zhang.utils.ImageUtiles;
-import org.yang.zhang.utils.JsonUtils;
-import org.yang.zhang.utils.StageManager;
+import org.yang.zhang.utils.*;
 import org.yang.zhang.view.ChatRoomItemView;
 import org.yang.zhang.view.ChatRoomView;
 import org.yang.zhang.view.ChatView;
@@ -107,8 +104,7 @@ public class MainController  implements Initializable {
     @Autowired
     private SearchContractController searchContractController;
 
-    private List<TreeItem<ContractItemView>> groupList=new ArrayList<>();
-    public static Map<String,TreeItem<ContractItemView>> contractMap=new HashMap<>();
+    private Integer userId;
     private ContractItemView focusItem;
     private ContractItemView focusGroup;
     private double xOffset = 0;
@@ -124,12 +120,12 @@ public class MainController  implements Initializable {
     }
 
     public void init(User user){
+        this.userId=user.getId();
         initMainPane(user);
         regesterChannel(user);
         initContract(user);
         initTabPane(user);
-        initMenuBar(user);
-        initDragable();
+        initEvent();
     }
 
     private void initMainPane(User user) {
@@ -141,40 +137,6 @@ public class MainController  implements Initializable {
         personWord.setFocusTraversable(false);
     }
 
-    private void initDragable() {
-        root.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            }
-        });
-        root.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                StageManager.getStage(StageCodes.MAIN).setX(event.getScreenX() - xOffset);
-                StageManager.getStage(StageCodes.MAIN).setY(event.getScreenY() - yOffset);
-            }
-        });
-    }
-
-    private void initMenuBar(User user) {
-        Integer id=user.getId();
-        addFriendBtn.setOnMouseClicked(click->{
-            if(StageManager.getStage(StageCodes.SEARCHCONTRACT)==null){
-                Stage searchContract=new Stage();
-                Scene scene=new Scene(searchContractView.getView());
-                searchContract.setScene(scene);
-                searchContract.setResizable(false);
-                searchContract.show();
-                searchContractController.init(String.valueOf(id));
-                StageManager.registerStage(StageCodes.SEARCHCONTRACT,searchContract);
-            }else{
-                StageManager.getStage(StageCodes.SEARCHCONTRACT).show();
-                searchContractController.init(String.valueOf(id));
-            }
-        });
-    }
 
     private void regesterChannel(User user) {
         //向服务器注册当前channel
@@ -207,23 +169,7 @@ public class MainController  implements Initializable {
             items.add(chatRoomView);
         }
         chatRoomList.setItems(items);
-        chatRoomList.setOnMouseClicked(click->{
-            if (click.getClickCount() == 2) {
-                ChatRoomItemView selectedItem = chatRoomList.getSelectionModel().getSelectedItem();
-                String chatRoomId=selectedItem.getId();
-                if (chatRoomId != null) {
-                    openChatRoom(chatRoomId,selectedItem.getIcon());
-                }
-            }
-        });
-
-
-        chatRoomList.setCellFactory(new Callback<ListView<ChatRoomItemView>,ListCell<ChatRoomItemView>>(){
-            @Override
-            public ListCell<ChatRoomItemView> call(ListView<ChatRoomItemView> param) {
-               return new ChatRoomViewCellImpl();
-            }
-        });
+        chatRoomList.setCellFactory(ChatRoomViewCellImpl.callback);
     }
 
     private void initRecentMessage(User user) {
@@ -234,35 +180,9 @@ public class MainController  implements Initializable {
             RecentContractView contractView=new RecentContractView(recentContract);
             items.add(contractView);
         }
-        messageList.setCellFactory(new Callback<ListView<RecentContractView>,ListCell<RecentContractView>>(){
-            @Override
-            public ListCell<RecentContractView> call(ListView<RecentContractView> param) {
-                return new RecentContractViewCellImpl();
-            }
-        });
+        messageList.setCellFactory(RecentContractViewCellImpl.callback);
         messageList.setItems(items);
-        messageList.setOnMouseClicked(click->{
-            if (click.getClickCount() == 2) {
-                RecentContractView selectedItem = messageList.getSelectionModel().getSelectedItem();
-                String userid=selectedItem.getId();
-                if (userid != null) {
-                    openChatWindow(Integer.valueOf(userid),selectedItem.getNickName(),ImageUtiles.getUserIcon(selectedItem.getUserIcon()));
-                }
-            }
-        });
-    }
 
-    private final class RecentContractViewCellImpl extends ListCell<RecentContractView>{
-        @Override
-        public void updateItem(RecentContractView pane, boolean empty) {
-            super.updateItem(pane,empty);
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                setGraphic(pane.getRecentContractPane());
-            }
-        }
     }
 
     public void initContract(User loginUser){
@@ -274,17 +194,16 @@ public class MainController  implements Initializable {
         //添加根节点
         TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
         rootItem.setValue(null);
-//        rootItem.setExpanded(true);
         contractTree.setRoot(rootItem);
         contractTree.setShowRoot(false);
-        groupList.clear();
-        contractMap.clear();
+        ClientCache.clearContract();
+        ClientCache.clearGroup();
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
             ContractItemView pane=new ContractItemView(contract.getGroupName());
             pane.setId("GROUP"+contract.getGroupId());
             TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
-            groupList.add(groupItem);
+            ClientCache.addGroup(groupItem);
             rootItem.getChildren().add(groupItem);
             List<User> users = contract.getUserList();
             for (User user : users) {
@@ -292,21 +211,90 @@ public class MainController  implements Initializable {
                 ContractItemView contractItemView=new ContractItemView(user);
                 contractItemView.setId(String.valueOf(user.getId()));
                 item.setValue(contractItemView);
-                contractMap.put(String.valueOf(user.getId()),item);
+                ClientCache.addContract(String.valueOf(user.getId()),item);
                 UserUtils.setUser(user.getId(),user);
                 ImageUtiles.setUserIcon(user.getId(),contractItemView.getUserImage());
                 groupItem.getChildren().add(item);
-//                groupItem.setExpanded(true);
             }
         }
+        contractTree.setCellFactory(ContractTreeCellImpl.callback);
+        contractTree.setEditable(true);
+        contractTree.setContextMenu(rightPopMenu());
+    }
 
-        contractTree.setCellFactory(new Callback<TreeView<ContractItemView>,TreeCell<ContractItemView>>(){
-            @Override
-            public TreeCell<ContractItemView> call(TreeView<ContractItemView> pane) {
-                return new ContractTreeCellImpl();
+
+
+
+    /**
+     * 系统设置
+     * @param event
+     */
+    @FXML
+    public void openSystemConfig(ActionEvent event){
+
+    }
+
+    /**
+     * 添加好友
+     * @param event
+     */
+    @FXML
+    public void openAddFriend(ActionEvent event){
+
+    }
+
+    @FXML
+    public void minsize(){
+        Stage primaryStage=StageManager.getStage(StageCodes.MAIN);
+        primaryStage.setIconified(true);
+    }
+
+    @FXML
+    public void closeApp(){
+        System.exit(0);
+    }
+
+    private void initEvent() {
+        root.setOnMousePressed(event ->  {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        root.setOnMouseDragged(event -> {
+            StageManager.getStage(StageCodes.MAIN).setX(event.getScreenX() - xOffset);
+            StageManager.getStage(StageCodes.MAIN).setY(event.getScreenY() - yOffset);
+        });
+        messageList.setOnMouseClicked(click->{
+            if (click.getClickCount() == 2) {
+                RecentContractView selectedItem = messageList.getSelectionModel().getSelectedItem();
+                String userid=selectedItem.getId();
+                if (userid != null) {
+                    ChatUtils.openChatWindow(Integer.valueOf(userid),selectedItem.getNickName(),ImageUtiles.getUserIcon(selectedItem.getUserIcon()));
+                }
             }
         });
-
+        addFriendBtn.setOnMouseClicked(click->{
+            if(StageManager.getStage(StageCodes.SEARCHCONTRACT)==null){
+                Stage searchContract=new Stage();
+                Scene scene=new Scene(searchContractView.getView());
+                searchContract.setScene(scene);
+                searchContract.setResizable(false);
+                searchContract.show();
+                searchContractController.init(String.valueOf(userId));
+                StageManager.registerStage(StageCodes.SEARCHCONTRACT,searchContract);
+            }else{
+                StageManager.getStage(StageCodes.SEARCHCONTRACT).show();
+                searchContractController.init(String.valueOf(userId));
+            }
+        });
+        chatRoomList.setOnMouseClicked(click->{
+            if (click.getClickCount() == 2) {
+                ChatRoomItemView selectedItem = chatRoomList.getSelectionModel().getSelectedItem();
+                String chatRoomId=selectedItem.getId();
+                if (chatRoomId != null) {
+                    ChatUtils.openChatRoom(chatRoomId,selectedItem.getIcon());
+                }
+            }
+        });
         contractTree.setOnMouseClicked(click -> {
             //左键双击弹出聊天框
             if (click.getButton()==MouseButton.PRIMARY&&click.getClickCount() == 2) {
@@ -314,7 +302,7 @@ public class MainController  implements Initializable {
                 if(selectedItem!=null){
                     String userid = selectedItem.getValue().getId();
                     if (!userid.contains("GROUP")) {
-                        openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getNickName(),selectedItem.getValue().getUserImage());
+                        ChatUtils.openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getNickName(),selectedItem.getValue().getUserImage());
                         selectedItem.getValue().setBlink(false);
                         selectedItem.getValue().stopBlink();
                     }else{
@@ -353,7 +341,9 @@ public class MainController  implements Initializable {
                 }
             }
         });
+    }
 
+    public ContextMenu rightPopMenu(){
         ContextMenu addMenu = new ContextMenu();
         MenuItem addMenuItem = new MenuItem("添加分组");
         MenuItem edit = new MenuItem("修改");
@@ -361,14 +351,61 @@ public class MainController  implements Initializable {
         addMenu.getItems().add(addMenuItem);
         addMenu.getItems().add(deleteMenu);
         addMenu.getItems().add(edit);
-        addMenuItem.setOnAction(new EventHandler() {
-            public void handle(Event t) {
-                TreeItem<ContractItemView> newGroup = new TreeItem<ContractItemView>();
-                ContractItemView itemView=new ContractItemView("");
-                TextField textField=itemView.getGroupName();
-                textField.setText("未命名");
-                itemView.setId("未命名");
-                itemView.setGroupEditable();
+        addMenuItem.setOnAction(event ->  {
+            TreeItem<ContractItemView> newGroup = new TreeItem<ContractItemView>();
+            ContractItemView itemView=new ContractItemView("");
+            TextField textField=itemView.getGroupName();
+            textField.setText("未命名");
+            itemView.setId("未命名");
+            itemView.setGroupEditable();
+            textField.focusedProperty().addListener(new ChangeListener<Boolean>()
+            {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                {
+                    if(!newPropertyValue)
+                    {
+                        if(textField.isEditable()){
+                            ContractGroup contractGroup= chatService.createNewGroup(textField.getText());
+                            textField.setEditable(false);
+                            itemView.setGroupEditDisable();
+                            itemView.setId("GROUP"+contractGroup.getId());
+                        }
+                    }
+                }
+            });
+            newGroup.setValue(itemView);
+            //新分组都挂在根节点下
+            contractTree.getRoot().getChildren().add(newGroup);
+        });
+        deleteMenu.setOnAction(event -> {
+            TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
+            if(item==null){
+                return;
+            }
+            ContractItemView contractItemView=item.getValue();
+            if(contractItemView.getId().contains("GROUP")){
+                //删除分组,原分组下的人移到默认的分组中
+                String groupId=contractItemView.getId();
+                chatService.deleteGroup(UserUtils.getCurrentUserId(),Integer.valueOf(groupId.substring(groupId.indexOf("P")+1,groupId.length())));
+                initContract(UserUtils.getCurrentUser());
+            }else{
+                //删除用户
+                String parentId=item.getParent().getValue().getId();
+                Integer pid=Integer.valueOf(parentId.substring(parentId.indexOf("P")+1,parentId.length()));
+                chatService.deleteFriend(pid,Integer.valueOf(contractItemView.getId()));
+                initContract(UserUtils.getCurrentUser());
+            }
+        });
+        edit.setOnAction(event ->  {
+            TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
+            if(item==null){
+                return;
+            }
+            ContractItemView contractItemView=item.getValue();
+            if(contractItemView.getId().contains("GROUP")){
+                TextField textField=contractItemView.getGroupName();
+                contractItemView.setGroupEditable();
                 textField.focusedProperty().addListener(new ChangeListener<Boolean>()
                 {
                     @Override
@@ -377,215 +414,17 @@ public class MainController  implements Initializable {
                         if(!newPropertyValue)
                         {
                             if(textField.isEditable()){
-                                ContractGroup contractGroup= chatService.createNewGroup(textField.getText());
+                                chatService.updateGroup(contractItemView.getId(),textField.getText());
                                 textField.setEditable(false);
-                                itemView.setGroupEditDisable();
-                                itemView.setId("GROUP"+contractGroup.getId());
+                                contractItemView.setGroupEditDisable();
                             }
                         }
                     }
                 });
-                newGroup.setValue(itemView);
-                //新分组都挂在根节点下
-                contractTree.getRoot().getChildren().add(newGroup);
+            }else{
+
             }
         });
-        deleteMenu.setOnAction(new EventHandler(){
-            @Override
-            public void handle(Event event) {
-                TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
-                if(item==null){
-                    return;
-                }
-                ContractItemView contractItemView=item.getValue();
-                if(contractItemView.getId().contains("GROUP")){
-                    //删除分组,原分组下的人移到默认的分组中
-                    String groupId=contractItemView.getId();
-                    chatService.deleteGroup(UserUtils.getCurrentUserId(),Integer.valueOf(groupId.substring(groupId.indexOf("P")+1,groupId.length())));
-                    initContract(UserUtils.getCurrentUser());
-                }else{
-                    //删除用户
-                    String parentId=item.getParent().getValue().getId();
-                    Integer pid=Integer.valueOf(parentId.substring(parentId.indexOf("P")+1,parentId.length()));
-                    chatService.deleteFriend(pid,Integer.valueOf(contractItemView.getId()));
-                    initContract(UserUtils.getCurrentUser());
-                }
-            }
-        });
-        edit.setOnAction(new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
-                if(item==null){
-                    return;
-                }
-                ContractItemView contractItemView=item.getValue();
-                if(contractItemView.getId().contains("GROUP")){
-                    TextField textField=contractItemView.getGroupName();
-                    contractItemView.setGroupEditable();
-                    textField.focusedProperty().addListener(new ChangeListener<Boolean>()
-                    {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-                        {
-                            if(!newPropertyValue)
-                            {
-                                if(textField.isEditable()){
-                                    chatService.updateGroup(contractItemView.getId(),textField.getText());
-                                    textField.setEditable(false);
-                                    contractItemView.setGroupEditDisable();
-                                }
-                            }
-                        }
-                    });
-                }else{
-
-                }
-            }
-        });
-        contractTree.setEditable(true);
-        contractTree.setContextMenu(addMenu);
-    }
-
-    private void openChatRoom(String chatRoomId, Image icon) {
-        Stage stage=StageManager.getStage(IDUtils.formatID(chatRoomId,IDType.ROOMWINDOW));
-        if(stage!=null){
-            stage.show();
-            return;
-        }
-        ChatRoomView chatView= new ChatRoomView(chatRoomId,icon);
-    }
-
-    private void openChatWindow(Integer id,String nickName,Image userIcon) {
-        try {
-            //不重复打开聊天框
-            if(ChatViewManager.getStage(String.valueOf(id))!=null){
-                return;
-            }
-            List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,UserUtils.getCurrentUserId());
-            ChatView chatView= new ChatView(id,nickName,userIcon,messageInfos);
-            ChatViewManager.registerStage(String.valueOf(id),chatView);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * 系统设置
-     * @param event
-     */
-    @FXML
-    public void openSystemConfig(ActionEvent event){
-
-    }
-
-    /**
-     * 添加好友
-     * @param event
-     */
-    @FXML
-    public void openAddFriend(ActionEvent event){
-
-    }
-
-
-    private final class ChatRoomViewCellImpl extends ListCell<ChatRoomItemView>{
-        @Override
-        public void updateItem(ChatRoomItemView pane, boolean empty) {
-            super.updateItem(pane,empty);
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                    setGraphic(pane.getRoomPane());
-            }
-        }
-    }
-    private final class ContractTreeCellImpl extends TreeCell<ContractItemView> {
-
-        private String cellId;
-
-        public ContractTreeCellImpl() {
-
-            setOnDragEntered(e -> {
-
-                //收缩分组
-                for(TreeItem<ContractItemView> paneTreeItem:groupList){
-                    paneTreeItem.setExpanded(false);
-                }
-                ClipboardContent content = new ClipboardContent();
-                content.putString(this.cellId);
-                e.getDragboard().setContent(content);
-                e.consume();
-            });
-            setOnDragDetected(e -> {
-                Dragboard db = startDragAndDrop(TransferMode.MOVE);
-                ClipboardContent content = new ClipboardContent();
-                content.putString( "Hello!" );
-                db.setContent(content);
-                e.consume();
-            });
-            setOnDragDone(e -> {
-
-                e.consume();
-            });
-            setOnDragDropped(e -> {
-                //将用户移动到目标分组中
-                Dragboard dragboard=e.getDragboard();
-                String itemId=dragboard.getString();
-                String newGroupId=this.cellId;
-                String oldGroupId=contractMap.get(itemId).getParent().getValue().getId();
-                chatService.updateContractGroup(itemId,oldGroupId.substring(oldGroupId.indexOf("P")+1,oldGroupId.length()),
-                        newGroupId.substring(newGroupId.indexOf("P")+1,newGroupId.length()));
-                e.setDropCompleted(true);
-                e.consume();
-                initContract(UserUtils.getCurrentUser());
-            });
-            setOnDragExited(e -> {
-//                for(TreeItem<ContractItemView> paneTreeItem:groupList){
-//                    paneTreeItem.setExpanded(true);
-//                }
-                e.consume();
-            });
-            setOnDragOver(event -> {
-                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                event.consume();
-            });
-
-
-        }
-
-        @Override
-        public void updateItem(ContractItemView pane, boolean empty) {
-            super.updateItem(pane,empty);
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                if(pane==null||pane.getId()==null){
-                    setGraphic(null);
-                }else{
-                    this.cellId=pane.getId();
-                    setGraphic(pane.getItemPane());
-                }
-
-            }
-        }
-    }
-
-    @FXML
-    public void minsize(){
-        Stage primaryStage=StageManager.getStage(StageCodes.MAIN);
-        primaryStage.setIconified(true);
-    }
-
-    @FXML
-    public void closeApp(){
-        System.exit(0);
-    }
-
-    public Map<String, TreeItem<ContractItemView>> getContractMap() {
-        return contractMap;
+        return addMenu;
     }
 }

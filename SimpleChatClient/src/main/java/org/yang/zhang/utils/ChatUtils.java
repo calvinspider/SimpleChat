@@ -3,11 +3,14 @@ package org.yang.zhang.utils;
 import java.util.Date;
 import java.util.List;
 
+import javafx.stage.Stage;
 import org.yang.zhang.enums.BubbleType;
+import org.yang.zhang.enums.IDType;
 import org.yang.zhang.enums.MessageType;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.service.ChatService;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.view.ChatRoomView;
 import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.LeftMessageBubble;
 import org.yang.zhang.view.RightMessageBubble;
@@ -27,19 +30,22 @@ import javafx.scene.layout.VBox;
 
 public class ChatUtils {
 
-    public static void openChatWindow(Integer id,String nickName,Image userIcon) {
-        try {
-            //不重复打开聊天框
-            if(ChatViewManager.getStage(String.valueOf(id))!=null){
-                return;
-            }
-            ChatService chatService=SpringContextUtils.getBean("chatService");
-            List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,UserUtils.getCurrentUserId());
-            ChatView chatView= new ChatView(id,nickName,userIcon,messageInfos);
-            ChatViewManager.registerStage(String.valueOf(id),chatView);
-        }catch (Exception e){
-            e.printStackTrace();
+    public static void openChatRoom(String chatRoomId, Image icon) {
+        Stage stage=StageManager.getStage(IDUtils.formatID(chatRoomId,IDType.ROOMWINDOW));
+        if(stage!=null){
+            stage.show();
+            return;
         }
+        new ChatRoomView(chatRoomId,icon);
+    }
+
+    public static void openChatWindow(Integer id,String nickName,Image userIcon) {
+        Stage stage=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW));
+        if(stage!=null){
+            stage.show();
+            return;
+        }
+        new ChatView(id,nickName,userIcon);
     }
 
     public static void sendMessage(Integer targetId,MessageType messageType, String content){
