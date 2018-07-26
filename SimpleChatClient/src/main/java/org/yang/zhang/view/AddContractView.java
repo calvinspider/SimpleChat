@@ -26,12 +26,12 @@ public class AddContractView {
      try {
          Pane pane=FXMLLoader.load(getClass().getResource("/fxml/addContractItem.fxml"));
          ImageView usericon=(ImageView)pane.lookup("#usericon");
-         usericon.setImage(ImageUtiles.getUserIcon(dto.getUserIcon()));
-         Label username=(Label)pane.lookup("#userName");
-         username.setText(userName);
-         Label userId=(Label)pane.lookup("#userId");
-         userId.setText(dto.getUserId());
          Label commoncount=(Label)pane.lookup("#commoncount");
+         Label username=(Label)pane.lookup("#userName");
+         Label userId=(Label)pane.lookup("#userId");
+         usericon.setImage(ImageUtiles.getUserIcon(dto.getUserIcon()));
+         username.setText(userName);
+         userId.setText(dto.getUserId());
          commoncount.setText(commonCount+"位共同好友");
          this.contractPane=pane;
          this.userIcon = dto.getUserIcon();

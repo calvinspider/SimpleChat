@@ -14,16 +14,24 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.enums.BubbleType;
+import org.yang.zhang.enums.IDType;
+import org.yang.zhang.enums.MessageType;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.ActionManager;
 import org.yang.zhang.utils.AnimationUtils;
+import org.yang.zhang.utils.ChatUtils;
 import org.yang.zhang.utils.ChatViewManager;
+import org.yang.zhang.utils.IDUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.DateUtils;
@@ -31,7 +39,7 @@ import org.yang.zhang.utils.JsonUtils;
 import org.yang.zhang.view.RightMessageBubble;
 
 @FXMLController
-public class ChatWindowController  implements Initializable {
+public class PersonChatController implements Initializable {
 
     @FXML
     private Label nameLabel;
@@ -62,49 +70,25 @@ public class ChatWindowController  implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        chatArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            public void handle(final KeyEvent keyEvent) {
-                if (keyEvent.getCode() == KeyCode.ENTER) {
-                    sendMessage(null);
-                    keyEvent.consume();
-                }
-            }
-        });
+        ActionManager.setKeyPressAction(chatArea,KeyCode.ENTER,this::sendMessage);
     }
 
     @FXML
-    public void sendMessage(ActionEvent event) {
-        if("".equals(chatArea.getText())){
+    public void sendMessage() {
+        if(StringUtils.isBlank(chatArea.getText())){
             return;
         }
-        String targetUser=userId.getText();
-        MessageInfo messageInfo=new MessageInfo();
-        messageInfo.setSourceclientid(UserUtils.getCurrentUserId());
-        messageInfo.setTargetclientid(Integer.valueOf(targetUser));
-        messageInfo.setMsgcontent(chatArea.getText());
-        messageInfo.setMsgtype(4);
-        messageInfo.setTime(new Date());
-
-        //向聊天框中添加聊天内容
-        RightMessageBubble rightMessageBubble=new RightMessageBubble(chatArea.getText(),UserUtils.getUserIcon());
-        Label time=new Label(DateUtils.formatDateTime(new Date()));
-        time.setPrefWidth(570);
-        time.setAlignment(Pos.CENTER);
-        time.setPrefHeight(200);
-        time.setStyle("-fx-padding: 10,10,10,10");
-        chatHistory.getChildren().add(time);
-        chatHistory.getChildren().add(rightMessageBubble.getPane());
-        AnimationUtils.slowScrollToBottom(chatPane);
-
-        //情况打字区
+        ChatUtils.sendMessage(Integer.valueOf(userId.getText()),MessageType.NORMAL,chatArea.getText());
+        ChatUtils.appendBubble(chatPane,BubbleType.RIGHT,chatArea.getText(),UserUtils.getUserIcon(),570D);
         chatArea.setText("");
-        //发送消息
-        NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
     }
 
     @FXML
     public void closeChatWindow(){
-        ChatViewManager.getStage(userId.getText()).getChatStage().close();
-        ChatViewManager.unregisterStage(userId.getText());
+        Stage stage=ChatViewManager.getStage(IDUtils.formatID(userId.getText(),IDType.ID)).getChatStage();
+        if(stage!=null){
+            stage.close();
+            ChatViewManager.unregisterStage(IDUtils.formatID(userId.getText(),IDType.ID));
+        }
     }
 }

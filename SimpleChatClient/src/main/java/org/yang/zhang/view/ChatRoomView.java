@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.yang.zhang.dto.ChatRoomDto;
 import org.yang.zhang.dto.RoomChatInfoDto;
+import org.yang.zhang.enums.BubbleType;
+import org.yang.zhang.enums.IDType;
 import org.yang.zhang.fxcontroller.MainController;
 import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.MessageInfo;
@@ -12,6 +14,7 @@ import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
 import org.yang.zhang.utils.ChatUtils;
 import org.yang.zhang.utils.DateUtils;
+import org.yang.zhang.utils.IDUtils;
 import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.SpringContextUtils;
 import org.yang.zhang.utils.StageManager;
@@ -65,20 +68,20 @@ public class ChatRoomView {
             ChatRoomDto chatRoomDto=chatService.getRoomDetail(Integer.valueOf(roomId));
             Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatRoomWindow.fxml")));
             Label roomIdLabel=(Label)scene.lookup("#roomId");
-            roomIdLabel.setText(roomId);
             Label nameLabel=(Label) scene.lookup("#nameLabel");
-            nameLabel.setText(chatRoomDto.getChatRoom().getName());
             imageView=(ImageView)scene.lookup("#imageView");
-            imageView.setImage(icon);
             friendPane=(TitledPane) scene.lookup("#friendPane");
             chatPane=(ScrollPane)scene.lookup("#chatPane");
+            roomIdLabel.setText(roomId);
+            nameLabel.setText(chatRoomDto.getChatRoom().getName());
+            imageView.setImage(icon);
             initMemberPane(chatRoomDto.getUsers());
             initRecentChat(chatRoomDto.getRecentMessage());
             chatRommStage=new Stage();
             chatRommStage.setScene(scene);
             chatRommStage.show();
             chatRommStage.setResizable(false);
-            StageManager.registerStage("CHATROOM"+roomId,chatRommStage);
+            StageManager.registerStage(IDUtils.formatID(roomId,IDType.ROOMWINDOW),chatRommStage);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -91,33 +94,11 @@ public class ChatRoomView {
         Integer id=UserUtils.getCurrentUserId();
         for (RoomChatInfoDto chatInfo:recentMessage){
             if(!id.equals(chatInfo.getUserId())){
-                LeftMessageBubble leftMessageBubble=new LeftMessageBubble(chatInfo.getMessage(),ImageUtiles.getUserIcon(chatInfo.getIcon()));
-                Pane pane=leftMessageBubble.getPane();
-                pane.setPrefWidth(670);
-                Label time=new Label(DateUtils.formatDateTime(chatInfo.getMessageTime()));
-                time.setPrefWidth(550);
-                time.setAlignment(Pos.CENTER);
-                time.setPrefHeight(30);
-                time.setStyle("-fx-padding: 10,10,10,10");
-                chatBox.getChildren().add(time);
-                chatBox.getChildren().add(pane);
+                ChatUtils.appendBubble(chatPane,BubbleType.LEFT,chatInfo.getMessage(),ImageUtiles.getUserIcon(chatInfo.getIcon()),670D);
             }else{
-                RightMessageBubble rightMessageBubble=new RightMessageBubble(chatInfo.getMessage(),UserUtils.getUserIcon());
-                Pane pane=rightMessageBubble.getPane();
-                pane.setPrefWidth(670);
-                Label time=new Label(DateUtils.formatDateTime(chatInfo.getMessageTime()));
-                time.setPrefWidth(550);
-                time.setAlignment(Pos.CENTER);
-                time.setPrefHeight(30);
-                time.setStyle("-fx-padding: 10,10,10,10");
-                chatBox.getChildren().add(time);
-                chatBox.getChildren().add(pane);
+                ChatUtils.appendBubble(chatPane,BubbleType.RIGHT,chatInfo.getMessage(),UserUtils.getUserIcon(),670D);
             }
         }
-        chatPane.setContent(chatBox);
-        Platform.runLater(()->{
-            chatPane.setVvalue(1.0);
-        });
     }
 
     private void initMemberPane(List<User> users) {

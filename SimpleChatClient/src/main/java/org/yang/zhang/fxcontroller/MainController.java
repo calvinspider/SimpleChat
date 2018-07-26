@@ -29,6 +29,8 @@ import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.enums.IDType;
+import org.yang.zhang.enums.MessageType;
 import org.yang.zhang.module.ChatRoom;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.MessageInfo;
@@ -36,7 +38,9 @@ import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
 import org.yang.zhang.service.ContractService;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.ChatUtils;
 import org.yang.zhang.utils.ChatViewManager;
+import org.yang.zhang.utils.IDUtils;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.JsonUtils;
@@ -125,6 +129,7 @@ public class MainController  implements Initializable {
         initContract(user);
         initTabPane(user);
         initMenuBar(user);
+        initDragable();
     }
 
     private void initMainPane(User user) {
@@ -134,6 +139,9 @@ public class MainController  implements Initializable {
         nameLabel.setText(user.getNickName());
         personWord.setText(user.getPersonWord());
         personWord.setFocusTraversable(false);
+    }
+
+    private void initDragable() {
         root.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -153,32 +161,24 @@ public class MainController  implements Initializable {
     private void initMenuBar(User user) {
         Integer id=user.getId();
         addFriendBtn.setOnMouseClicked(click->{
-            try {
-                if(StageManager.getStage(StageCodes.SEARCHCONTRACT)==null){
-                    Stage searchContract=new Stage();
-                    Scene scene=new Scene(searchContractView.getView());
-                    searchContract.setScene(scene);
-                    searchContract.setResizable(false);
-                    searchContract.show();
-                    searchContractController.init(String.valueOf(id));
-                    StageManager.registerStage(StageCodes.SEARCHCONTRACT,searchContract);
-                }else{
-                    StageManager.getStage(StageCodes.SEARCHCONTRACT).show();
-                    searchContractController.init(String.valueOf(id));
-                }
-            }catch (Exception e){
-                e.printStackTrace();
+            if(StageManager.getStage(StageCodes.SEARCHCONTRACT)==null){
+                Stage searchContract=new Stage();
+                Scene scene=new Scene(searchContractView.getView());
+                searchContract.setScene(scene);
+                searchContract.setResizable(false);
+                searchContract.show();
+                searchContractController.init(String.valueOf(id));
+                StageManager.registerStage(StageCodes.SEARCHCONTRACT,searchContract);
+            }else{
+                StageManager.getStage(StageCodes.SEARCHCONTRACT).show();
+                searchContractController.init(String.valueOf(id));
             }
         });
     }
 
     private void regesterChannel(User user) {
         //向服务器注册当前channel
-        MessageInfo messageInfo=new MessageInfo();
-        messageInfo.setSourceclientid(user.getId());
-        messageInfo.setMsgtype(1);
-        messageInfo.setTime(new Date());
-        NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
+        ChatUtils.sendMessage(null,MessageType.REGISTER,null);
     }
 
     private void initTabPane(User user) {
@@ -207,13 +207,11 @@ public class MainController  implements Initializable {
             items.add(chatRoomView);
         }
         chatRoomList.setItems(items);
-        chatRoomList.setItems(items);
         chatRoomList.setOnMouseClicked(click->{
             if (click.getClickCount() == 2) {
                 ChatRoomItemView selectedItem = chatRoomList.getSelectionModel().getSelectedItem();
                 String chatRoomId=selectedItem.getId();
                 if (chatRoomId != null) {
-                    System.out.println("打开群");
                     openChatRoom(chatRoomId,selectedItem.getIcon());
                 }
             }
@@ -450,8 +448,9 @@ public class MainController  implements Initializable {
     }
 
     private void openChatRoom(String chatRoomId, Image icon) {
-        //不重复打开
-        if(ChatViewManager.getStage("CHATROOM"+chatRoomId)!=null){
+        Stage stage=StageManager.getStage(IDUtils.formatID(chatRoomId,IDType.ROOMWINDOW));
+        if(stage!=null){
+            stage.show();
             return;
         }
         ChatRoomView chatView= new ChatRoomView(chatRoomId,icon);

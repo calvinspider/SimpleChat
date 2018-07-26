@@ -10,11 +10,14 @@ import javax.persistence.Table;
 
 import org.omg.CORBA.PRIVATE_MEMBER;
 
+import lombok.Data;
+
 /**
  * @Author calvin.zhang
  * @Description
  * @Date 2018 07 12 15:16
  */
+@Data
 @Entity
 @Table(name = "t_recent_contract")
 public class RecentContract {
@@ -25,44 +28,4 @@ public class RecentContract {
     private Integer contractUserId;
     private String lastMessage;
     private Date messageTime;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getContractUserId() {
-        return contractUserId;
-    }
-
-    public void setContractUserId(Integer contractUserId) {
-        this.contractUserId = contractUserId;
-    }
-
-    public String getLastMessage() {
-        return lastMessage;
-    }
-
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
-    }
-
-    public Date getMessageTime() {
-        return messageTime;
-    }
-
-    public void setMessageTime(Date messageTime) {
-        this.messageTime = messageTime;
-    }
 }

@@ -2,7 +2,6 @@ package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -12,7 +11,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.SimpleChatClientApplication;
@@ -21,7 +20,7 @@ import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
-import org.yang.zhang.utils.ListenerManager;
+import org.yang.zhang.utils.ActionManager;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.LoginErrorView;
@@ -91,7 +90,7 @@ public class LoginController  implements Initializable {
         Stage mainStage=new Stage();
         mainStage.setScene(new Scene(mainView.getView()));
         mainStage.initStyle(StageStyle.UNDECORATED);
-        ListenerManager.setOnCloseExistListener(mainStage);
+        ActionManager.setOnCloseExistListener(mainStage);
         //初始化主界面
         mainController.init(user);
         mainStage.show();

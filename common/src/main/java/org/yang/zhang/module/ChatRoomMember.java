@@ -18,7 +18,7 @@ import lombok.Data;
 @Entity
 @Table(name = "t_chatroom_member")
 @Data
-public class ChatRoomMamber implements Serializable {
+public class ChatRoomMember implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -7,8 +7,10 @@ package org.yang.zhang.enums;
  */
 
 public enum  MessageType {
- MSG(0),
- NOTIFICATION(1);
+ REGISTER(1),
+ UNREGISTER(2),
+ ROOM(3),
+ NORMAL(4);
 
  private Integer code;
  MessageType(Integer code){

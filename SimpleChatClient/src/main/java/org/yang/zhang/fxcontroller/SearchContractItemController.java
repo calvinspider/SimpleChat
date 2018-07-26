@@ -23,7 +23,7 @@ import javafx.scene.image.ImageView;
  * @Date 2018 07 12 17:51
  */
 @FXMLController
-public class ContractItemController implements Initializable {
+public class SearchContractItemController implements Initializable {
 
     @FXML
     ImageView usericon;
@@ -36,10 +36,6 @@ public class ContractItemController implements Initializable {
     @FXML
     Label userId;
 
-    private ChatService chatService;
-
-    private SearchContractController searchContractController;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -47,11 +43,11 @@ public class ContractItemController implements Initializable {
 
     @FXML
     public void addContract(ActionEvent event){
-        chatService=SpringContextUtils.getBean("chatService");
-        searchContractController=SpringContextUtils.getBean("searchContractController");
-        Integer id=Integer.valueOf(userId.getText());
-        Integer userid=UserUtils.getCurrentUserId();
-        chatService.addFriend(userid,id);
+        ChatService chatService=SpringContextUtils.getBean("chatService");
+        SearchContractController searchContractController=SpringContextUtils.getBean("searchContractController");
+        Integer targetId=Integer.valueOf(userId.getText());
+        Integer currentUserId=UserUtils.getCurrentUserId();
+        chatService.addFriend(currentUserId,targetId);
         searchContractController.init(String.valueOf(UserUtils.getCurrentUserId()));
     }
 }

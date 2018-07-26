@@ -25,13 +25,13 @@ public class ChatRoomItemView {
     private Pane roomPane;
     public ChatRoomItemView(ChatRoom chatRoom){
         try {
-            this.roomName = chatRoom.getName();
-            this.icon=ImageUtiles.getUserIcon(chatRoom.getIcon());
             roomPane=FXMLLoader.load(getClass().getResource("/fxml/chatRoom.fxml"));
             roomLabel=(Label)roomPane.lookup("#chatRoomName");
-            roomLabel.setText(chatRoom.getName());
             imageView=(ImageView)roomPane.lookup("#chatRoomIcon");
             imageView.setImage(this.icon);
+            roomLabel.setText(chatRoom.getName());
+            this.roomName = chatRoom.getName();
+            this.icon=ImageUtiles.getUserIcon(chatRoom.getIcon());
         }catch (Exception e){
             e.printStackTrace();
         }
