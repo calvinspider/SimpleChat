@@ -20,10 +20,12 @@ import javafx.scene.layout.Pane;
  */
 
 public class RecentContractView {
+    private String id;
     private Pane recentContractPane;
     private Date messageTime;
     private String lastMessage;
     private String userIcon;
+    private String nickName;
 
     public RecentContractView(RecentContract recentContract) {
         try {
@@ -41,11 +43,21 @@ public class RecentContractView {
             contracticon.setFitHeight(45);
             this.messageTime = recentContract.getLastMessageDate();
             this.lastMessage = recentContract.getLastMessage();
-            this.userIcon = "";
+            this.userIcon = recentContract.getIcon();
             this.recentContractPane=pane;
+            this.id=recentContract.getContractId();
+            this.nickName=recentContract.getNickName();
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getNickName() {
+        return nickName;
     }
 
     public Pane getRecentContractPane() {

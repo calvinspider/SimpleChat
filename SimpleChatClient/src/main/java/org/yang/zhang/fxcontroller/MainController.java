@@ -74,7 +74,7 @@ public class MainController  implements Initializable {
     @FXML
     public Tab messageTab;
     @FXML
-    public ListView<Pane> messageList;
+    public ListView<RecentContractView> messageList;
     @FXML
     public Tab chatRoomTab;
     @FXML
@@ -176,7 +176,7 @@ public class MainController  implements Initializable {
         //向服务器注册当前channel
         MessageInfo messageInfo=new MessageInfo();
         messageInfo.setSourceclientid(user.getId());
-        messageInfo.setMsgcontent(Constant.REGEIST);
+        messageInfo.setMsgtype(1);
         messageInfo.setTime(new Date());
         NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
     }
@@ -228,26 +228,43 @@ public class MainController  implements Initializable {
         });
     }
 
-
-
     private void initRecentMessage(User user) {
         Integer id=user.getId();
-        ObservableList<Pane> items =FXCollections.observableArrayList();
+        ObservableList<RecentContractView> items =FXCollections.observableArrayList();
         List<RecentContract> recentChatLogDtos= chatService.getrecentContract(id);
         for (RecentContract recentContract:recentChatLogDtos){
             RecentContractView contractView=new RecentContractView(recentContract);
-            items.add(contractView.getRecentContractPane());
+            items.add(contractView);
         }
+        messageList.setCellFactory(new Callback<ListView<RecentContractView>,ListCell<RecentContractView>>(){
+            @Override
+            public ListCell<RecentContractView> call(ListView<RecentContractView> param) {
+                return new RecentContractViewCellImpl();
+            }
+        });
         messageList.setItems(items);
         messageList.setOnMouseClicked(click->{
             if (click.getClickCount() == 2) {
-                Pane selectedItem = messageList.getSelectionModel().getSelectedItem();
+                RecentContractView selectedItem = messageList.getSelectionModel().getSelectedItem();
                 String userid=selectedItem.getId();
                 if (userid != null) {
-                    openChatWindow(Integer.valueOf(userid),ImageUtiles.getUserIcon(Integer.valueOf(userid)));
+                    openChatWindow(Integer.valueOf(userid),selectedItem.getNickName(),ImageUtiles.getUserIcon(selectedItem.getUserIcon()));
                 }
             }
         });
+    }
+
+    private final class RecentContractViewCellImpl extends ListCell<RecentContractView>{
+        @Override
+        public void updateItem(RecentContractView pane, boolean empty) {
+            super.updateItem(pane,empty);
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                setGraphic(pane.getRecentContractPane());
+            }
+        }
     }
 
     public void initContract(User loginUser){
@@ -299,7 +316,7 @@ public class MainController  implements Initializable {
                 if(selectedItem!=null){
                     String userid = selectedItem.getValue().getId();
                     if (!userid.contains("GROUP")) {
-                        openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getUserImage());
+                        openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getNickName(),selectedItem.getValue().getUserImage());
                         selectedItem.getValue().setBlink(false);
                         selectedItem.getValue().stopBlink();
                     }else{
@@ -440,14 +457,14 @@ public class MainController  implements Initializable {
         ChatRoomView chatView= new ChatRoomView(chatRoomId,icon);
     }
 
-    private void openChatWindow(Integer id,Image userIcon) {
+    private void openChatWindow(Integer id,String nickName,Image userIcon) {
         try {
             //不重复打开聊天框
             if(ChatViewManager.getStage(String.valueOf(id))!=null){
                 return;
             }
             List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,UserUtils.getCurrentUserId());
-            ChatView chatView= new ChatView(id,userIcon,messageInfos);
+            ChatView chatView= new ChatView(id,nickName,userIcon,messageInfos);
             ChatViewManager.registerStage(String.valueOf(id),chatView);
         }catch (Exception e){
             e.printStackTrace();

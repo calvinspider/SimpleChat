@@ -14,7 +14,10 @@
 
     <select id="getChatRoomUsers" resultType="org.yang.zhang.module.User">
       SELECT
-	  *
+	  id,
+	  nick_name as nickName,
+	  icon_url as iconUrl,
+	  person_word as personWord
     FROM
         t_user
     WHERE
@@ -28,11 +31,17 @@
         )
     </select>
 
-    <select id="getRecentMessage" resultType="org.yang.zhang.module.RoomChatInfo">
+    <select id="getRecentMessage" resultType="org.yang.zhang.dto.RoomChatInfoDto">
       SELECT
-        *
+         trc.id as id,
+         trc.room_id as roomId,
+         trc.user_id as userId,
+         trc.message as message,
+         trc.message_time as messageTime,
+         tu.icon_url as icon
         FROM
-            t_room_chatinfo
+            t_room_chatinfo trc
+            left join t_user tu on tu.id=trc.user_id
         WHERE
             room_id = #{id}
         ORDER BY

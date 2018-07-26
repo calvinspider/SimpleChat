@@ -53,6 +53,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             throw new Exception("MessageInfo must not be NULL!");
         }
         Integer userId=info.getSourceclientid();
+        Integer targetId=info.getTargetclientid();
         ChatView chatWindow=ChatViewManager.getStage(String.valueOf(userId));
         //聊天框未打开,头像闪动
         if(chatWindow==null){

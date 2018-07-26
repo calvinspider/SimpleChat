@@ -39,7 +39,7 @@ public class ChatView {
     private Stage chatStage;
     private Integer userId;
     private Image userIcon;
-    public ChatView(Integer openUserId,Image userIcon,List<MessageInfo> messageInfos) {
+    public ChatView(Integer openUserId,String openUserName,Image userIcon,List<MessageInfo> messageInfos) {
         try {
             //创建聊天框
             Stage chatStage=new Stage();
@@ -49,7 +49,7 @@ public class ChatView {
             chatStage.setResizable(false);
             //目标联系人
             Label nameLabel1 = (Label)scene.lookup("#nameLabel");
-            nameLabel1.setText(UserUtils.getUser(openUserId).getNickName());
+            nameLabel1.setText(openUserName);
             Label  userIdLabel= (Label)scene.lookup("#userId");
             userIdLabel.setVisible(false);
             userIdLabel.setText(String.valueOf(openUserId));

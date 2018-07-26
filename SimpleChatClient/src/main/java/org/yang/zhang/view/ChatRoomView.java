@@ -1,18 +1,41 @@
 package org.yang.zhang.view;
 
+import java.util.List;
+
 import org.yang.zhang.dto.ChatRoomDto;
+import org.yang.zhang.dto.RoomChatInfoDto;
+import org.yang.zhang.fxcontroller.MainController;
+import org.yang.zhang.module.ChatRoom;
+import org.yang.zhang.module.MessageInfo;
+import org.yang.zhang.module.RoomChatInfo;
+import org.yang.zhang.module.User;
 import org.yang.zhang.service.ChatService;
+import org.yang.zhang.utils.ChatUtils;
+import org.yang.zhang.utils.DateUtils;
+import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.SpringContextUtils;
 import org.yang.zhang.utils.StageManager;
+import org.yang.zhang.utils.UserUtils;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  * @Author calvin.zhang
@@ -29,30 +52,32 @@ public class ChatRoomView {
     private String name;
     private Label tagLabel;
     private String tag;
-    private ScrollPane publicMsgPane;
-    private ScrollPane memberPane;
+    private ListView publicMsgPane;
+    private TitledPane friendPane;
+    private ListView<ContractItemView> friendList=new ListView<>();
     private TextArea textArea;
     private ScrollPane chatPane;
-    private Pane root;
+
 
     public ChatRoomView(String roomId,Image icon){
         try {
             ChatService chatService=SpringContextUtils.getBean("chatService");
             ChatRoomDto chatRoomDto=chatService.getRoomDetail(Integer.valueOf(roomId));
-            root=FXMLLoader.load(getClass().getResource("/fxml/chatRoomWindow.fxml"));
-            Label nameLabel=(Label) root.lookup("#nameLabel");
+            Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatRoomWindow.fxml")));
+            Label roomIdLabel=(Label)scene.lookup("#roomId");
+            roomIdLabel.setText(roomId);
+            Label nameLabel=(Label) scene.lookup("#nameLabel");
             nameLabel.setText(chatRoomDto.getChatRoom().getName());
-            Label tagLabel=(Label) root.lookup("#tagLabel");
-            ScrollPane publicMsgPane=(ScrollPane)root.lookup("#publicMsgPane");
-            ScrollPane memberPane=(ScrollPane)root.lookup("#memberPane");
-            TextArea textArea=(TextArea)root.lookup("#textArea");
-            ScrollPane chatPane=(ScrollPane)root.lookup("#chatPane");
-            imageView=(ImageView)root.lookup("#imageView");
+            imageView=(ImageView)scene.lookup("#imageView");
             imageView.setImage(icon);
-
+            friendPane=(TitledPane) scene.lookup("#friendPane");
+            chatPane=(ScrollPane)scene.lookup("#chatPane");
+            initMemberPane(chatRoomDto.getUsers());
+            initRecentChat(chatRoomDto.getRecentMessage());
             chatRommStage=new Stage();
-            chatRommStage.setScene(new Scene(root));
+            chatRommStage.setScene(scene);
             chatRommStage.show();
+            chatRommStage.setResizable(false);
             StageManager.registerStage("CHATROOM"+roomId,chatRommStage);
 
         }catch (Exception e){
@@ -60,107 +85,91 @@ public class ChatRoomView {
         }
     }
 
+    private void initRecentChat(List<RoomChatInfoDto> recentMessage) {
+        VBox chatBox=new VBox();
+        chatBox.setPrefWidth(685);
+        Integer id=UserUtils.getCurrentUserId();
+        for (RoomChatInfoDto chatInfo:recentMessage){
+            if(!id.equals(chatInfo.getUserId())){
+                LeftMessageBubble leftMessageBubble=new LeftMessageBubble(chatInfo.getMessage(),ImageUtiles.getUserIcon(chatInfo.getIcon()));
+                Pane pane=leftMessageBubble.getPane();
+                pane.setPrefWidth(670);
+                Label time=new Label(DateUtils.formatDateTime(chatInfo.getMessageTime()));
+                time.setPrefWidth(550);
+                time.setAlignment(Pos.CENTER);
+                time.setPrefHeight(30);
+                time.setStyle("-fx-padding: 10,10,10,10");
+                chatBox.getChildren().add(time);
+                chatBox.getChildren().add(pane);
+            }else{
+                RightMessageBubble rightMessageBubble=new RightMessageBubble(chatInfo.getMessage(),UserUtils.getUserIcon());
+                Pane pane=rightMessageBubble.getPane();
+                pane.setPrefWidth(670);
+                Label time=new Label(DateUtils.formatDateTime(chatInfo.getMessageTime()));
+                time.setPrefWidth(550);
+                time.setAlignment(Pos.CENTER);
+                time.setPrefHeight(30);
+                time.setStyle("-fx-padding: 10,10,10,10");
+                chatBox.getChildren().add(time);
+                chatBox.getChildren().add(pane);
+            }
+        }
+        chatPane.setContent(chatBox);
+        Platform.runLater(()->{
+            chatPane.setVvalue(1.0);
+        });
+    }
+
+    private void initMemberPane(List<User> users) {
+
+        friendList.setCellFactory(new Callback<ListView<ContractItemView>,ListCell<ContractItemView>>(){
+            @Override
+            public ListCell<ContractItemView> call(ListView<ContractItemView> param) {
+                return new ContractItemViewCellImpl();
+            }
+        });
+
+        ObservableList<ContractItemView> items =FXCollections.observableArrayList();
+        for (User user:users){
+            user.setPersonWord("");
+            ContractItemView contractItemView=new ContractItemView(user);
+            contractItemView.setId(String.valueOf(user.getId()));
+            items.add(contractItemView);
+        }
+        friendList.setItems(items);
+        friendPane.setContent(friendList);
+        friendList.setOnMouseClicked(click->{
+            if (click.getClickCount() == 2) {
+                ContractItemView selectedItem = friendList.getSelectionModel().getSelectedItem();
+                String userid=selectedItem.getId();
+                if (userid != null) {
+                    ChatUtils.openChatWindow(Integer.valueOf(userid),selectedItem.getNickName(),ImageUtiles.getUserIcon(Integer.valueOf(userid)));
+                }
+            }
+        });
+    }
+
+
+    private final class ContractItemViewCellImpl extends ListCell<ContractItemView>{
+        @Override
+        public void updateItem(ContractItemView pane, boolean empty) {
+            super.updateItem(pane,empty);
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                setGraphic(pane.getItemPane());
+            }
+        }
+    }
+
+
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Stage getChatRommStage() {
-        return chatRommStage;
-    }
-
-    public void setChatRommStage(Stage chatRommStage) {
-        this.chatRommStage = chatRommStage;
-    }
-
-    public Image getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Image icon) {
-        this.icon = icon;
-    }
-
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
-
-    public Label getNameLabel() {
-        return nameLabel;
-    }
-
-    public void setNameLabel(Label nameLabel) {
-        this.nameLabel = nameLabel;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Label getTagLabel() {
-        return tagLabel;
-    }
-
-    public void setTagLabel(Label tagLabel) {
-        this.tagLabel = tagLabel;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public ScrollPane getPublicMsgPane() {
-        return publicMsgPane;
-    }
-
-    public void setPublicMsgPane(ScrollPane publicMsgPane) {
-        this.publicMsgPane = publicMsgPane;
-    }
-
-    public ScrollPane getMemberPane() {
-        return memberPane;
-    }
-
-    public void setMemberPane(ScrollPane memberPane) {
-        this.memberPane = memberPane;
-    }
-
-    public TextArea getTextArea() {
-        return textArea;
-    }
-
-    public void setTextArea(TextArea textArea) {
-        this.textArea = textArea;
-    }
-
-    public ScrollPane getChatPane() {
-        return chatPane;
-    }
-
-    public void setChatPane(ScrollPane chatPane) {
-        this.chatPane = chatPane;
-    }
-
-    public Pane getRoot() {
-        return root;
-    }
-
-    public void setRoot(Pane root) {
-        this.root = root;
     }
 }

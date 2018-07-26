@@ -40,6 +40,7 @@ public class ContractItemView {
     private Timeline timeline=new Timeline();
     private Label nameLabel;
     private Label personLabel;
+    private String nickName;
 
     public ContractItemView(String text){
         try {
@@ -68,6 +69,7 @@ public class ContractItemView {
             username.setText(user.getNickName());
             personword.setText(user.getPersonWord());
             this.user=user;
+            this.nickName=user.getNickName();
             this.userIconView=usericon;
             timeline.setCycleCount( Animation.INDEFINITE ) ;
             this.blink=false;
@@ -197,5 +199,9 @@ public class ContractItemView {
     public void setGroupNoFocus() {
         this.getItemPane().setStyle("-fx-background-color: #A1BBD8");
         this.groupName.setStyle("-fx-background-color: #A1BBD8");
+    }
+
+    public String getNickName() {
+        return nickName;
     }
 }

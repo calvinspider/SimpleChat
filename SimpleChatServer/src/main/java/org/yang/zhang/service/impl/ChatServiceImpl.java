@@ -7,6 +7,7 @@ import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.FindByUserDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
+import org.yang.zhang.dto.RoomChatInfoDto;
 import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.mapper.ChatMapper;
@@ -170,11 +171,11 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ChatRoomDto getRoomDetail(Integer id) {
         ChatRoomDto chatRoomDto=new ChatRoomDto();
-        ChatRoom chatRoom=chatRoomRepository.getOne(id);
+        ChatRoom chatRoom=chatRoomRepository.findById(id).orElse(null);
         chatRoomDto.setChatRoom(chatRoom);
         List<User> users=chatRoomMapper.getChatRoomUsers(id);
         chatRoomDto.setUsers(users);
-        List<RoomChatInfo> recentMessage=chatRoomMapper.getRecentMessage(id);
+        List<RoomChatInfoDto> recentMessage=chatRoomMapper.getRecentMessage(id);
         chatRoomDto.setRecentMessage(recentMessage);
         return chatRoomDto;
     }

@@ -18,7 +18,6 @@ import lombok.Data;
  */
 @Entity
 @Table(name = "t_chatroom")
-@Data
 public class ChatRoom implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +26,7 @@ public class ChatRoom implements Serializable {
     private String type;
     private String remark;
     private String icon;
+
 
     public Integer getId() {
         return id;

@@ -8,6 +8,9 @@ import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.RoomChatInfo;
 import org.yang.zhang.module.User;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 /**
@@ -15,13 +18,12 @@ import lombok.Data;
  * @Description
  * @Date 2018 07 25 11:52
  */
-@Data
 public class ChatRoomDto implements Serializable {
     private Integer id;
     private ChatRoom chatRoom;
     private List<User> users;
     private List<String> publicMsg;
-    private List<RoomChatInfo> recentMessage;
+    private List<RoomChatInfoDto> recentMessage;
 
     public Integer getId() {
         return id;
@@ -55,11 +57,11 @@ public class ChatRoomDto implements Serializable {
         this.publicMsg = publicMsg;
     }
 
-    public List<RoomChatInfo> getRecentMessage() {
+    public List<RoomChatInfoDto> getRecentMessage() {
         return recentMessage;
     }
 
-    public void setRecentMessage(List<RoomChatInfo> recentMessage) {
+    public void setRecentMessage(List<RoomChatInfoDto> recentMessage) {
         this.recentMessage = recentMessage;
     }
 }
