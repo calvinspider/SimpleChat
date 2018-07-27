@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -22,7 +24,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.cellimpl.ChatRoomViewCellImpl;
 import org.yang.zhang.cellimpl.ContractTreeCellImpl;
@@ -48,22 +49,20 @@ import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.ContractItemView;
 import org.yang.zhang.view.RecentContractView;
 import org.yang.zhang.view.SearchContractView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.imageio.ImageIO;
 
 @FXMLController
 public class MainController  implements Initializable {
@@ -245,7 +244,7 @@ public class MainController  implements Initializable {
     @FXML
     public void minsize(){
         Stage primaryStage=StageManager.getStage(StageCodes.MAIN);
-        primaryStage.setIconified(true);
+        primaryStage.hide();
     }
 
     @FXML

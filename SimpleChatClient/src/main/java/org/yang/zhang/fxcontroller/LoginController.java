@@ -21,6 +21,7 @@ import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
 import org.yang.zhang.utils.ActionManager;
+import org.yang.zhang.utils.TrayManger;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.view.LoginErrorView;
@@ -54,7 +55,7 @@ public class LoginController  implements Initializable {
     private MainView mainView;
     @Autowired
     private RegisterView registerView;
-
+    private TrayManger trayManger=new TrayManger();
     public void initialize(URL url, ResourceBundle rb) {
 
     }
@@ -98,6 +99,7 @@ public class LoginController  implements Initializable {
 
         //注册主界面
         StageManager.registerStage(StageCodes.MAIN,mainStage);
+        trayManger.tray(mainStage);
     }
 
     @FXML

@@ -3,7 +3,15 @@
 <mapper namespace="org.yang.zhang.mapper.ChatMapper">
 
     <select id="oneDayChatLog" parameterType="org.yang.zhang.dto.RecentChatLogDto" resultType="org.yang.zhang.module.MessageInfo">
-      select * from t_chatinfo
+      select
+      id as id,
+      sourceclientid as sourceclientid,
+      targetclientid as targetclientid,
+      msgtype as msgtype,
+      msgcontent as msgcontent,
+      sendflag as sendflag,
+      time as time
+      from t_chatinfo
       where
       ((sourceclientid=#{id1} and targetclientid=#{id2})
       or

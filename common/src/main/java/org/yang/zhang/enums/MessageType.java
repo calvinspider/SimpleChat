@@ -11,10 +11,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 
 public enum  MessageType implements BaseEnum {
- REGISTER(1,"注册"),
- UNREGISTER(2,"注销"),
- ROOM(3,"聊天室"),
- NORMAL(4,"普通");
+ REGISTER(0,"注册"),
+ UNREGISTER(1,"注销"),
+ ROOM(2,"聊天室"),
+ NORMAL(3,"普通");
 
     private Integer value;
     private String text;
