@@ -46,7 +46,6 @@
             <Label prefHeight="28.0" prefWidth="107.0" style="-fx-alignment: center;" text="邮箱" GridPane.rowIndex="8" />
             <Label prefHeight="28.0" prefWidth="107.0" style="-fx-alignment: center;" text="生日" GridPane.rowIndex="9" />
             <TextField fx:id="nickName" GridPane.columnIndex="1" />
-            <TextField fx:id="icon" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="shuxiang" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <TextField fx:id="phone" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <TextField fx:id="page" GridPane.columnIndex="1" GridPane.rowIndex="7" />
@@ -63,8 +62,10 @@
             <TextField fx:id="personword" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label prefHeight="28.0" prefWidth="107.0" style="-fx-alignment: center;" text="密码" GridPane.rowIndex="1" />
             <TextField fx:id="password" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button fx:id="chooseFileBtn" mnemonicParsing="false" onAction="#chooseFile" text="点击选择头像" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
       <Button fx:id="registerBtn" layoutX="257.0" layoutY="468.0" mnemonicParsing="false" onAction="#register" text="注册" />
+      <Label fx:id="fileName" layoutX="218.0" layoutY="71.0" prefHeight="25.0" prefWidth="101.0" />
    </children>
 </Pane>

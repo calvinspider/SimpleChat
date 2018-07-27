@@ -1,5 +1,6 @@
 package org.yang.zhang.fxcontroller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -17,7 +18,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  * @Author calvin.zhang
@@ -28,7 +33,8 @@ import javafx.scene.control.TextField;
 public class RegisterController implements Initializable {
 
     @FXML TextField nickName;
-    @FXML TextField icon;
+    @FXML Label fileName;
+    @FXML Button chooseFileBtn;
     @FXML TextField shuxiang;
     @FXML TextField phone;
     @FXML TextField page;
@@ -69,7 +75,6 @@ public class RegisterController implements Initializable {
         user.setPage(page.getText());
         user.setSex(sex.getText());
         Result<User> result=userService.register(user);
-        System.out.println("用户注册："+result.getData());
         if(result.getCode().equals(ResultConstants.RESULT_SUCCESS)){
             Alert _alert = new Alert(Alert.AlertType.INFORMATION);
             _alert.setTitle("信息");
@@ -84,4 +89,14 @@ public class RegisterController implements Initializable {
             _alert.show();
         }
     }
+
+    @FXML
+    private void chooseFile(){
+        Stage mainStage = null;
+        FileChooser fileChooser = new FileChooser();//构建一个文件选择器实例
+        File selectedFile = fileChooser.showOpenDialog(mainStage);
+        fileName.setText(selectedFile.getName());
+    }
+
+
 }
