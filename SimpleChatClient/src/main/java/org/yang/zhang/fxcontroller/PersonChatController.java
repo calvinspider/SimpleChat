@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -22,6 +23,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.enums.BubbleType;
 import org.yang.zhang.enums.IDType;
 import org.yang.zhang.enums.MessageType;
@@ -42,26 +44,21 @@ import org.yang.zhang.view.RightMessageBubble;
 public class PersonChatController implements Initializable {
 
     @FXML
+    private Pane root;
+    @FXML
     private Label nameLabel;
-
     @FXML
     private Label userId;
-
     @FXML
     private ImageView userIcon;
-
     @FXML
     private VBox chatHistory;
-
     @FXML
     private ScrollPane chatPane;
-
     @FXML
     private TextArea chatArea;
-
     @FXML
     private Button closeBtn;
-
     @FXML
     private Button sendBtn;
 
@@ -90,5 +87,10 @@ public class PersonChatController implements Initializable {
             stage.close();
             ChatViewManager.unregisterStage(IDUtils.formatID(userId.getText(),IDType.ID));
         }
+    }
+
+    @FXML
+    public void closeApp(){
+        closeChatWindow();
     }
 }

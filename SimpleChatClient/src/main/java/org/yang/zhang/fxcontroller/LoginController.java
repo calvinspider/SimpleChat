@@ -9,6 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -31,6 +33,8 @@ import org.yang.zhang.view.RegisterView;
 
 @FXMLController
 public class LoginController  implements Initializable {
+    @FXML
+    private Pane root;
     @FXML
     private Button loginButton;
     @FXML
@@ -56,8 +60,22 @@ public class LoginController  implements Initializable {
     @Autowired
     private RegisterView registerView;
     private TrayManger trayManger=new TrayManger();
-    public void initialize(URL url, ResourceBundle rb) {
+    private double xOffset = 0;
+    private double yOffset = 0;
 
+    public void initialize(URL url, ResourceBundle rb) {
+        initEvent();
+    }
+
+    private void initEvent() {
+        root.setOnMousePressed(event ->  {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        root.setOnMouseDragged(event -> {
+            StageManager.getStage(StageCodes.LOGIN).setX(event.getScreenX() - xOffset);
+            StageManager.getStage(StageCodes.LOGIN).setY(event.getScreenY() - yOffset);
+        });
     }
 
     /**
@@ -111,4 +129,11 @@ public class LoginController  implements Initializable {
             StageManager.registerStage(StageCodes.REGISTER,registerStage);
         }
     }
+
+    @FXML
+    public void closeApp(){
+        System.exit(0);
+    }
+
+
 }

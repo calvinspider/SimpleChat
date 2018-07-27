@@ -3,6 +3,7 @@ package org.yang.zhang.view;
 import java.util.List;
 
 import org.yang.zhang.cellimpl.RoomContractItemViewCellImpl;
+import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.dto.ChatRoomDto;
 import org.yang.zhang.dto.RoomChatInfoDto;
 import org.yang.zhang.enums.BubbleType;
@@ -38,6 +39,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 /**
@@ -56,10 +58,12 @@ public class ChatRoomView {
     private ImageView icon;
     private TitledPane friendPane;
     private ScrollPane chatPane;
+    private Pane root;
     private ListView<ContractItemView> friendList=new ListView<>();
 
     public  static Double CHATBOXDEFAULTWIDTH=685D;
-
+    private double xOffset = 0;
+    private double yOffset = 0;
     public ChatRoomView(String roomId,Image icon){
         try {
             scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatRoomWindow.fxml")));
@@ -71,7 +75,19 @@ public class ChatRoomView {
         initMember();
         initMemberValue(chatRoomDto,roomId,icon);
         initStage(roomId);
+        initEvent();
         show();
+    }
+
+    private void initEvent() {
+        root.setOnMousePressed(event ->  {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        root.setOnMouseDragged(event -> {
+            StageManager.getStage(IDUtils.formatID(id,IDType.ROOMWINDOW)).setX(event.getScreenX() - xOffset);
+            StageManager.getStage(IDUtils.formatID(id,IDType.ROOMWINDOW)).setY(event.getScreenY() - yOffset);
+        });
     }
 
     private void show() {
@@ -82,6 +98,7 @@ public class ChatRoomView {
         stage=new Stage();
         stage.setScene(scene);
         stage.setResizable(false);
+        stage.initStyle(StageStyle.UNDECORATED);
         StageManager.registerStage(IDUtils.formatID(roomId,IDType.ROOMWINDOW),stage);
     }
 
@@ -100,6 +117,7 @@ public class ChatRoomView {
         this.icon=(ImageView)scene.lookup("#imageView");
         this.friendPane=(TitledPane) scene.lookup("#friendPane");
         this.chatPane=(ScrollPane)scene.lookup("#chatPane");
+        this.root=(Pane)scene.lookup("#root");
     }
 
     private void initRecentChat(List<RoomChatInfoDto> recentMessage) {

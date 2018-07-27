@@ -1,5 +1,8 @@
 package org.yang.zhang;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.StageStyle;
 
 import org.yang.zhang.config.CustomSplash;
@@ -11,6 +14,7 @@ import javafx.stage.Stage;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.yang.zhang.view.LoginView;
+import org.yang.zhang.view.MainView;
 
 @SpringBootApplication
 public class SimpleChatClientApplication extends AbstractJavaFxApplicationSupport {
@@ -22,15 +26,10 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
 
     @Override
     public void start(Stage stage) throws Exception {
-        stage.initStyle(StageStyle.UNDECORATED);
         stage.setResizable(false);
         stage.setIconified(false);
-        stage.setTitle("登录");
-        //注册登陆页面
         StageManager.registerStage(StageCodes.LOGIN,stage);
         ActionManager.setOnCloseExistListener(stage);
         super.start(stage);
     }
-
-
 }

@@ -26,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
@@ -46,9 +47,10 @@ public class ChatView {
     private TextArea chatArea;
     private VBox chatHistory;
     private ScrollPane chatPane;
-
+    private Pane root;
     private static Double DEFAULTDUBBLEWIDTH=570D;
-
+    private double xOffset = 0;
+    private double yOffset = 0;
     public ChatView(Integer openUserId,String openUserName,Image userIcon) {
         try {
             scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
@@ -74,6 +76,15 @@ public class ChatView {
         chatStage.setOnCloseRequest(event ->  {
             ChatViewManager.unregisterStage(IDUtils.formatID(id,IDType.CHATWINDOW));
         });
+
+        root.setOnMousePressed(event ->  {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        root.setOnMouseDragged(event -> {
+            StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)).setX(event.getScreenX() - xOffset);
+            StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)).setY(event.getScreenY() - yOffset);
+        });
     }
 
     private void initChatHistory() {
@@ -98,6 +109,7 @@ public class ChatView {
         chatStage=new Stage();
         chatStage.setScene(scene);
         chatStage.setResizable(false);
+        chatStage.initStyle(StageStyle.UNDECORATED);
         StageManager.registerStage(IDUtils.formatID(id,IDType.CHATWINDOW),chatStage);
     }
 
@@ -118,6 +130,7 @@ public class ChatView {
         chatArea=(TextArea) scene.lookup("#chatArea");
         chatHistory = (VBox)scene.lookup("#chatHistory");
         chatPane = (ScrollPane)scene.lookup("#chatPane");
+        root=(Pane)scene.lookup("#root");
     }
 
     public VBox getChatHistory() {

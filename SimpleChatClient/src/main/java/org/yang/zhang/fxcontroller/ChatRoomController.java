@@ -77,4 +77,9 @@ public class ChatRoomController implements Initializable {
         }
         StageManager.unregisterStage(roomStageId);
     }
+
+    @FXML
+    public void closeApp(){
+        closeChatWindow();
+    }
 }

@@ -3,6 +3,7 @@ package org.yang.zhang.utils;
 import java.util.Date;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.yang.zhang.enums.BubbleType;
 import org.yang.zhang.enums.IDType;
@@ -69,6 +70,7 @@ public class ChatUtils {
                 leftMessageBubble.getPane().setPrefWidth(width);
                 chatHistory.getChildren().add(time);
                 chatHistory.getChildren().add(leftMessageBubble.getPane());
+                Platform.runLater(()->scrollPane.setVvalue(1.0));
                 AnimationUtils.slowScrollToBottom(scrollPane);
                 break;
             case RIGHT:
@@ -76,6 +78,7 @@ public class ChatUtils {
                 rightMessageBubble.getPane().setPrefWidth(width);
                 chatHistory.getChildren().add(time);
                 chatHistory.getChildren().add(rightMessageBubble.getPane());
+                Platform.runLater(()->scrollPane.setVvalue(1.0));
                 AnimationUtils.slowScrollToBottom(scrollPane);
                 break;
         }

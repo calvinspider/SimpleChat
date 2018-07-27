@@ -23,7 +23,7 @@ public class AnimationUtils {
 
     public static void slowScrollToBottom(ScrollPane scrollPane) {
         Animation animation = new Timeline(
-                new KeyFrame(Duration.seconds(1),
+                new KeyFrame(Duration.millis(200),
                         new KeyValue(scrollPane.vvalueProperty(), 1)));
         animation.play();
     }
