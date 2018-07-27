@@ -35,6 +35,11 @@ import javafx.stage.WindowEvent;
  */
 
 public class ChatView {
+
+    private Integer id;
+    private Scene scene;
+    private Stage chatStage;
+    private Image icon;
     private Label nameLabel;
     private Label  userIdLabel;
     private ImageView userImage;
@@ -42,43 +47,58 @@ public class ChatView {
     private VBox chatHistory;
     private ScrollPane chatPane;
 
+    private static Double DEFAULTDUBBLEWIDTH=570D;
+
     public ChatView(Integer openUserId,String openUserName,Image userIcon) {
         try {
-            Stage chatStage=new Stage();
-            Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
-            chatStage.setScene(scene);
-            chatStage.setResizable(false);
-            initMember(scene);
-            setMemberValue(openUserId,openUserName,userIcon);
-            chatArea.textProperty().addListener(new ChangeListener<Object>() {
-                @Override
-                public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-                    chatArea.setScrollTop(Double.MAX_VALUE);
-                }
-            });
-            chatArea.wrapTextProperty().setValue(true);
-            StageManager.registerStage(IDUtils.formatID(openUserId,IDType.CHATWINDOW),chatStage);
-            chatStage.show();
-            chatStage.setOnCloseRequest(event ->  {
-                    ChatViewManager.unregisterStage(String.valueOf(openUserId));
-            });
-            ChatService chatService=SpringContextUtils.getBean("chatService");
-            List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(openUserId,UserUtils.getCurrentUserId());
-            //获取近一天的聊天记录
-            for (MessageInfo messageInfo:messageInfos){
-                Label label;
-                if(openUserId.equals(messageInfo.getSourceclientid())){
-                    ChatUtils.appendBubble(chatPane,BubbleType.LEFT,messageInfo.getMsgcontent(),userIcon,570D);
-
-                }else{
-                    ChatUtils.appendBubble(chatPane,BubbleType.RIGHT,messageInfo.getMsgcontent(),UserUtils.getUserIcon(),570D);
-                }
-            }
-            StageManager.registerStage(IDUtils.formatID(openUserId,IDType.CHATWINDOW),chatStage);
+            scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
         }catch (Exception e){
             e.printStackTrace();
         }
+        initMember(scene);
+        setMemberValue(openUserId,openUserName,userIcon);
+        initStage(scene);
+        initChatHistory();
+        initEvent();
+        show();
+    }
 
+    private void initEvent() {
+        chatArea.textProperty().addListener(new ChangeListener<Object>() {
+            @Override
+            public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+                chatArea.setScrollTop(Double.MAX_VALUE);
+            }
+        });
+
+        chatStage.setOnCloseRequest(event ->  {
+            ChatViewManager.unregisterStage(IDUtils.formatID(id,IDType.CHATWINDOW));
+        });
+    }
+
+    private void initChatHistory() {
+        ChatService chatService=SpringContextUtils.getBean("chatService");
+        List<MessageInfo> messageInfos=chatService.getOneDayRecentChatLog(id,UserUtils.getCurrentUserId());
+        //获取近一天的聊天记录
+        for (MessageInfo messageInfo:messageInfos){
+            if(id.equals(messageInfo.getSourceclientid())){
+                ChatUtils.appendBubble(chatPane,BubbleType.LEFT,messageInfo.getMsgcontent(),icon,DEFAULTDUBBLEWIDTH);
+
+            }else{
+                ChatUtils.appendBubble(chatPane,BubbleType.RIGHT,messageInfo.getMsgcontent(),UserUtils.getUserIcon(),DEFAULTDUBBLEWIDTH);
+            }
+        }
+    }
+
+    private void show() {
+        chatStage.show();
+    }
+
+    private void initStage(Scene scene) {
+        chatStage=new Stage();
+        chatStage.setScene(scene);
+        chatStage.setResizable(false);
+        StageManager.registerStage(IDUtils.formatID(id,IDType.CHATWINDOW),chatStage);
     }
 
     private void setMemberValue(Integer openUserId,String openUserName,Image userIcon) {
@@ -86,6 +106,9 @@ public class ChatView {
         userIdLabel.setVisible(false);
         userIdLabel.setText(String.valueOf(openUserId));
         userImage.setImage(userIcon);
+        this.id=openUserId;
+        this.icon=userIcon;
+        chatArea.wrapTextProperty().setValue(true);
     }
 
     private void initMember(Scene scene) {
@@ -103,5 +126,37 @@ public class ChatView {
 
     public ScrollPane getChatPane() {
         return chatPane;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public Stage getChatStage() {
+        return chatStage;
+    }
+
+    public Image getIcon() {
+        return icon;
+    }
+
+    public Label getNameLabel() {
+        return nameLabel;
+    }
+
+    public Label getUserIdLabel() {
+        return userIdLabel;
+    }
+
+    public ImageView getUserImage() {
+        return userImage;
+    }
+
+    public TextArea getChatArea() {
+        return chatArea;
     }
 }

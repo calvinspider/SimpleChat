@@ -180,7 +180,6 @@ public class ContractItemView {
     }
 
     public void setGroupEditable(){
-
         this.groupName.setEditable(true);
         this.groupName.setStyle("-fx-background-color: #FFFFFF");
         this.groupName.setFocusTraversable(true);

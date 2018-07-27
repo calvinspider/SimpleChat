@@ -21,8 +21,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.dto.AddContractDto;
 import org.yang.zhang.service.ContractService;
+import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.UserUtils;
-import org.yang.zhang.view.AddContractView;
+import org.yang.zhang.view.SearchContractItemView;
 
 @FXMLController
 public class SearchContractController implements Initializable {
@@ -67,8 +68,9 @@ public class SearchContractController implements Initializable {
             }
             int j=0;
             for (int i=0;i<list.size();i++){
-                AddContractView contractView=new AddContractView(list.get(i));
-                Pane pane=contractView.getContractPane();
+                AddContractDto dto=list.get(i);
+                SearchContractItemView contractView=new SearchContractItemView(ImageUtiles.getUserIcon(dto.getUserIcon()),dto.getUserName(),dto.getUserId(),dto.getCommonCount());
+                Pane pane=contractView.getItemPane();
                 if(i!=0&&i%5==0){
                     j+=1;
                 }
@@ -88,8 +90,9 @@ public class SearchContractController implements Initializable {
           return;
       }
       for (int i=0;i<list.size();i++){
-          AddContractView contractView=new AddContractView(list.get(i));
-          Pane pane=contractView.getContractPane();
+          AddContractDto dto=list.get(i);
+          SearchContractItemView contractView=new SearchContractItemView(ImageUtiles.getUserIcon(dto.getUserIcon()),dto.getUserName(),dto.getUserId(),dto.getCommonCount());
+          Pane pane=contractView.getItemPane();
           if(i!=0&&i%5==0){
               j+=1;
           }

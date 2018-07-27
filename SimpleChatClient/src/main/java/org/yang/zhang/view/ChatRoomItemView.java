@@ -18,50 +18,55 @@ import javafx.scene.layout.Pane;
 
 public class ChatRoomItemView {
     private String id;
-    private Image icon;
-    private ImageView imageView;
     private String roomName;
-    private Label roomLabel;
+    private Image icon;
     private Pane roomPane;
+    private Label chatRoomName;
+    private ImageView chatRoomIcon;
     public ChatRoomItemView(ChatRoom chatRoom){
         try {
             roomPane=FXMLLoader.load(getClass().getResource("/fxml/chatRoom.fxml"));
-            roomLabel=(Label)roomPane.lookup("#chatRoomName");
-            imageView=(ImageView)roomPane.lookup("#chatRoomIcon");
-            imageView.setImage(this.icon);
-            roomLabel.setText(chatRoom.getName());
-            this.roomName = chatRoom.getName();
-            this.icon=ImageUtiles.getUserIcon(chatRoom.getIcon());
         }catch (Exception e){
             e.printStackTrace();
         }
+        initMember();
+        initMemberValue(chatRoom);
     }
 
-    public Image getIcon() {
-        return icon;
+    private void initMemberValue(ChatRoom chatRoom) {
+        this.icon=ImageUtiles.getUserIcon(chatRoom.getIcon());
+        this.roomName = chatRoom.getName();
+        this.id=String.valueOf(chatRoom.getId());
+        this.chatRoomIcon.setImage(this.icon);
+        this.chatRoomName.setText(chatRoom.getName());
     }
 
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public Label getRoomLabel() {
-        return roomLabel;
-    }
-
-    public Pane getRoomPane() {
-        return roomPane;
+    private void initMember() {
+        chatRoomName=(Label)roomPane.lookup("#chatRoomName");
+        chatRoomIcon=(ImageView)roomPane.lookup("#chatRoomIcon");
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public Image getIcon() {
+        return icon;
+    }
+
+    public Pane getRoomPane() {
+        return roomPane;
+    }
+
+    public Label getChatRoomName() {
+        return chatRoomName;
+    }
+
+    public ImageView getChatRoomIcon() {
+        return chatRoomIcon;
     }
 }

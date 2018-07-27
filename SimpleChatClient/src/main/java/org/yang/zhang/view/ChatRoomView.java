@@ -2,6 +2,7 @@ package org.yang.zhang.view;
 
 import java.util.List;
 
+import org.yang.zhang.cellimpl.RoomContractItemViewCellImpl;
 import org.yang.zhang.dto.ChatRoomDto;
 import org.yang.zhang.dto.RoomChatInfoDto;
 import org.yang.zhang.enums.BubbleType;
@@ -19,7 +20,6 @@ import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.SpringContextUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.utils.UserUtils;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,50 +47,65 @@ import javafx.util.Callback;
  */
 
 public class ChatRoomView {
-    private Integer id;
-    private Stage chatRommStage;
-    private Image icon;
-    private ImageView imageView;
-    private Label nameLabel;
-    private String name;
-    private Label tagLabel;
-    private String tag;
-    private ListView publicMsgPane;
-    private TitledPane friendPane;
-    private ListView<ContractItemView> friendList=new ListView<>();
-    private TextArea textArea;
-    private ScrollPane chatPane;
 
+    private String id;
+    private Scene scene;
+    private Stage stage;
+    private Label roomIdLabel;
+    private Label nameLabel;
+    private ImageView icon;
+    private TitledPane friendPane;
+    private ScrollPane chatPane;
+    private ListView<ContractItemView> friendList=new ListView<>();
+
+    public  static Double CHATBOXDEFAULTWIDTH=685D;
 
     public ChatRoomView(String roomId,Image icon){
         try {
-            ChatService chatService=SpringContextUtils.getBean("chatService");
-            ChatRoomDto chatRoomDto=chatService.getRoomDetail(Integer.valueOf(roomId));
-            Scene scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatRoomWindow.fxml")));
-            Label roomIdLabel=(Label)scene.lookup("#roomId");
-            Label nameLabel=(Label) scene.lookup("#nameLabel");
-            imageView=(ImageView)scene.lookup("#imageView");
-            friendPane=(TitledPane) scene.lookup("#friendPane");
-            chatPane=(ScrollPane)scene.lookup("#chatPane");
-            roomIdLabel.setText(roomId);
-            nameLabel.setText(chatRoomDto.getChatRoom().getName());
-            imageView.setImage(icon);
-            initMemberPane(chatRoomDto.getUsers());
-            initRecentChat(chatRoomDto.getRecentMessage());
-            chatRommStage=new Stage();
-            chatRommStage.setScene(scene);
-            chatRommStage.show();
-            chatRommStage.setResizable(false);
-            StageManager.registerStage(IDUtils.formatID(roomId,IDType.ROOMWINDOW),chatRommStage);
-
+            scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatRoomWindow.fxml")));
         }catch (Exception e){
             e.printStackTrace();
         }
+        ChatService chatService=SpringContextUtils.getBean("chatService");
+        ChatRoomDto chatRoomDto=chatService.getRoomDetail(Integer.valueOf(roomId));
+        initMember();
+        initMemberValue(chatRoomDto,roomId,icon);
+        initStage(roomId);
+        show();
+    }
+
+    private void show() {
+        stage.show();
+    }
+
+    private void initStage(String roomId) {
+        stage=new Stage();
+        stage.setScene(scene);
+        stage.setResizable(false);
+        StageManager.registerStage(IDUtils.formatID(roomId,IDType.ROOMWINDOW),stage);
+    }
+
+    private void initMemberValue(ChatRoomDto chatRoomDto,String roomId,Image icon) {
+        this.roomIdLabel.setText(roomId);
+        this.nameLabel.setText(chatRoomDto.getChatRoom().getName());
+        this.icon.setImage(icon);
+        this.id=roomId;
+        initMemberPane(chatRoomDto.getUsers());
+        initRecentChat(chatRoomDto.getRecentMessage());
+    }
+
+    private void initMember() {
+        this.roomIdLabel=(Label)scene.lookup("#roomIdLabel");
+        this.nameLabel=(Label) scene.lookup("#nameLabel");
+        this.icon=(ImageView)scene.lookup("#imageView");
+        this.friendPane=(TitledPane) scene.lookup("#friendPane");
+        this.chatPane=(ScrollPane)scene.lookup("#chatPane");
     }
 
     private void initRecentChat(List<RoomChatInfoDto> recentMessage) {
         VBox chatBox=new VBox();
-        chatBox.setPrefWidth(685);
+        chatPane.setContent(chatBox);
+        chatBox.setPrefWidth(CHATBOXDEFAULTWIDTH);
         Integer id=UserUtils.getCurrentUserId();
         for (RoomChatInfoDto chatInfo:recentMessage){
             if(!id.equals(chatInfo.getUserId())){
@@ -102,14 +117,7 @@ public class ChatRoomView {
     }
 
     private void initMemberPane(List<User> users) {
-
-        friendList.setCellFactory(new Callback<ListView<ContractItemView>,ListCell<ContractItemView>>(){
-            @Override
-            public ListCell<ContractItemView> call(ListView<ContractItemView> param) {
-                return new ContractItemViewCellImpl();
-            }
-        });
-
+        friendList.setCellFactory(RoomContractItemViewCellImpl.callback);
         ObservableList<ContractItemView> items =FXCollections.observableArrayList();
         for (User user:users){
             user.setPersonWord("");
@@ -130,27 +138,39 @@ public class ChatRoomView {
         });
     }
 
-
-    private final class ContractItemViewCellImpl extends ListCell<ContractItemView>{
-        @Override
-        public void updateItem(ContractItemView pane, boolean empty) {
-            super.updateItem(pane,empty);
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                setGraphic(pane.getItemPane());
-            }
-        }
-    }
-
-
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Scene getScene() {
+        return scene;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public Label getRoomIdLabel() {
+        return roomIdLabel;
+    }
+
+    public Label getNameLabel() {
+        return nameLabel;
+    }
+
+    public ImageView getIcon() {
+        return icon;
+    }
+
+    public TitledPane getFriendPane() {
+        return friendPane;
+    }
+
+    public ScrollPane getChatPane() {
+        return chatPane;
+    }
+
+    public ListView<ContractItemView> getFriendList() {
+        return friendList;
     }
 }

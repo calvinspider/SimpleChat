@@ -165,7 +165,6 @@ public class MainController  implements Initializable {
         List<ChatRoom> chatRooms= chatService.getUserChatRoom(id);
         for (ChatRoom chatRoom:chatRooms){
             ChatRoomItemView chatRoomView=new ChatRoomItemView(chatRoom);
-            chatRoomView.setId(String.valueOf(chatRoom.getId()));
             items.add(chatRoomView);
         }
         chatRoomList.setItems(items);
