@@ -25,5 +25,16 @@
     -fx-stroke-width: 3pt;
 }
 
+.list-view .list-cell:even {
+    -fx-background-color: #A1BBD8;;
+    -fx-text-fill: #A1BBD8;;
+}
+.list-view .list-cell:odd {
+    -fx-background-color: #A1BBD8;;
+    -fx-text-fill: #A1BBD8;;
+}
 
-
+.list-view .list-cell:hover {
+    -fx-background-color: #D2D8CC;;
+    -fx-text-fill: #D2D8CC;;
+}

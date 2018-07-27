@@ -9,30 +9,30 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="630.0" prefWidth="880.0" style="-fx-background-color: #9BB7D6" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.ChatRoomController">
+<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="630.0" prefWidth="880.0" style="-fx-background-color: #E4E9F5" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.ChatRoomController">
    <children>
-      <Pane prefHeight="80.0" prefWidth="880.0" style="-fx-background-color: #9BB7D6">
+      <Pane prefHeight="80.0" prefWidth="880.0" style="-fx-background-color: #E4E9F5">
          <children>
             <ImageView fx:id="imageView" fitHeight="40.0" fitWidth="40.0" layoutX="4.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="nameLabel" layoutX="54.0" layoutY="2.0" prefHeight="25.0" prefWidth="256.0" />
-            <Label fx:id="tagLabel" layoutX="54.0" layoutY="27.0" prefHeight="25.0" prefWidth="256.0" />
-            <ToolBar layoutX="766.0" prefHeight="25.0" prefWidth="113.0" style="-fx-background-color: #9BB7D6" />
+            <Label style="-fx-background-color: #E4E9F5" fx:id="nameLabel" layoutX="54.0" layoutY="2.0" prefHeight="25.0" prefWidth="256.0" />
+            <Label style="-fx-background-color: #E4E9F5" fx:id="tagLabel" layoutX="54.0" layoutY="27.0" prefHeight="25.0" prefWidth="256.0" />
+            <ToolBar layoutX="766.0" prefHeight="25.0" prefWidth="113.0" style="-fx-background-color: #E4E9F5" />
             <ToolBar layoutX="840.0" layoutY="2.0" prefHeight="30.0" prefWidth="38.0" style="-fx-background-color: #E4E9F5">
                <items>
-                  <Button mnemonicParsing="false" onAction="#closeApp" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#9BB7D6;-fx-background-image:url(images/icon/close.jpg)" />
+                  <Button mnemonicParsing="false" onAction="#closeApp" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#E4E9F5;-fx-background-image:url(images/icon/close.jpg)" />
                </items>
             </ToolBar>
          </children>
       </Pane>
-      <ScrollPane fx:id="chatPane" hbarPolicy="NEVER" layoutY="80.0" prefHeight="410.0" prefWidth="685.0" style="-fx-background-color: #9BB7D6">
+      <ScrollPane fx:id="chatPane" hbarPolicy="NEVER" layoutY="80.0" prefHeight="410.0" prefWidth="685.0" style="-fx-background-color: #E4E9F5">
 
       </ScrollPane>
-      <TitledPane fx:id="friendPane" animated="false" layoutX="685.0" layoutY="80.0" prefHeight="550.0" prefWidth="195.0" style="-fx-background-color: #9BB7D6" text="群成员">
+      <TitledPane fx:id="friendPane" animated="false" layoutX="685.0" layoutY="80.0" prefHeight="550.0" prefWidth="195.0" style="-fx-background-color: #E4E9F5" text="群成员">
 
       </TitledPane>
       <TextArea fx:id="chatArea" layoutY="490.0" prefHeight="110.0" prefWidth="685.0" />
       <Button layoutX="591.0" layoutY="604.0" mnemonicParsing="false" onAction="#closeChatWindow" text="关闭" />
       <Button layoutX="640.0" layoutY="603.0" mnemonicParsing="false" onAction="#sendMessage" text="发送" />
-      <Label fx:id="roomIdLabel" visible="false" />
+      <Label fx:id="roomIdLabel" visible="false" style="-fx-background-color: #E4E9F5"/>
    </children>
 </Pane>
