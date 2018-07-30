@@ -18,7 +18,8 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
-public class FileUploadServer {
+public class FileUploadServer implements Runnable{
+
     public void bind(int port) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -41,15 +42,9 @@ public class FileUploadServer {
         }
     }
 
-    public static void main(String[] args) {
-        int port = 8080;
-        if (args != null && args.length > 0) {
-            try {
-                port = Integer.valueOf(args[0]);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
+    @Override
+    public void run() {
+        int port = 8087;
         try {
             new FileUploadServer().bind(port);
         } catch (Exception e) {

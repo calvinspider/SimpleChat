@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
@@ -11,6 +12,7 @@ import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.UserService;
+import org.yang.zhang.socket.file.FileUploadClient;
 import org.yang.zhang.utils.StageManager;
 
 import de.felixroske.jfxsupport.FXMLController;
@@ -74,6 +76,15 @@ public class RegisterController implements Initializable {
         user.setPersonWord(personword.getText());
         user.setPage(page.getText());
         user.setSex(sex.getText());
+        if(StringUtils.isBlank(fileName.getText())){
+            Alert _alert = new Alert(Alert.AlertType.INFORMATION);
+            _alert.setTitle("信息");
+            _alert.setContentText("请选择头像！");
+            _alert.initOwner(StageManager.getStage(StageCodes.REGISTER));
+            _alert.show();
+        }
+        user.setIconUrl(fileName.getText());
+        FileUploadClient.sendFile(new File(fileName.getText()),fileName.getText());
         Result<User> result=userService.register(user);
         if(result.getCode().equals(ResultConstants.RESULT_SUCCESS)){
             Alert _alert = new Alert(Alert.AlertType.INFORMATION);
@@ -95,7 +106,7 @@ public class RegisterController implements Initializable {
         Stage mainStage = null;
         FileChooser fileChooser = new FileChooser();//构建一个文件选择器实例
         File selectedFile = fileChooser.showOpenDialog(mainStage);
-        fileName.setText(selectedFile.getName());
+        fileName.setText(selectedFile.getPath());
     }
 
 

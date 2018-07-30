@@ -15,7 +15,7 @@ import java.io.RandomAccessFile;
 public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
     private int byteRead;
     private volatile int start = 0;
-    private String file_dir = "D:";
+    private String file_dir = "D:\\Documents\\SimpleChat\\SimpleChatServer\\src\\main\\resources\\static\\images\\userIcon";
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -29,10 +29,7 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
             RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
             randomAccessFile.seek(start);
             randomAccessFile.write(bytes);
-            start = start + byteRead;
-            if (byteRead > 0) {
-                ctx.writeAndFlush(start);
-            } else {
+            if (byteRead <= 0) {
                 randomAccessFile.close();
                 ctx.close();
             }
