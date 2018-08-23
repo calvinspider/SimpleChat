@@ -64,9 +64,11 @@ public class NettyClient{
         RandomAccessFile randomAccessFile=null;
         try {
             int size=1024*50;
+            Long totalByte=file.length();
             randomAccessFile = new RandomAccessFile(file, "r");
             byte[] bytes = new byte[size];
             int byteRead = randomAccessFile.read(bytes);
+            totalByte=totalByte-byteRead;
             Boolean create=true;
             while (byteRead!=-1) {
                 FileUploadFile uploadFile = new FileUploadFile();
@@ -75,10 +77,12 @@ public class NettyClient{
                 uploadFile.setCreate(create);
                 channel.writeAndFlush(uploadFile);
                 create = false;
-                byteRead = randomAccessFile.read(bytes);
-                if(byteRead<size&&byteRead!=-1){
+                totalByte=totalByte-byteRead;
+                if(totalByte<size){
                     bytes=new byte[byteRead];
                 }
+                byteRead = randomAccessFile.read(bytes);
+
             }
         } catch (Exception e) {
             e.printStackTrace();

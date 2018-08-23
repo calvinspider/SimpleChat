@@ -83,9 +83,13 @@ public class RegisterController implements Initializable {
             _alert.initOwner(StageManager.getStage(StageCodes.REGISTER));
             _alert.show();
         }
-        user.setIconUrl(fileName.getText());
-        String name=fileName.getText();
-        NettyClient.sendFile(new File(fileName.getText()),name.substring(name.lastIndexOf("\\")+1,name.length()));
+
+        String name= fileName.getText();
+        String format=name.substring(name.lastIndexOf("."),name.length());
+        String realName=String.valueOf(System.nanoTime())+format;
+        NettyClient.sendFile(new File(fileName.getText()),realName);
+        user.setIconUrl(realName);
+
         Result<User> result=userService.register(user);
         if(result.getCode().equals(ResultConstants.RESULT_SUCCESS)){
             Alert _alert = new Alert(Alert.AlertType.INFORMATION);
