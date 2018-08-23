@@ -7,6 +7,7 @@ package org.yang.zhang.socket;
  */
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 import java.util.Date;
 import java.util.List;
@@ -30,9 +31,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 
-    private int byteRead;
-    private volatile int start = 0;
-    private String file_dir = "D:\\Documents\\SimpleChat\\SimpleChatServer\\src\\main\\resources\\static\\images\\userIcon";
+    private static String fileDir = "D:\\Documents\\SimpleChat\\SimpleChatServer\\src\\main\\resources\\static\\images\\userIcon";
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -43,17 +42,35 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         if (msg instanceof FileUploadFile) {
             FileUploadFile ef = (FileUploadFile) msg;
             byte[] bytes = ef.getBytes();
-            byteRead = ef.getEndPos();
-            String md5 = ef.getFile_md5();//文件名
-            String path = file_dir + File.separator + md5;
-            File file = new File(path);
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
-            randomAccessFile.seek(start);
-            randomAccessFile.write(bytes);
-            if (byteRead <= 0) {
-                randomAccessFile.close();
-                ctx.close();
+            String fileName=ef.getFileName();
+            File file=null;
+            FileOutputStream out=null;
+            RandomAccessFile randomAccessFile=null;
+            try {
+                file= new File(fileDir + File.separator + fileName);
+                if(!file.exists()){
+                    randomAccessFile= new RandomAccessFile(file, "rw");
+                    randomAccessFile.write(bytes);
+                }else{
+                    out= new FileOutputStream(file,true);
+                    out.write(bytes);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                try {
+                    if(randomAccessFile!=null){
+                        randomAccessFile.close();
+                    }
+                    if(out!=null){
+                        out.close();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
+
+
             return;
         }
         TypeReference type = new TypeReference<MessageInfo>(){};

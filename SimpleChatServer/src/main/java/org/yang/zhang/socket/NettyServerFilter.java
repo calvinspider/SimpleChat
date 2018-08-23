@@ -42,6 +42,6 @@ public class NettyServerFilter extends ChannelInitializer<SocketChannel> {
 //        ph.addLast("encoder", new StringEncoder());
         ph.addLast(new ObjectEncoder());
         ph.addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.weakCachingConcurrentResolver(null))); // 最大长度
-        ph.addLast("handler", new NettyServerHandler());// 服务端业务逻辑
+        ph.addLast(new NettyServerHandler());// 服务端业务逻辑
     }
 }

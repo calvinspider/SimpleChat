@@ -35,10 +35,6 @@ public class NettyClient{
     private  static String host = "127.0.0.1";
     private  static int port = 6789;
     private  static Channel channel;
-    private static int byteRead;
-    private static volatile int start = 0;
-    private static volatile int lastLength = 0;
-    private static RandomAccessFile randomAccessFile;
 
     public void run() {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -59,30 +55,41 @@ public class NettyClient{
     }
 
     public static void sendFile(File file, String fileName){
-        FileUploadFile uploadFile = new FileUploadFile();
-        uploadFile.setFile(file);
-        uploadFile.setFile_md5(fileName.substring(fileName.lastIndexOf("\\")+1,fileName.length()));
-        uploadFile.setStarPos(0);// 文件开始位置
-        if (uploadFile.getFile().exists()) {
-            if (!uploadFile.getFile().isFile()) {
-                System.out.println("Not a file :" + uploadFile.getFile());
+        if (file.exists()) {
+            if (!file.isFile()) {
+                System.out.println("Not a file :" + file);
                 return;
             }
         }
+        RandomAccessFile randomAccessFile=null;
         try {
-            randomAccessFile = new RandomAccessFile(uploadFile.getFile(), "r");
-            randomAccessFile.seek(uploadFile.getStarPos());
-            lastLength = (int) randomAccessFile.length() / 10;
-            byte[] bytes = new byte[lastLength];
-            if ((byteRead = randomAccessFile.read(bytes)) != -1) {
-                uploadFile.setEndPos(byteRead);
+            int size=1024*50;
+            randomAccessFile = new RandomAccessFile(file, "r");
+            byte[] bytes = new byte[size];
+            int byteRead = randomAccessFile.read(bytes);
+            Boolean create=true;
+            while (byteRead!=-1) {
+                FileUploadFile uploadFile = new FileUploadFile();
                 uploadFile.setBytes(bytes);
+                uploadFile.setFileName(fileName);
+                uploadFile.setCreate(create);
                 channel.writeAndFlush(uploadFile);
-            } else {
-                System.out.println("文件已经读完");
+                create = false;
+                byteRead = randomAccessFile.read(bytes);
+                if(byteRead<size&&byteRead!=-1){
+                    bytes=new byte[byteRead];
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if(randomAccessFile!=null){
+                try {
+                    randomAccessFile.close();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
