@@ -6,12 +6,14 @@ package org.yang.zhang.socket;
  * @Date 2018 06 08 15:10
  */
 
+import java.io.File;
+import java.io.RandomAccessFile;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.yang.zhang.enums.MessageType;
 import org.yang.zhang.mapper.ChatRoomMapper;
+import org.yang.zhang.module.FileUploadFile;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.RecentContract;
 import org.yang.zhang.module.RoomChatInfo;
@@ -28,16 +30,38 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 
+    private int byteRead;
+    private volatile int start = 0;
+    private String file_dir = "D:\\Documents\\SimpleChat\\SimpleChatServer\\src\\main\\resources\\static\\images\\userIcon";
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if(msg==null){
             return;
         }
+        //文件传输
+        if (msg instanceof FileUploadFile) {
+            FileUploadFile ef = (FileUploadFile) msg;
+            byte[] bytes = ef.getBytes();
+            byteRead = ef.getEndPos();
+            String md5 = ef.getFile_md5();//文件名
+            String path = file_dir + File.separator + md5;
+            File file = new File(path);
+            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+            randomAccessFile.seek(start);
+            randomAccessFile.write(bytes);
+            if (byteRead <= 0) {
+                randomAccessFile.close();
+                ctx.close();
+            }
+            return;
+        }
         TypeReference type = new TypeReference<MessageInfo>(){};
-        MessageInfo info=JsonUtils.fromJson((String) msg,type);
+        MessageInfo info=JsonUtils.fromJson((String)msg,type);
         if(info==null){
             throw new Exception("MessageInfo must not be NULL!");
         }
+
         ChatMessageRepository chatMessageRepository=SpringContextUtils.getBean("chatMessageRepository");
         RecentContractRepository recentContractRepository=SpringContextUtils.getBean("recentContractRepository");
         ChatRoomMapper chatRoomMapper=SpringContextUtils.getBean("chatRoomMapper");

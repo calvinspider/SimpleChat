@@ -12,7 +12,7 @@ import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.UserService;
-import org.yang.zhang.socket.file.FileUploadClient;
+import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.StageManager;
 
 import de.felixroske.jfxsupport.FXMLController;
@@ -84,7 +84,7 @@ public class RegisterController implements Initializable {
             _alert.show();
         }
         user.setIconUrl(fileName.getText());
-        FileUploadClient.sendFile(new File(fileName.getText()),fileName.getText());
+        NettyClient.sendFile(new File(fileName.getText()),fileName.getText());
         Result<User> result=userService.register(user);
         if(result.getCode().equals(ResultConstants.RESULT_SUCCESS)){
             Alert _alert = new Alert(Alert.AlertType.INFORMATION);

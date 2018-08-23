@@ -11,6 +11,9 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
@@ -30,9 +33,11 @@ public class NettyClientFilter extends ChannelInitializer<SocketChannel> {
         /*
          * 解码和编码，应和服务端一致
          * */
-        ph.addLast("framer", new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-        ph.addLast("decoder", new StringDecoder());
-        ph.addLast("encoder", new StringEncoder());
+//        ph.addLast("framer", new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+//        ph.addLast("decoder", new StringDecoder());
+//        ph.addLast("encoder", new StringEncoder());
+        ph.addLast(new ObjectEncoder());
+        ph.addLast(new ObjectDecoder(ClassResolvers.weakCachingConcurrentResolver(null)));
         ph.addLast("handler", new NettyClientHandler()); //客户端的逻辑
     }
 }
