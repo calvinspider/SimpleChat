@@ -46,7 +46,8 @@ public class ChatUtils {
             stage.show();
             return;
         }
-        new ChatView(id,nickName,userIcon);
+        ChatView chatView=new ChatView(id,nickName,userIcon);
+        ChatViewManager.registerStage(String.valueOf(id),chatView);
     }
 
     public static void sendMessage(Integer targetId,MessageType messageType, String content){

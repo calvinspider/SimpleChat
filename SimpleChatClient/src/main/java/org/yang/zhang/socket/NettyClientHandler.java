@@ -6,6 +6,7 @@ package org.yang.zhang.socket;
  * @Date 2018 06 08 15:12
  */
 
+import org.yang.zhang.enums.BubbleType;
 import org.yang.zhang.fxcontroller.MainController;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.utils.*;
@@ -59,7 +60,18 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         Platform.setImplicitExit(false);
         switch (info.getMsgtype()){
             case NORMAL:
-                Platform.runLater(()->rightConerPop(info.getMsgcontent(),String.valueOf(userId),userId));
+                Platform.runLater(()->{
+                    ChatView chatWindow=ChatViewManager.getStage(String.valueOf(userId));
+                    //聊天框未打开,头像闪动
+                    if(chatWindow==null){
+                        TreeItem<ContractItemView> itemViewTreeItem= ClientCache.getContractMap().get(String.valueOf(userId));
+                        ContractItemView contractItemView=itemViewTreeItem.getValue();
+                        contractItemView.startBlink();
+                    }else {
+                        ChatUtils.appendBubble(chatWindow.getChatPane(),BubbleType.RIGHT,info.getMsgcontent(),UserUtils.getUserIcon(),570D);
+                    }
+                    rightConerPop(info.getMsgcontent(),String.valueOf(userId),userId);
+                });
                 break;
             case ROOM:
                 Platform.runLater(()->rightConerPop(info.getMsgcontent(),String.valueOf(userId),userId));
