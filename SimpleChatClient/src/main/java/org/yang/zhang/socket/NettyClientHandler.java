@@ -20,6 +20,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -33,6 +34,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 /**
@@ -96,14 +98,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 
     public void rightConerPop(String content,String userName,Integer userId){
         String title="来自 "+userName+" 的信息";
-        try {
+        TitledPane titledPane=ConerPopUtils.getConer(userId);
+        if(ConerPopUtils.getConer(userId)!=null){
+            titledPane.setContent(new Text(content));
+        }else{
             TitledPane page=new TitledPane();
             page.setText(title);
             page.setContent(new Text(content));
-            FadeTransition ft = new FadeTransition(Duration.millis(3000), page);
-            ft.setFromValue(0.0);
-            ft.setToValue(1.0);
-            ft.play();
             Scene scene = new Scene(page);
             Stage stage=new Stage();
             stage.setScene(scene);
@@ -115,9 +116,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             stage.setHeight(200);
             stage.setIconified(false);
             stage.show();
-        }catch (Exception e){
-            e.printStackTrace();
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    ConerPopUtils.unregisterConer(userId);
+                }
+            });
+            ConerPopUtils.registerConer(userId,page);
         }
-
     }
 }
