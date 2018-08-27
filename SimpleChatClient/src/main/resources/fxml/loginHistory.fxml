@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #0096C9;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fx:id="userIcon" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="userId" layoutX="54.0" layoutY="1.0" prefHeight="20.0" prefWidth="100.0" text="Label" />
+      <Label fx:id="nickName" layoutX="55.0" layoutY="19.0" prefHeight="20.0" prefWidth="100.0" text="Label" />
+   </children>
+</Pane>
