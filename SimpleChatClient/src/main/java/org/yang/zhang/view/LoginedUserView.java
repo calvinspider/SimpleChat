@@ -23,6 +23,7 @@ public class LoginedUserView {
     private Label nickName;
     private Label userId;
     private Scene scene;
+    private String id;
 
     public LoginedUserView(String userId,String nickName,String icon){
         try {
@@ -39,6 +40,7 @@ public class LoginedUserView {
         this.icon.setImage(iconImage);
         this.userId.setText(userId);
         this.nickName.setText(nickName);
+        this.id=userId;
     }
 
     private void initMember(Scene scene) {
@@ -46,6 +48,11 @@ public class LoginedUserView {
         icon  = (ImageView)scene.lookup("#userIcon");
         userId=(Label)scene.lookup("#userId");
         nickName=(Label)scene.lookup("#nickName");
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 
     public Pane getPane() {

@@ -9,16 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +20,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
+import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.SimpleChatClientApplication;
@@ -99,7 +91,7 @@ public class LoginController  implements Initializable {
                         final ListCell<LoginedUserView> cell = new ListCell<LoginedUserView>() {
                             @Override
                             public void updateItem(LoginedUserView pane, boolean empty) {
-                                super.updateItem(pane,empty);
+                                super.updateItem(pane, empty);
                                 if (empty) {
                                     setText(null);
                                     setGraphic(null);
@@ -111,6 +103,21 @@ public class LoginController  implements Initializable {
                         return cell;
                     }
                 });
+//        userName.setConverter(new StringConverter<LoginedUserView>(){
+//            @Override
+//            public String toString(LoginedUserView user) {
+//                if (user== null){
+//                    return userName.getEditor().getText();
+//                } else {
+//                    return user.toString();
+//                }
+//            }
+//
+//            @Override
+//            public LoginedUserView fromString(String string) {
+//                return null;
+//            }
+//        });
     }
 
     private void initEvent() {
@@ -131,7 +138,7 @@ public class LoginController  implements Initializable {
     @FXML
     private void handleSubmitButtonAction(ActionEvent event) {
         //登陆
-        String name=userName.getValue().getUserId().getText();
+        String name=userName.getEditor().getText();
         String pwd=passWord.getText();
         if(StringUtils.isBlank(name)||StringUtils.isBlank(pwd)){
             return;
@@ -174,6 +181,10 @@ public class LoginController  implements Initializable {
         FileInputStream inputStream=null;
         BufferedReader bufferedReader=null;
         String fileName=fileRoot+File.separator+historyUserFileName;
+        File file=new File(fileName);
+        if(!file.exists()){
+            return new ArrayList<>();
+        }
         try{
             inputStream = new FileInputStream(fileName);
             bufferedReader= new BufferedReader(new InputStreamReader(inputStream));
@@ -199,24 +210,32 @@ public class LoginController  implements Initializable {
 
     private void saveUserLoginHistory(User user) {
         FileInputStream inputStream=null;
-        FileOutputStream outputStream=null;
         BufferedReader bufferedReader=null;
         BufferedWriter bufferedWriter=null;
+        FileWriter fw=null;
         try{
             Boolean userInHistory=false;
             String fileName=fileRoot+File.separator+historyUserFileName;
             File file=new File(fileName);
+            File dir=new File(fileRoot);
+            if(!dir.exists()){
+                dir.mkdir();
+            }
             if(!file.exists()){
                 file.createNewFile();
             }
             inputStream = new FileInputStream(fileName);
-            outputStream= new FileOutputStream(fileName);
+            fw = new FileWriter(file, true);
             bufferedReader= new BufferedReader(new InputStreamReader(inputStream));
-            bufferedWriter= new BufferedWriter(new OutputStreamWriter(outputStream));
+            bufferedWriter= new BufferedWriter(fw);
             String str;
+            String userid=String.valueOf(user.getId());
             while((str = bufferedReader.readLine()) != null)
             {
-                if(str.equals(String.valueOf(user.getId()))){
+                String[] tmp=str.split(",");
+                String now=tmp[0];
+                System.out.println(tmp[0]+userid);
+                if(now.equals(userid)){
                     userInHistory=true;
                     break;
                 }
@@ -226,14 +245,15 @@ public class LoginController  implements Initializable {
                 bufferedWriter.flush();
             }
             inputStream.close();
+            fw.close();
             bufferedReader.close();
         }catch (Exception e){
             e.printStackTrace();
             try {
                 if(inputStream!=null)
                     inputStream.close();
-                if(outputStream!=null)
-                    outputStream.close();
+                if(fw!=null)
+                    fw.close();
                 if(bufferedReader!=null)
                     bufferedReader.close();
                 if(bufferedWriter!=null)
