@@ -4,6 +4,9 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.constants.Constant;
@@ -13,16 +16,13 @@ import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.UserService;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.DialogUtils;
 import org.yang.zhang.utils.StageManager;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -34,75 +34,107 @@ import javafx.stage.Stage;
 @FXMLController
 public class RegisterController implements Initializable {
 
-    @FXML TextField nickName;
-    @FXML Label fileName;
-    @FXML Button chooseFileBtn;
-    @FXML TextField shuxiang;
-    @FXML TextField phone;
-    @FXML TextField page;
-    @FXML TextField email;
-    @FXML TextField birthday;
-    @FXML TextField sex;
-    @FXML TextField xingzuo;
-    @FXML TextField bloodType;
-    @FXML TextField hometoem;
-    @FXML TextField locate;
-    @FXML TextField age;
-    @FXML TextField personword;
-    @FXML TextField password;
+    @FXML
+    TextField nickName;
+    @FXML
+    Button chooseFileBtn;
+    @FXML
+    ChoiceBox<String> xingzuo;
+    @FXML
+    TextField mobile;
+    @FXML
+    TextField email;
+    @FXML
+    TextField birthday;
+    @FXML
+    ChoiceBox<String> sex;
+    @FXML
+    ChoiceBox<String> blood;
+    @FXML
+    TextField personWord;
+    @FXML
+    TextField personalDesc;
+    @FXML
+    ChoiceBox<String> job;
+    @FXML
+    ImageView userIcon;
+    @FXML
+    TextField passwordSure;
+    @FXML
+    TextField password;
+    @FXML
+    TextField userIconFIeld;
 
     @Autowired
     private UserService userService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+    }
+
+    @FXML
+    public void close(){
 
     }
 
     @FXML
-    public void register(ActionEvent event){
+    public void register(){
         User user=new User();
-        user.setPassword(password.getText());
-        user.setNickName(nickName.getText());
-        user.setAge(age.getText());
-        user.setBirthday(birthday.getText());
-        user.setBloodType(bloodType.getText());
-        user.setConstellation(xingzuo.getText());
-        user.setEmail(email.getText());
-        user.setHomeTown(hometoem.getText());
-        user.setLocate(locate.getText());
-        user.setZodiac(shuxiang.getText());
-        user.setPhone(phone.getText());
-        user.setPersonWord(personword.getText());
-        user.setPage(page.getText());
-        user.setSex(sex.getText());
-        if(StringUtils.isBlank(fileName.getText())){
-            Alert _alert = new Alert(Alert.AlertType.INFORMATION);
-            _alert.setTitle("信息");
-            _alert.setContentText("请选择头像！");
-            _alert.initOwner(StageManager.getStage(StageCodes.REGISTER));
-            _alert.show();
+        String nickNameStr=nickName.getText();
+        String xingzuoStr=xingzuo.getValue();
+        String mobileStr=mobile.getText();
+        String emailStr=email.getText();
+        String birthdayStr=birthday.getText();
+        String sexStr=sex.getValue();
+        String bloodStr=blood.getValue();
+        String personWordStr=personWord.getText();
+        String personalDescStr=personalDesc.getText();
+        String jobStr=job.getValue();
+        String passwordSureStr=passwordSure.getText();
+        String passwordStr=password.getText();
+        if(StringUtils.isBlank(nickNameStr)){
+            DialogUtils.alert("请填写昵称!");
+            return;
         }
+        if(StringUtils.isBlank(passwordStr)){
+            DialogUtils.alert("请输入密码!");
+            return;
+        }
+        if(StringUtils.isBlank(passwordSureStr)){
+            DialogUtils.alert("请确认密码!");
+            return;
+        }
+        if(!passwordSureStr.equals(passwordStr)){
+            DialogUtils.alert("俩次输入的密码不一致!");
+            return;
+        }
+        String fileNameStr=userIconFIeld.getText();
+        if(StringUtils.isBlank(fileNameStr)){
+            DialogUtils.alert("请选择头像!");
+            return;
+        }
+        user.setPassword(passwordStr);
+        user.setNickName(nickNameStr);
+        user.setBirthday(birthdayStr);
+        user.setBloodType(bloodStr);
+        user.setConstellation(xingzuoStr);
+        user.setEmail(emailStr);
+        user.setPhone(mobileStr);
+        user.setPersonWord(personWordStr);
+        user.setSex(sexStr);
+//        user.setJob(jobStr);
+//        user.setPersonalDesc(personalDescStr);
 
-        String name= fileName.getText();
-        String format=name.substring(name.lastIndexOf("."),name.length());
+        String format=fileNameStr.substring(fileNameStr.lastIndexOf("."),fileNameStr.length());
         String realName=String.valueOf(System.nanoTime())+format;
-        NettyClient.sendFile(new File(fileName.getText()),realName);
+        NettyClient.sendFile(new File(fileNameStr),realName);
         user.setIconUrl(realName);
 
         Result<User> result=userService.register(user);
         if(result.getCode().equals(ResultConstants.RESULT_SUCCESS)){
-            Alert _alert = new Alert(Alert.AlertType.INFORMATION);
-            _alert.setTitle("信息");
-            _alert.setContentText("用户注册成功！\n您的登陆账号为 "+result.getData().getId());
-            _alert.initOwner(StageManager.getStage(StageCodes.REGISTER));
-            _alert.show();
+           DialogUtils.alert("用户注册成功！您的登陆账号为 <b>"+result.getData().getId()+"</b>");
         }else{
-            Alert _alert = new Alert(Alert.AlertType.INFORMATION);
-            _alert.setTitle("信息");
-            _alert.setContentText("注册失败！");
-            _alert.initOwner(StageManager.getStage(StageCodes.REGISTER));
-            _alert.show();
+            DialogUtils.alert("注册失败!");
         }
     }
 
@@ -111,8 +143,7 @@ public class RegisterController implements Initializable {
         Stage mainStage = null;
         FileChooser fileChooser = new FileChooser();//构建一个文件选择器实例
         File selectedFile = fileChooser.showOpenDialog(mainStage);
-        fileName.setText(selectedFile.getPath());
+        userIconFIeld.setText(selectedFile.getPath());
+        userIcon.setImage(new Image(selectedFile.getPath()));
     }
-
-
 }
