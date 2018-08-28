@@ -103,21 +103,6 @@ public class LoginController  implements Initializable {
                         return cell;
                     }
                 });
-//        userName.setConverter(new StringConverter<LoginedUserView>(){
-//            @Override
-//            public String toString(LoginedUserView user) {
-//                if (user== null){
-//                    return userName.getEditor().getText();
-//                } else {
-//                    return user.toString();
-//                }
-//            }
-//
-//            @Override
-//            public LoginedUserView fromString(String string) {
-//                return null;
-//            }
-//        });
     }
 
     private void initEvent() {
@@ -209,7 +194,7 @@ public class LoginController  implements Initializable {
     }
 
     private void saveUserLoginHistory(User user) {
-        FileInputStream inputStream=null;
+        FileReader fr=null;
         BufferedReader bufferedReader=null;
         BufferedWriter bufferedWriter=null;
         FileWriter fw=null;
@@ -224,9 +209,9 @@ public class LoginController  implements Initializable {
             if(!file.exists()){
                 file.createNewFile();
             }
-            inputStream = new FileInputStream(fileName);
+            fr = new FileReader(fileName);
             fw = new FileWriter(file, true);
-            bufferedReader= new BufferedReader(new InputStreamReader(inputStream));
+            bufferedReader= new BufferedReader(fr);
             bufferedWriter= new BufferedWriter(fw);
             String str;
             String userid=String.valueOf(user.getId());
@@ -241,17 +226,17 @@ public class LoginController  implements Initializable {
                 }
             }
             if(!userInHistory){
-                bufferedWriter.write(user.getId()+","+user.getIconUrl()+","+user.getNickName()+"\r\n");
+                bufferedWriter.write(user.getId()+","+user.getIconUrl()+","+user.getNickName()+"\n");
                 bufferedWriter.flush();
             }
-            inputStream.close();
+            fr.close();
             fw.close();
             bufferedReader.close();
         }catch (Exception e){
             e.printStackTrace();
             try {
-                if(inputStream!=null)
-                    inputStream.close();
+                if(fr!=null)
+                    fr.close();
                 if(fw!=null)
                     fw.close();
                 if(bufferedReader!=null)
