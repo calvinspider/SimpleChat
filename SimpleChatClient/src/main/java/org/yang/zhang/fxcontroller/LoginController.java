@@ -1,20 +1,27 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -31,6 +38,7 @@ import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
 import org.yang.zhang.utils.ActionManager;
 import org.yang.zhang.utils.DialogUtils;
+import org.yang.zhang.utils.ImageUtiles;
 import org.yang.zhang.utils.TrayManger;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.StageManager;
@@ -56,7 +64,7 @@ public class LoginController  implements Initializable {
     @FXML
     private CheckBox autoLogin;
     @FXML
-    private ComboBox<LoginedUserView> userName;
+    private ComboBox userName;
     @FXML
     private TextField passWord;
     @FXML
@@ -73,9 +81,12 @@ public class LoginController  implements Initializable {
     private MainView mainView;
     @Autowired
     private RegisterView registerView;
+
     private TrayManger trayManger=new TrayManger();
     private double xOffset = 0;
     private double yOffset = 0;
+
+    Map<String,String> loginedMap=new HashMap<>();
 
     public void initialize(URL url, ResourceBundle rb) {
         initHistoryUsers();
@@ -103,7 +114,31 @@ public class LoginController  implements Initializable {
                         return cell;
                     }
                 });
+        userName.getEditor().setOnKeyReleased(this::handleKeyPressedForComboBox);
+        userName.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if(newValue instanceof String){
+                setIcon((String) newValue);
+            }
+            if(newValue instanceof LoginedUserView){
+                userIcon.setImage(((LoginedUserView) newValue).getIconImage());
+            }
+        });
     }
+
+    private void handleKeyPressedForComboBox(KeyEvent keyEvent) {
+        String text=userName.getEditor().getText();
+        setIcon(text);
+    }
+
+    private void setIcon(String id){
+        if(!loginedMap.containsKey(id)){
+            userIcon.setImage(ImageUtiles.getUserIcon("defaultIcon.png"));
+            return;
+        }
+        Image image=ImageUtiles.getUserIcon(loginedMap.get(id));
+        userIcon.setImage(image);
+    }
+
 
     private void initEvent() {
         root.setOnMousePressed(event ->  {
@@ -178,6 +213,7 @@ public class LoginController  implements Initializable {
             {
                 String[] array=str.split(",");
                 result.add(new LoginedUserView(array[0],array[2],array[1]));
+                loginedMap.put(array[0],array[1]);
             }
         }catch (Exception e){
             e.printStackTrace();
