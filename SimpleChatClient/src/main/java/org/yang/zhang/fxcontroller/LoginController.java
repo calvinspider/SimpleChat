@@ -33,14 +33,18 @@ import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.SimpleChatClientApplication;
+import org.yang.zhang.config.SystemConfig;
+import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
 import org.yang.zhang.utils.ActionManager;
+import org.yang.zhang.utils.ClientCache;
 import org.yang.zhang.utils.DialogUtils;
 import org.yang.zhang.utils.ImageUtiles;
+import org.yang.zhang.utils.SystemConfigUtils;
 import org.yang.zhang.utils.TrayManger;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.StageManager;
@@ -53,9 +57,6 @@ import org.yang.zhang.view.RegisterView;
 
 @FXMLController
 public class LoginController  implements Initializable {
-
-    private static String fileRoot="D:\\simpleChatFiles";
-    private static String historyUserFileName="historyUser.txt";
 
     @FXML
     private Pane root;
@@ -93,6 +94,31 @@ public class LoginController  implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         initHistoryUsers();
         initEvent();
+        initConfig();
+    }
+
+    private void initConfig() {
+       if(ClientCache.systemConfig.getRemember()!=null&&ClientCache.systemConfig.getRemember()){
+           remember.setSelected(true);
+           Map<String,String> map=ClientCache.systemConfig.getPwdMap();
+           if(map!=null){
+               for (Map.Entry<String,String> entry:map.entrySet()){
+                   userName.setValue(entry.getKey());
+                   passWord.setText(entry.getValue());
+                   break;
+               }
+           }
+       }else{
+           remember.setSelected(false);
+       }
+        if(ClientCache.systemConfig.getAutoLogin()!=null&&ClientCache.systemConfig.getAutoLogin()){
+            autoLogin.setSelected(true);
+            remember.setSelected(true);
+        }else{
+            autoLogin.setSelected(false);
+        }
+
+
     }
 
     private void initHistoryUsers() {
@@ -160,6 +186,10 @@ public class LoginController  implements Initializable {
     @FXML
     private void handleSubmitButtonAction(ActionEvent event) {
         //登陆
+        login();
+    }
+
+    private void login() {
         String name=userName.getEditor().getText();
         String pwd=passWord.getText();
         if(StringUtils.isBlank(name)||StringUtils.isBlank(pwd)){
@@ -179,7 +209,7 @@ public class LoginController  implements Initializable {
 
         //文件保存历史登陆用户
         saveUserLoginHistory(user);
-
+        saveUserPwdMap(user.getId(),pwd);
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.hide();
@@ -198,11 +228,17 @@ public class LoginController  implements Initializable {
         trayManger.tray(mainStage);
     }
 
+    private void saveUserPwdMap(Integer id, String pwd) {
+        Map<String,String> map=ClientCache.systemConfig.getPwdMap();
+        map.put(String.valueOf(id),pwd);
+        SystemConfigUtils.flushConfig(ClientCache.systemConfig);
+    }
+
     private List<LoginedUserView> findLoginedUsers() {
         List<LoginedUserView> result=new ArrayList<>();
         FileInputStream inputStream=null;
         BufferedReader bufferedReader=null;
-        String fileName=fileRoot+File.separator+historyUserFileName;
+        String fileName=Constant.fileRoot+File.separator+Constant.historyUserFileName;
         File file=new File(fileName);
         if(!file.exists()){
             return new ArrayList<>();
@@ -238,9 +274,9 @@ public class LoginController  implements Initializable {
         FileWriter fw=null;
         try{
             Boolean userInHistory=false;
-            String fileName=fileRoot+File.separator+historyUserFileName;
+            String fileName=Constant.fileRoot+File.separator+Constant.historyUserFileName;
             File file=new File(fileName);
-            File dir=new File(fileRoot);
+            File dir=new File(Constant.fileRoot);
             if(!dir.exists()){
                 dir.mkdir();
             }
@@ -310,6 +346,28 @@ public class LoginController  implements Initializable {
     @FXML
     public void closeApp(){
         System.exit(0);
+    }
+
+    @FXML
+    public void rememberPwd(){
+        if(remember.isSelected()){
+            ClientCache.systemConfig.setRemember(true);
+        }else{
+            ClientCache.systemConfig.setRemember(false);
+        }
+        SystemConfigUtils.flushConfig(ClientCache.systemConfig);
+    }
+
+    @FXML
+    public void autoLogin(){
+        if(remember.isSelected()){
+            ClientCache.systemConfig.setAutoLogin(true);
+            remember.setSelected(true);
+            ClientCache.systemConfig.setRemember(true);
+        }else{
+            ClientCache.systemConfig.setAutoLogin(false);
+        }
+        SystemConfigUtils.flushConfig(ClientCache.systemConfig);
     }
 
 

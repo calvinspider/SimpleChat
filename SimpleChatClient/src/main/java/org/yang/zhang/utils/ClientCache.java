@@ -1,6 +1,8 @@
 package org.yang.zhang.utils;
 
 import javafx.scene.control.TreeItem;
+
+import org.yang.zhang.config.SystemConfig;
 import org.yang.zhang.view.ContractItemView;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +12,7 @@ import java.util.Map;
 public class ClientCache {
     private static List<TreeItem<ContractItemView>> groupList=new ArrayList<>();
     public static Map<String,TreeItem<ContractItemView>> contractMap=new HashMap<>();
-
+    public static SystemConfig systemConfig;
 
     public static void addGroup(TreeItem<ContractItemView> item){
         groupList.add(item);

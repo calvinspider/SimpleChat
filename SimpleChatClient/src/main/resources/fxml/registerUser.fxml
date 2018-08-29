@@ -10,7 +10,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
 
 <Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="462.0" style="-fx-background-color: #E2E2E7" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.RegisterController">
    <children>
@@ -95,11 +94,6 @@
       <Label layoutX="53.0" layoutY="465.0" text="密码：" />
       <Label layoutX="257.0" layoutY="465.0" text="确认密码" />
       <TextField fx:id="userIconFIeld" editable="false" layoutX="353.0" layoutY="60.0" prefHeight="15.0" prefWidth="48.0" visible="false" />
-      <Label prefHeight="36.0" prefWidth="462.0" text="    注册账号">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
        
    </children>
 </Pane>

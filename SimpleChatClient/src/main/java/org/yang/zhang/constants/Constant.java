@@ -25,4 +25,9 @@ public class Constant {
     public static final String USERREGISTER=serverHost+"/user/register";
     public static final String USERCHATROOMS=serverHost+"/chat/getUerChatRooms";
     public static final String REGEIST="REGEIST";
+
+    public static String fileRoot="D:\\simpleChatFiles";
+    public static String historyUserFileName="historyUser.txt";
+    public static String SystemConfigFileName="systemConfig.txt";
+
 }
