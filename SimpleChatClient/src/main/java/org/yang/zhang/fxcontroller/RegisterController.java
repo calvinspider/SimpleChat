@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.constants.Constant;
@@ -34,6 +35,8 @@ import javafx.stage.Stage;
 @FXMLController
 public class RegisterController implements Initializable {
 
+    @FXML
+    Pane root;
     @FXML
     TextField nickName;
     @FXML
@@ -68,13 +71,37 @@ public class RegisterController implements Initializable {
     @Autowired
     private UserService userService;
 
+    private double xOffset = 0;
+    private double yOffset = 0;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+      nickName.setText("");
+      xingzuo.setValue("");
+      mobile.setText("");
+      email.setText("");
+      birthday.setText("");
+      sex.setValue("");
+      blood.setValue("");
+      personWord.setText("");
+      personalDesc.setText("");
+      job.setValue("");
+      passwordSure.setText("");
+      password.setText("");
+
+        root.setOnMousePressed(event ->  {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        root.setOnMouseDragged(event -> {
+            StageManager.getStage(StageCodes.REGISTER).setX(event.getScreenX() - xOffset);
+            StageManager.getStage(StageCodes.REGISTER).setY(event.getScreenY() - yOffset);
+        });
     }
 
     @FXML
     public void close(){
-
+        StageManager.getStage(StageCodes.REGISTER).close();
     }
 
     @FXML
@@ -132,9 +159,11 @@ public class RegisterController implements Initializable {
 
         Result<User> result=userService.register(user);
         if(result.getCode().equals(ResultConstants.RESULT_SUCCESS)){
-           DialogUtils.alert("用户注册成功！您的登陆账号为 <b>"+result.getData().getId()+"</b>");
+           DialogUtils.alert("用户注册成功！您的登陆账号为 "+result.getData().getId()+"");
+           StageManager.getStage(StageCodes.REGISTER).close();
         }else{
             DialogUtils.alert("注册失败!");
+            StageManager.getStage(StageCodes.REGISTER).close();
         }
     }
 
@@ -144,6 +173,9 @@ public class RegisterController implements Initializable {
         FileChooser fileChooser = new FileChooser();//构建一个文件选择器实例
         File selectedFile = fileChooser.showOpenDialog(mainStage);
         userIconFIeld.setText(selectedFile.getPath());
-        userIcon.setImage(new Image(selectedFile.getPath()));
+        File file = new File(selectedFile.getPath());
+        userIcon.setImage(new Image(file.toURI().toString()));
     }
+
+
 }

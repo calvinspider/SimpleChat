@@ -292,6 +292,8 @@ public class LoginController  implements Initializable {
         if(StageManager.getStage(StageCodes.REGISTER)==null){
             Stage registerStage=new Stage();
             registerStage.setScene(new Scene(registerView.getView()));
+            registerStage.setResizable(false);
+            registerStage.initStyle(StageStyle.TRANSPARENT);
             registerStage.show();
             StageManager.registerStage(StageCodes.REGISTER,registerStage);
             registerStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
