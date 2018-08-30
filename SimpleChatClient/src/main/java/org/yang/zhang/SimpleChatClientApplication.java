@@ -10,11 +10,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.StageStyle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.yang.zhang.config.CustomSplash;
 import org.yang.zhang.config.SystemConfig;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
+import org.yang.zhang.fxcontroller.LoginController;
 import org.yang.zhang.utils.ActionManager;
 import org.yang.zhang.utils.ClientCache;
 import org.yang.zhang.utils.JsonUtils;
@@ -43,7 +45,6 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
         StageManager.registerStage(StageCodes.LOGIN,stage);
         ActionManager.setOnCloseExistListener(stage);
         super.start(stage);
-
     }
 
 

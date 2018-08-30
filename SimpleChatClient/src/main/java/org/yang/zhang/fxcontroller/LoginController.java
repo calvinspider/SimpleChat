@@ -189,7 +189,7 @@ public class LoginController  implements Initializable {
         login();
     }
 
-    private void login() {
+    public void login() {
         String name=userName.getEditor().getText();
         String pwd=passWord.getText();
         if(StringUtils.isBlank(name)||StringUtils.isBlank(pwd)){
@@ -209,7 +209,9 @@ public class LoginController  implements Initializable {
 
         //文件保存历史登陆用户
         saveUserLoginHistory(user);
-        saveUserPwdMap(user.getId(),pwd);
+        if(remember.isSelected()){
+            saveUserPwdMap(user.getId(),pwd);
+        }
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.hide();
@@ -370,5 +372,8 @@ public class LoginController  implements Initializable {
         SystemConfigUtils.flushConfig(ClientCache.systemConfig);
     }
 
+    public Boolean isAutoLogin(){
+        return autoLogin.isSelected();
+    }
 
 }

@@ -17,15 +17,15 @@
             <Image url="@../images/loginBanner.jpg" />
          </image></ImageView>
       <Button fx:id="loginButton" layoutX="135.0" layoutY="290.0" minHeight="30.0" minWidth="200.0" mnemonicParsing="false" onAction="#handleSubmitButtonAction" style="-fx-background-color: #1FC7FD;" text="登录" textFill="WHITE" />
-      <ImageView fx:id="userIcon" fitHeight="80.0" fitWidth="85.0" layoutX="40.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView style="-fx-background-radius: 20" fx:id="userIcon" fitHeight="80.0" fitWidth="85.0" layoutX="40.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/defaultIcon.png" />
          </image>
       </ImageView>
       <ComboBox fx:id="userName" layoutX="135.0" layoutY="195.0" maxHeight="30.0" maxWidth="200.0" minHeight="30.0" minWidth="170.0" prefHeight="30.0" prefWidth="200.0" promptText="账号" />
       <PasswordField fx:id="passWord" layoutX="135.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" promptText="密码" />
-      <Label fx:id="userRegister" layoutX="351.0" layoutY="195.0" minHeight="30.0" minWidth="75.0" onMousePressed="#userRegister" text="注册账号" />
-      <Label layoutX="350.0" layoutY="225.0" minHeight="30.0" minWidth="75.0" text="忘记密码" />
+      <Label style="-fx-text-fill: #3CC3F5" fx:id="userRegister" layoutX="351.0" layoutY="195.0" minHeight="30.0" minWidth="75.0" onMousePressed="#userRegister" text="注册账号" />
+      <Label style="-fx-text-fill: #3CC3F5" layoutX="350.0" layoutY="225.0" minHeight="30.0" minWidth="75.0" text="找回密码" />
       <CheckBox onAction="#autoLogin" fx:id="autoLogin" layoutX="266.0" layoutY="258.0" minHeight="15.0" minWidth="15.0" mnemonicParsing="false" opacity="0.8" text="自动登陆" />
       <!--<ToolBar layoutX="379.0" layoutY="-4.0" prefHeight="32.0" prefWidth="50.0" style="-fx-background-color: #4377B6">-->
          <!--<items>-->
