@@ -6,8 +6,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -23,7 +27,10 @@ import java.util.ResourceBundle;
 
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -38,6 +45,7 @@ import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
+import org.yang.zhang.keyboard.VirtualKeyboard;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
 import org.yang.zhang.utils.ActionManager;
@@ -74,6 +82,8 @@ public class LoginController  implements Initializable {
     private ImageView userIcon;
     @FXML
     private Label userRegister;
+    @FXML
+    private ImageView keyborad;
     @Autowired
     private LoginServiceImpl loginService;
     @Autowired
@@ -88,6 +98,7 @@ public class LoginController  implements Initializable {
     private TrayManger trayManger=new TrayManger();
     private double xOffset = 0;
     private double yOffset = 0;
+    Stage keyBoardStage;
 
     Map<String,String> loginedMap=new HashMap<>();
 
@@ -95,6 +106,7 @@ public class LoginController  implements Initializable {
         initHistoryUsers();
         initEvent();
         initConfig();
+        initKeyBoard();
     }
 
     private void initConfig() {
@@ -153,6 +165,20 @@ public class LoginController  implements Initializable {
         });
     }
 
+    public void initKeyBoard(){
+        keyBoardStage=new Stage();
+        final VBox root = new VBox();
+        Scene scene = new Scene(root);
+        VirtualKeyboard vkb = new VirtualKeyboard(passWord);
+        vkb.view().setStyle("-fx-border-color: darkblue; -fx-border-radius: 5;");
+        root.getChildren().addAll(vkb.view());
+        keyBoardStage.setScene(scene);
+        keyBoardStage.initStyle(StageStyle.UNDECORATED);
+        keyBoardStage.setResizable(false);
+        keyBoardStage.setAlwaysOnTop(true);
+    }
+
+
     private void handleKeyPressedForComboBox(KeyEvent keyEvent) {
         String text=userName.getEditor().getText();
         setIcon(text);
@@ -177,6 +203,20 @@ public class LoginController  implements Initializable {
             StageManager.getStage(StageCodes.LOGIN).setX(event.getScreenX() - xOffset);
             StageManager.getStage(StageCodes.LOGIN).setY(event.getScreenY() - yOffset);
         });
+        keyborad.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(keyBoardStage.isShowing()){
+                    keyBoardStage.hide();
+                }else{
+                    keyBoardStage.setY(StageManager.getStage(StageCodes.LOGIN).getY()+260);
+                    keyBoardStage.setX(StageManager.getStage(StageCodes.LOGIN).getX()+100);
+                    keyBoardStage.show();
+                }
+                event.consume();
+            }
+        });
+        keyborad.cursorProperty().setValue(Cursor.HAND);
     }
 
     /**
@@ -375,5 +415,4 @@ public class LoginController  implements Initializable {
     public Boolean isAutoLogin(){
         return autoLogin.isSelected();
     }
-
 }

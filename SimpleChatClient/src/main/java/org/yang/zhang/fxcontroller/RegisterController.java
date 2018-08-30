@@ -172,9 +172,12 @@ public class RegisterController implements Initializable {
         Stage mainStage = null;
         FileChooser fileChooser = new FileChooser();//构建一个文件选择器实例
         File selectedFile = fileChooser.showOpenDialog(mainStage);
-        userIconFIeld.setText(selectedFile.getPath());
-        File file = new File(selectedFile.getPath());
-        userIcon.setImage(new Image(file.toURI().toString()));
+        try {
+            userIconFIeld.setText(selectedFile.getPath());
+            File file = new File(selectedFile.getPath());
+            userIcon.setImage(new Image(file.toURI().toString()));
+        }catch (Exception e){}
+
     }
 
 
