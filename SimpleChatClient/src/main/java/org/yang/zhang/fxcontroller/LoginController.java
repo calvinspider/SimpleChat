@@ -3,6 +3,8 @@ package org.yang.zhang.fxcontroller;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -63,6 +65,7 @@ import org.yang.zhang.view.LoginedUserView;
 import org.yang.zhang.view.MainView;
 import org.yang.zhang.view.PasswordBackView;
 import org.yang.zhang.view.RegisterView;
+import org.yang.zhang.view.UserStatusView;
 
 @FXMLController
 public class LoginController  implements Initializable {
@@ -85,6 +88,9 @@ public class LoginController  implements Initializable {
     private Label userRegister;
     @FXML
     private ImageView keyborad;
+    @FXML
+    private ComboBox<UserStatusView> userStatus;
+
     @Autowired
     private LoginServiceImpl loginService;
     @Autowired
@@ -107,9 +113,50 @@ public class LoginController  implements Initializable {
 
     public void initialize(URL url, ResourceBundle rb) {
         initHistoryUsers();
+        initStatusList();
         initEvent();
         initConfig();
         initKeyBoard();
+    }
+
+    private void initStatusList() {
+        userStatus.getItems().add(new UserStatusView("images/icon/green.jpg","我在线上"));
+        userStatus.getItems().add(new UserStatusView("images/icon/red.jpg","忙碌"));
+        userStatus.getItems().add(new UserStatusView("images/icon/yellow.jpg","隐身"));
+        userStatus.setCellFactory(
+                new Callback<ListView<UserStatusView>, ListCell<UserStatusView>>() {
+                    @Override public ListCell<UserStatusView> call(ListView<UserStatusView> param) {
+                        final ListCell<UserStatusView> cell = new ListCell<UserStatusView>() {
+                            @Override
+                            public void updateItem(UserStatusView pane, boolean empty) {
+                                super.updateItem(pane, empty);
+                                if (empty) {
+                                    setText(null);
+                                    setGraphic(null);
+                                } else {
+                                    setGraphic(pane.getPane());
+                                }
+                            }
+                        };
+                        return cell;
+                    }
+                });
+        userStatus.setButtonCell(new StatusListCell());
+        userStatus.getSelectionModel().selectFirst();
+    }
+
+    public class StatusListCell extends ListCell<UserStatusView> {
+        protected void updateItem(UserStatusView item, boolean empty){
+            super.updateItem(item, empty);
+            if (empty) {
+                setItem(null);
+                setGraphic(null);
+            }else{
+                setText(item.toString());
+                ImageView imageView=new ImageView(item.getImage());
+                setGraphic(imageView);
+            }
+        }
     }
 
     private void initConfig() {
