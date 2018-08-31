@@ -10,6 +10,7 @@ public class Constant {
 //    public static String serverHost="http://47.52.164.19:9888";
     public static String serverHost="http://127.0.0.1:9888";
     public static final String LoginUrl=serverHost+"/login";
+    public static final String FindPassword=serverHost+"/findPassWord?userId={userId}";
     public static final String ContractUrl=serverHost+"/chat/contract";
     public static final String ONEDAYCHATLOGURL=serverHost+"/chat/oneDayChatLog";
     public static final String ONEMONTHCONTRACT=serverHost+"/chat/oneMonthContract";

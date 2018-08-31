@@ -9,4 +9,6 @@ import org.yang.zhang.entity.Result;
 public interface LoginService {
 
     Result login(String userName,String passWord);
+
+    Result<Void> findPassWord(String text);
 }

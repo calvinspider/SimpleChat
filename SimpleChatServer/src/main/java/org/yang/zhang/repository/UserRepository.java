@@ -9,4 +9,5 @@ import org.yang.zhang.module.User;
 public interface UserRepository extends JpaRepository<User, Integer>,
         JpaSpecificationExecutor<User>{
     List<User> findByIdIn(List<Integer> userIds);
+
 }

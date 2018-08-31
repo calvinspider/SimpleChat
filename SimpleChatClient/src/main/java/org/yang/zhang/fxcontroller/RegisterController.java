@@ -17,6 +17,7 @@ import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.UserService;
 import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.utils.AccountValidatorUtil;
 import org.yang.zhang.utils.DialogUtils;
 import org.yang.zhang.utils.StageManager;
 
@@ -125,6 +126,14 @@ public class RegisterController implements Initializable {
         }
         if(StringUtils.isBlank(passwordStr)){
             DialogUtils.alert("请输入密码!");
+            return;
+        }
+        if(StringUtils.isBlank(emailStr)){
+            DialogUtils.alert("请输入邮箱!");
+            return;
+        }
+        if(!AccountValidatorUtil.isEmail(emailStr)){
+            DialogUtils.alert("请输入正确的邮箱地址!");
             return;
         }
         if(StringUtils.isBlank(passwordSureStr)){

@@ -61,6 +61,7 @@ import org.yang.zhang.view.LoginErrorView;
 import org.yang.zhang.view.LoginView;
 import org.yang.zhang.view.LoginedUserView;
 import org.yang.zhang.view.MainView;
+import org.yang.zhang.view.PasswordBackView;
 import org.yang.zhang.view.RegisterView;
 
 @FXMLController
@@ -94,6 +95,8 @@ public class LoginController  implements Initializable {
     private MainView mainView;
     @Autowired
     private RegisterView registerView;
+    @Autowired
+    private PasswordBackView passwordBackView;
 
     private TrayManger trayManger=new TrayManger();
     private double xOffset = 0;
@@ -175,7 +178,7 @@ public class LoginController  implements Initializable {
         keyBoardStage.setScene(scene);
         keyBoardStage.initStyle(StageStyle.UNDECORATED);
         keyBoardStage.setResizable(false);
-        keyBoardStage.setAlwaysOnTop(true);
+//        keyBoardStage.setAlwaysOnTop(true);
     }
 
 
@@ -382,6 +385,20 @@ public class LoginController  implements Initializable {
             });
         }else{
             StageManager.getStage(StageCodes.REGISTER).show();
+        }
+    }
+
+    @FXML
+    public void passwordBack(){
+        if(StageManager.getStage(StageCodes.PASSBACK)==null){
+            Scene scene=new Scene(passwordBackView.getView());
+            Stage stage=new Stage();
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.UNDECORATED);
+            StageManager.registerStage(StageCodes.PASSBACK,stage);
+            stage.show();
+        }else{
+            StageManager.getStage(StageCodes.PASSBACK).show();
         }
     }
 

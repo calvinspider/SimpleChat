@@ -44,7 +44,7 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
         stage.setIconified(false);
         StageManager.registerStage(StageCodes.LOGIN,stage);
         ActionManager.setOnCloseExistListener(stage);
-        stage.setAlwaysOnTop(true);
+//        stage.setAlwaysOnTop(true);
         super.start(stage);
     }
 

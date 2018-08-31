@@ -27,4 +27,10 @@ public class LoginController {
         System.out.println(JsonUtils.toJson(result));
         return JsonUtils.toJson(result);
     }
+
+    @RequestMapping("/findPassWord")
+    public String findPassWord(String userId){
+        Result<Void> result= userService.findPassWord(userId);
+        return JsonUtils.toJson(result);
+    }
 }

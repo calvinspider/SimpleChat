@@ -28,7 +28,7 @@
       <Label layoutX="53.0" layoutY="229.0" text="个人说明" />
       <TextField fx:id="personalDesc" layoutX="53.0" layoutY="254.0" prefHeight="52.0" prefWidth="372.0" />
       <Label layoutX="53.0" layoutY="317.0" text="昵称：" />
-      <TextField fx:id="nickName" layoutX="95.0" layoutY="313.0" prefHeight="25.0" prefWidth="122.0" />
+      <TextField fx:id="nickName" layoutX="95.0" layoutY="313.0" prefHeight="25.0" prefWidth="122.0" /><Label layoutX="226.0" layoutY="317.0" style="-fx-text-fill: red">*</Label>
       <Label layoutX="259.0" layoutY="388.0" text="手机：" />
       <Label layoutX="53.0" layoutY="387.0" text="邮箱：" />
       <Label layoutX="259.0" layoutY="352.0" text="血型：" />
@@ -67,7 +67,7 @@
          </items>
       </ChoiceBox>
       <TextField fx:id="birthday" layoutX="95.0" layoutY="348.0" prefHeight="25.0" prefWidth="122.0" />
-      <TextField fx:id="email" layoutX="95.0" layoutY="383.0" prefHeight="25.0" prefWidth="122.0" />
+      <TextField fx:id="email" layoutX="95.0" layoutY="383.0" prefHeight="25.0" prefWidth="122.0" /><Label layoutX="438.0" layoutY="467.0" style="-fx-text-fill: red">*</Label>
       <TextField fx:id="mobile" layoutX="306.0" layoutY="383.0" prefHeight="25.0" prefWidth="122.0" />
       <ChoiceBox layoutX="95.0" layoutY="424.0" prefHeight="25.0" prefWidth="122.0" fx:id="xingzuo">
          <items>
@@ -91,9 +91,9 @@
       <Button layoutX="294.0" layoutY="506.0" mnemonicParsing="false" onAction="#close" prefHeight="30.0" prefWidth="60.0" text="取消" />
       <PasswordField fx:id="password" layoutX="95.0" layoutY="461.0" prefHeight="23.0" prefWidth="122.0" />
       <PasswordField fx:id="passwordSure" layoutX="306.0" layoutY="461.0" prefHeight="23.0" prefWidth="122.0" />
-      <Label layoutX="53.0" layoutY="465.0" text="密码：" />
-      <Label layoutX="257.0" layoutY="465.0" text="确认密码" />
+      <Label layoutX="53.0" layoutY="465.0" text="密码：" /><Label layoutX="228.0" layoutY="388.0" style="-fx-text-fill: red">*</Label>
+      <Label layoutX="257.0" layoutY="465.0" text="确认密码" /><Label layoutX="230.0" layoutY="465.0" style="-fx-text-fill: red">*</Label>
       <TextField fx:id="userIconFIeld" editable="false" layoutX="353.0" layoutY="60.0" prefHeight="15.0" prefWidth="48.0" visible="false" />
-       
+
    </children>
 </Pane>

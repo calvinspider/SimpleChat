@@ -1,7 +1,10 @@
 package org.yang.zhang.service.impl;
 
+import java.util.Optional;
+
 import javax.persistence.criteria.CriteriaBuilder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,7 @@ import org.yang.zhang.entity.Result;
 import org.yang.zhang.module.User;
 import org.yang.zhang.repository.UserRepository;
 import org.yang.zhang.service.UserService;
+import org.yang.zhang.utils.MailUtils;
 
 /**
  * @Author calvin.zhang
@@ -40,5 +44,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public Result<Void> findPassWord(String userId) {
+        Optional<User> user=userRepository.findById(Integer.valueOf(userId));
+        if(!user.isPresent()){
+            return Result.errorMessage("该用户不存在!");
+        }
+        String pwd=user.get().getPassword();
+        String email=user.get().getEmail();
+        if(StringUtils.isBlank(email)){
+            return Result.errorMessage("该用户未配置邮箱,无法找回密码!");
+        }
+        MailUtils.send(email,"密码找回","您的密码为:"+pwd);
+        return Result.success();
     }
 }

@@ -32,4 +32,15 @@ public class LoginServiceImpl implements LoginService {
         }
         return Result.errorMessage("登陆失败");
     }
+
+    public Result<Void> findPassWord(String userId) {
+        TypeReference type = new TypeReference<Result<Void>>(){};
+        try {
+            String result=restTemplate.postForObject(Constant.FindPassword,null,String.class,userId);
+            return JsonUtils.fromJson(result, type);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.errorMessage("系统异常,请稍后再试!");
+        }
+    }
 }

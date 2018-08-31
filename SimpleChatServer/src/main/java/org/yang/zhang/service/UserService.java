@@ -12,4 +12,5 @@ import org.yang.zhang.module.User;
 public interface UserService {
     Result<User> login(String userName, String passWord);
     User register(User user);
+    Result<Void> findPassWord(String userId);
 }
