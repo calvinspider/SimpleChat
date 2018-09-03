@@ -63,3 +63,24 @@
     -fx-font-size: 1em; /* 12 */
     -fx-text-fill: #828282;
 }
+
+.menu-item .label {
+}
+
+.menu-item:focused {
+}
+
+.menu-item:focused .label {
+}
+
+.context-menu {
+}
+.menu-button {
+    -fx-background-color: transparent;
+}
+.menu-button .arrow {
+    -fx-background-color: transparent;
+}
+.menu-button > .arrow-button > .arrow {
+    -fx-padding: 0;
+}

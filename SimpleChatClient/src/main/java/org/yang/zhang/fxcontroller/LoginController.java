@@ -1,8 +1,6 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,25 +9,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.yang.zhang.abstracts.AbstractController;
 import org.yang.zhang.cellimpl.LoginedUserCellImpl;
-import org.yang.zhang.cellimpl.UserStatusCellImpl;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.entity.Result;
@@ -70,7 +64,7 @@ public class LoginController extends AbstractController implements Initializable
     @FXML
     private ImageView keyborad;
     @FXML
-    private ComboBox<UserStatusView> userStatus;
+    private MenuButton statusMenu;
 
     @Autowired
     private LoginServiceImpl loginService;
@@ -104,37 +98,25 @@ public class LoginController extends AbstractController implements Initializable
     }
 
     private void initUserStatusList() {
-        userStatus.getItems().add(new UserStatusView(Constant.STATUS_ONLINE_ICON,UserStatusType.ONLINE.getText()));
-        userStatus.getItems().add(new UserStatusView(Constant.STATUS_BUSY_ICON,UserStatusType.BUSY.getText()));
-        userStatus.getItems().add(new UserStatusView(Constant.STATUS_INVISIBLE_ICON,UserStatusType.INVISIBLE.getText()));
-        userStatus.setCellFactory(UserStatusCellImpl.callback);
-        userStatus.setButtonCell(new StatusButtonCell());
-        userStatus.getSelectionModel().selectFirst();
-        userStatus.valueProperty().addListener(new ChangeListener<UserStatusView>() {
-            @Override public void changed(ObservableValue ov, UserStatusView old, UserStatusView newv) {
-                if(UserStatusType.ONLINE.getText().equals(newv.getStatus())){
-                    status=UserStatusType.ONLINE;
-                }else if(UserStatusType.BUSY.getText().equals(newv.getStatus())){
-                    status=UserStatusType.BUSY;
-                }else if(UserStatusType.INVISIBLE.getText().equals(newv.getStatus())){
-                    status=UserStatusType.INVISIBLE;
-                }
-            }
+        statusMenu.setGraphic(new ImageView(new Image(Constant.STATUS_ONLINE_ICON)));
+        MenuItem online=new MenuItem(UserStatusType.ONLINE.getText(),new ImageView(new Image(Constant.STATUS_ONLINE_ICON)));
+        MenuItem busy=new MenuItem(UserStatusType.BUSY.getText(),new ImageView(new Image(Constant.STATUS_BUSY_ICON)));
+        MenuItem invisible=new MenuItem(UserStatusType.INVISIBLE.getText(),new ImageView(new Image(Constant.STATUS_INVISIBLE_ICON)));
+        online.setOnAction((event)->{
+            statusMenu.setGraphic(new ImageView(new Image(Constant.STATUS_ONLINE_ICON)));
+            status=UserStatusType.ONLINE;
         });
-    }
-
-    public class StatusButtonCell extends ListCell<UserStatusView> {
-        protected void updateItem(UserStatusView item, boolean empty){
-            super.updateItem(item, empty);
-            if (empty) {
-                setItem(null);
-                setGraphic(null);
-            }else{
-                setText(item.toString());
-                ImageView imageView=new ImageView(item.getImage());
-                setGraphic(imageView);
-            }
-        }
+        busy.setOnAction((event)->{
+            statusMenu.setGraphic(new ImageView(new Image(Constant.STATUS_BUSY_ICON)));
+            status=UserStatusType.BUSY;
+        });
+        invisible.setOnAction((event)->{
+            statusMenu.setGraphic(new ImageView(new Image(Constant.STATUS_INVISIBLE_ICON)));
+            status=UserStatusType.INVISIBLE;
+        });
+        statusMenu.getItems().add(online);
+        statusMenu.getItems().add(busy);
+        statusMenu.getItems().add(invisible);
     }
 
     private void initConfig() {

@@ -4,6 +4,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -32,7 +33,7 @@
             <Image url="@../images/keyboard.png" />
          </image>
       </ImageView>
-      <ComboBox fx:id="userStatus" layoutX="90.0" layoutY="265.0" maxHeight="15.0" maxWidth="32.0" minHeight="15.0" minWidth="15.0" prefHeight="15.0" prefWidth="28.0" stylesheets="@../css/login.css">
-      </ComboBox>
+      <MenuButton fx:id="statusMenu" layoutX="90.0" layoutY="264.0" maxHeight="16" maxWidth="16" minHeight="16.0" minWidth="16.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0">
+      </MenuButton>
    </children>
 </Pane>
