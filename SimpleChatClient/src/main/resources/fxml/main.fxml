@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
@@ -20,8 +21,8 @@
                   <ImageView fx:id="userIcon" fitHeight="60.0" fitWidth="72.0" layoutX="-12.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 10">
 
                   </ImageView>
-                  <Label fx:id="nameLabel" layoutX="65.0" layoutY="17.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
-                  <TextField fx:id="personWord" layoutX="65.0" layoutY="53.0" promptText="编辑个性签名" style="-fx-background-color: #9BB7D6" />
+                  <Label fx:id="nameLabel" layoutX="61.0" layoutY="13.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
+                  <TextField fx:id="personWord" layoutX="56.0" layoutY="48.0" promptText="编辑个性签名" style="-fx-background-color: #9BB7D6" />
                </children>
             </Pane>
             <ToolBar layoutX="208.0" layoutY="1.0" prefHeight="35.0" prefWidth="72.0" style="-fx-background-color: #9BB7D6">
@@ -30,6 +31,12 @@
                   <Button mnemonicParsing="false" onAction="#closeApp" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#9BB7D6;-fx-background-image:url(images/icon/close.jpg)" />
                </items>
             </ToolBar>
+            <ImageView fitHeight="25.0" fitWidth="147.0" layoutX="7.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../images/icon/songshu.png" />
+                </image>
+            </ImageView>
+            <Label layoutX="40.0" layoutY="7.0" text="SIM" />
          </children></Pane>
       <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" style="-fx-background-color: #8096AF" />
       <TabPane fx:id="tabPane" layoutY="140.0" prefHeight="526.0" prefWidth="280.0" style="-fx-background-color:#A1BBD8" tabClosingPolicy="UNAVAILABLE">
