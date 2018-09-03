@@ -20,6 +20,7 @@ public class LoginedUserView {
     private Pane pane;
     private ImageView icon;
     private Image iconImage;
+    private String iconUrl;
     private Label nickName;
     private Label userId;
     private Scene scene;
@@ -41,6 +42,7 @@ public class LoginedUserView {
         this.userId.setText(userId);
         this.nickName.setText(nickName);
         this.id=userId;
+        this.iconUrl=icon;
     }
 
     private void initMember(Scene scene) {
@@ -77,5 +79,13 @@ public class LoginedUserView {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
     }
 }

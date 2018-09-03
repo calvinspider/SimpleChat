@@ -3,52 +3,39 @@ package org.yang.zhang.fxcontroller;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 
-import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.yang.zhang.SimpleChatClientApplication;
-import org.yang.zhang.config.SystemConfig;
+import org.yang.zhang.abstracts.AbstractController;
+import org.yang.zhang.cellimpl.LoginedUserCellImpl;
+import org.yang.zhang.cellimpl.UserStatusCellImpl;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.enums.UserStatusType;
-import org.yang.zhang.keyboard.VirtualKeyboard;
+import org.yang.zhang.utils.VirtualKeyboard;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
 import org.yang.zhang.utils.ActionManager;
@@ -59,9 +46,6 @@ import org.yang.zhang.utils.SystemConfigUtils;
 import org.yang.zhang.utils.TrayManger;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.StageManager;
-import org.yang.zhang.view.ChatRoomItemView;
-import org.yang.zhang.view.LoginErrorView;
-import org.yang.zhang.view.LoginView;
 import org.yang.zhang.view.LoginedUserView;
 import org.yang.zhang.view.MainView;
 import org.yang.zhang.view.PasswordBackView;
@@ -69,7 +53,7 @@ import org.yang.zhang.view.RegisterView;
 import org.yang.zhang.view.UserStatusView;
 
 @FXMLController
-public class LoginController  implements Initializable {
+public class LoginController extends AbstractController implements Initializable {
 
     @FXML
     private Pane root;
@@ -78,15 +62,11 @@ public class LoginController  implements Initializable {
     @FXML
     private CheckBox remember;
     @FXML
-    private CheckBox autoLogin;
-    @FXML
     private ComboBox userName;
     @FXML
     private TextField passWord;
     @FXML
     private ImageView userIcon;
-    @FXML
-    private Label userRegister;
     @FXML
     private ImageView keyborad;
     @FXML
@@ -97,69 +77,53 @@ public class LoginController  implements Initializable {
     @Autowired
     private MainController mainController;
     @Autowired
-    private LoginView loginView;
-    @Autowired
     private MainView mainView;
     @Autowired
     private RegisterView registerView;
     @Autowired
     private PasswordBackView passwordBackView;
 
+    //加载托盘图标
     private TrayManger trayManger=new TrayManger();
-    private double xOffset = 0;
-    private double yOffset = 0;
-    Stage keyBoardStage;
-
-    UserStatusType status=UserStatusType.ONLINE;
-
-    Map<String,String> loginedMap=new HashMap<>();
+    //密码虚拟键盘
+    private Stage keyBoardStage;
+    //默认登陆状态
+    private UserStatusType status=UserStatusType.ONLINE;
+    //历史登陆账号缓存
+    private Map<String,String> loginedMap=new HashMap<>();
 
     public void initialize(URL url, ResourceBundle rb) {
-        initHistoryUsers();
-        initStatusList();
-        initEvent();
-        initConfig();
+        //初始化历史登陆用户数据（账号下拉框）
+        initHistoryLoginedUsers();
+        //初始化用户状态选择框
+        initUserStatusList();
+        //初始化密码虚拟键盘
         initKeyBoard();
+        //初始化系统配置
+        initConfig();
     }
 
-    private void initStatusList() {
-        userStatus.getItems().add(new UserStatusView("images/icon/green.jpg","我在线上"));
-        userStatus.getItems().add(new UserStatusView("images/icon/red.jpg","忙碌"));
-        userStatus.getItems().add(new UserStatusView("images/icon/yellow.jpg","隐身"));
-        userStatus.setCellFactory(
-                new Callback<ListView<UserStatusView>, ListCell<UserStatusView>>() {
-                    @Override public ListCell<UserStatusView> call(ListView<UserStatusView> param) {
-                        final ListCell<UserStatusView> cell = new ListCell<UserStatusView>() {
-                            @Override
-                            public void updateItem(UserStatusView pane, boolean empty) {
-                                super.updateItem(pane, empty);
-                                if (empty) {
-                                    setText(null);
-                                    setGraphic(null);
-                                } else {
-                                    setGraphic(pane.getPane());
-                                }
-                            }
-                        };
-                        return cell;
-                    }
-                });
-        userStatus.setButtonCell(new StatusListCell());
+    private void initUserStatusList() {
+        userStatus.getItems().add(new UserStatusView(Constant.STATUS_ONLINE_ICON,UserStatusType.ONLINE.getText()));
+        userStatus.getItems().add(new UserStatusView(Constant.STATUS_BUSY_ICON,UserStatusType.BUSY.getText()));
+        userStatus.getItems().add(new UserStatusView(Constant.STATUS_INVISIBLE_ICON,UserStatusType.INVISIBLE.getText()));
+        userStatus.setCellFactory(UserStatusCellImpl.callback);
+        userStatus.setButtonCell(new StatusButtonCell());
         userStatus.getSelectionModel().selectFirst();
         userStatus.valueProperty().addListener(new ChangeListener<UserStatusView>() {
             @Override public void changed(ObservableValue ov, UserStatusView old, UserStatusView newv) {
-                if("我在线上".equals(newv.getStatus())){
+                if(UserStatusType.ONLINE.getText().equals(newv.getStatus())){
                     status=UserStatusType.ONLINE;
-                }else if("忙碌".equals(newv.getStatus())){
+                }else if(UserStatusType.BUSY.getText().equals(newv.getStatus())){
                     status=UserStatusType.BUSY;
-                }else if("隐身".equals(newv.getStatus())){
+                }else if(UserStatusType.INVISIBLE.getText().equals(newv.getStatus())){
                     status=UserStatusType.INVISIBLE;
                 }
             }
         });
     }
 
-    public class StatusListCell extends ListCell<UserStatusView> {
+    public class StatusButtonCell extends ListCell<UserStatusView> {
         protected void updateItem(UserStatusView item, boolean empty){
             super.updateItem(item, empty);
             if (empty) {
@@ -187,38 +151,21 @@ public class LoginController  implements Initializable {
        }else{
            remember.setSelected(false);
        }
-        if(ClientCache.systemConfig.getAutoLogin()!=null&&ClientCache.systemConfig.getAutoLogin()){
-            autoLogin.setSelected(true);
-            remember.setSelected(true);
-        }else{
-            autoLogin.setSelected(false);
-        }
-
-
+       setDragable();
     }
 
-    private void initHistoryUsers() {
-        userName.getItems().addAll(findLoginedUsers());
+    private void initHistoryLoginedUsers() {
+        List<LoginedUserView> list=SystemConfigUtils.findLoginedUsers();
+        for (LoginedUserView view:list){
+            loginedMap.put(view.getId(),view.getIconUrl());
+        }
+        userName.getItems().addAll(list);
         userName.setEditable(true);
-        userName.setCellFactory(
-                new Callback<ListView<LoginedUserView>, ListCell<LoginedUserView>>() {
-                    @Override public ListCell<LoginedUserView> call(ListView<LoginedUserView> param) {
-                        final ListCell<LoginedUserView> cell = new ListCell<LoginedUserView>() {
-                            @Override
-                            public void updateItem(LoginedUserView pane, boolean empty) {
-                                super.updateItem(pane, empty);
-                                if (empty) {
-                                    setText(null);
-                                    setGraphic(null);
-                                } else {
-                                    setGraphic(pane.getPane());
-                                }
-                            }
-                        };
-                        return cell;
-                    }
-                });
-        userName.getEditor().setOnKeyReleased(this::handleKeyPressedForComboBox);
+        userName.getEditor().setOnKeyReleased((KeyEvent)->{
+            String text=userName.getEditor().getText();
+            setIcon(text);}
+        );
+        userName.setCellFactory(LoginedUserCellImpl.callback);
         userName.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             if(newValue instanceof String){
                 setIcon((String) newValue);
@@ -229,44 +176,15 @@ public class LoginController  implements Initializable {
         });
     }
 
-    public void initKeyBoard(){
+    private void initKeyBoard(){
         keyBoardStage=new Stage();
         final VBox root = new VBox();
         Scene scene = new Scene(root);
         VirtualKeyboard vkb = new VirtualKeyboard(passWord);
-        vkb.view().setStyle("-fx-border-color: darkblue; -fx-border-radius: 5;");
         root.getChildren().addAll(vkb.view());
         keyBoardStage.setScene(scene);
         keyBoardStage.initStyle(StageStyle.UNDECORATED);
         keyBoardStage.setResizable(false);
-//        keyBoardStage.setAlwaysOnTop(true);
-    }
-
-
-    private void handleKeyPressedForComboBox(KeyEvent keyEvent) {
-        String text=userName.getEditor().getText();
-        setIcon(text);
-    }
-
-    private void setIcon(String id){
-        if(!loginedMap.containsKey(id)){
-            userIcon.setImage(ImageUtiles.getUserIcon("defaultIcon.png"));
-            return;
-        }
-        Image image=ImageUtiles.getUserIcon(loginedMap.get(id));
-        userIcon.setImage(image);
-    }
-
-
-    private void initEvent() {
-        root.setOnMousePressed(event ->  {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        root.setOnMouseDragged(event -> {
-            StageManager.getStage(StageCodes.LOGIN).setX(event.getScreenX() - xOffset);
-            StageManager.getStage(StageCodes.LOGIN).setY(event.getScreenY() - yOffset);
-        });
         keyborad.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -283,16 +201,16 @@ public class LoginController  implements Initializable {
         keyborad.cursorProperty().setValue(Cursor.HAND);
     }
 
-    /**
-     * 登陆事件
-     * @param event
-     */
-    @FXML
-    private void handleSubmitButtonAction(ActionEvent event) {
-        //登陆
-        login();
+    private void setIcon(String id){
+        if(!loginedMap.containsKey(id)){
+            userIcon.setImage(ImageUtiles.getUserIcon("defaultIcon.png"));
+            return;
+        }
+        Image image=ImageUtiles.getUserIcon(loginedMap.get(id));
+        userIcon.setImage(image);
     }
 
+    @FXML
     public void login() {
         String name=userName.getEditor().getText();
         String pwd=passWord.getText();
@@ -313,14 +231,14 @@ public class LoginController  implements Initializable {
         UserUtils.setCurrentUser(user);
 
         //文件保存历史登陆用户
-        saveUserLoginHistory(user);
+        SystemConfigUtils.saveUserLoginHistory(user);
         if(remember.isSelected()){
             saveUserPwdMap(user.getId(),pwd);
         }
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.hide();
-
+        keyBoardStage.hide();
         Stage mainStage=new Stage();
         mainStage.setScene(new Scene(mainView.getView()));
         mainStage.initStyle(StageStyle.UNDECORATED);
@@ -339,95 +257,6 @@ public class LoginController  implements Initializable {
         Map<String,String> map=ClientCache.systemConfig.getPwdMap();
         map.put(String.valueOf(id),pwd);
         SystemConfigUtils.flushConfig(ClientCache.systemConfig);
-    }
-
-    private List<LoginedUserView> findLoginedUsers() {
-        List<LoginedUserView> result=new ArrayList<>();
-        FileInputStream inputStream=null;
-        BufferedReader bufferedReader=null;
-        String fileName=Constant.fileRoot+File.separator+Constant.historyUserFileName;
-        File file=new File(fileName);
-        if(!file.exists()){
-            return new ArrayList<>();
-        }
-        try{
-            inputStream = new FileInputStream(fileName);
-            bufferedReader= new BufferedReader(new InputStreamReader(inputStream));
-            String str;
-            while((str = bufferedReader.readLine()) != null)
-            {
-                String[] array=str.split(",");
-                result.add(new LoginedUserView(array[0],array[2],array[1]));
-                loginedMap.put(array[0],array[1]);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            try {
-                if(inputStream!=null)
-                    inputStream.close();
-                if(bufferedReader!=null)
-                    bufferedReader.close();
-            }catch (Exception e1){
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-
-    private void saveUserLoginHistory(User user) {
-        FileReader fr=null;
-        BufferedReader bufferedReader=null;
-        BufferedWriter bufferedWriter=null;
-        FileWriter fw=null;
-        try{
-            Boolean userInHistory=false;
-            String fileName=Constant.fileRoot+File.separator+Constant.historyUserFileName;
-            File file=new File(fileName);
-            File dir=new File(Constant.fileRoot);
-            if(!dir.exists()){
-                dir.mkdir();
-            }
-            if(!file.exists()){
-                file.createNewFile();
-            }
-            fr = new FileReader(fileName);
-            fw = new FileWriter(file, true);
-            bufferedReader= new BufferedReader(fr);
-            bufferedWriter= new BufferedWriter(fw);
-            String str;
-            String userid=String.valueOf(user.getId());
-            while((str = bufferedReader.readLine()) != null)
-            {
-                String[] tmp=str.split(",");
-                String now=tmp[0];
-                System.out.println(tmp[0]+userid);
-                if(now.equals(userid)){
-                    userInHistory=true;
-                    break;
-                }
-            }
-            if(!userInHistory){
-                bufferedWriter.write(user.getId()+","+user.getIconUrl()+","+user.getNickName()+"\n");
-                bufferedWriter.flush();
-            }
-            fr.close();
-            fw.close();
-            bufferedReader.close();
-        }catch (Exception e){
-            e.printStackTrace();
-            try {
-                if(fr!=null)
-                    fr.close();
-                if(fw!=null)
-                    fw.close();
-                if(bufferedReader!=null)
-                    bufferedReader.close();
-                if(bufferedWriter!=null)
-                    bufferedWriter.close();
-            }catch (Exception e1){
-                e.printStackTrace();
-            }
-        }
     }
 
     @FXML
@@ -479,19 +308,16 @@ public class LoginController  implements Initializable {
         SystemConfigUtils.flushConfig(ClientCache.systemConfig);
     }
 
-    @FXML
-    public void autoLogin(){
-        if(remember.isSelected()){
-            ClientCache.systemConfig.setAutoLogin(true);
-            remember.setSelected(true);
-            ClientCache.systemConfig.setRemember(true);
-        }else{
-            ClientCache.systemConfig.setAutoLogin(false);
-        }
-        SystemConfigUtils.flushConfig(ClientCache.systemConfig);
+    @Override
+    public void setDragable() {
+        root.setOnMousePressed(event ->  {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        root.setOnMouseDragged(event -> {
+            StageManager.getStage(StageCodes.LOGIN).setX(event.getScreenX() - xOffset);
+            StageManager.getStage(StageCodes.LOGIN).setY(event.getScreenY() - yOffset);
+        });
     }
 
-    public Boolean isAutoLogin(){
-        return autoLogin.isSelected();
-    }
 }

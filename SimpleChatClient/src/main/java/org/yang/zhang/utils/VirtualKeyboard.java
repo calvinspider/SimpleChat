@@ -1,4 +1,4 @@
-package org.yang.zhang.keyboard;
+package org.yang.zhang.utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;

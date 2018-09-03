@@ -6,7 +6,7 @@
 
 <Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: white" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="statusName" layoutX="29.0" layoutY="-9.0" prefHeight="40.0" prefWidth="85.0" text="Label" />
+      <Label  fx:id="statusName" layoutX="29.0" layoutY="-9.0" prefHeight="40.0" prefWidth="85.0" text="Label" />
       <ImageView fx:id="statusIcon" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </Pane>

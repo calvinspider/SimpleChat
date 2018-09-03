@@ -49,9 +49,9 @@
 
 #userStatus .list-cell
 {
-    -fx-background: #ECEDEE;
+    -fx-background: #EDEEEE;
     -fx-pref-width: 80;
-    -fx-pref-height: 25;
+    -fx-pref-height: 35;
 }
 
 #userStatus{
