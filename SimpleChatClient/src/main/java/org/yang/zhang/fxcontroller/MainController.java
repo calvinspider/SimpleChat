@@ -1,6 +1,7 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -217,7 +218,8 @@ public class MainController  implements Initializable {
         }
         contractTree.setCellFactory(ContractTreeCellImpl.callback);
         contractTree.setEditable(true);
-        contractTree.setContextMenu(rightPopMenu());
+        contractTree.setContextMenu(groupMenu());
+
     }
 
 
@@ -341,15 +343,109 @@ public class MainController  implements Initializable {
         });
     }
 
-    public ContextMenu rightPopMenu(){
+    public ContextMenu userMenu(){
         ContextMenu addMenu = new ContextMenu();
-        MenuItem addMenuItem = new MenuItem("添加分组");
-        MenuItem edit = new MenuItem("修改");
-        MenuItem deleteMenu = new MenuItem("删除");
-        addMenu.getItems().add(addMenuItem);
-        addMenu.getItems().add(deleteMenu);
-        addMenu.getItems().add(edit);
-        addMenuItem.setOnAction(event ->  {
+        MenuItem message = new MenuItem("发送即时消息",new ImageView(new Image("images/icon/message.png")));
+        MenuItem email = new MenuItem("发送电子邮件",new ImageView(new Image("images/icon/email.png")));
+        MenuItem info = new MenuItem("查看资料",new ImageView(new Image("images/icon/info.png")));
+        MenuItem card = new MenuItem("分享TA的名片",new ImageView(new Image("images/icon/card.png")));
+        MenuItem history = new MenuItem("消息记录",new ImageView(new Image("images/icon/history.png")));
+        MenuItem auth = new MenuItem("设置权限",new ImageView(new Image("images/icon/auth.png")));
+        MenuItem remark = new MenuItem("修改备注姓名",new ImageView(new Image("images/icon/remark.png")));
+        MenuItem move = new MenuItem("移动联系人至",new ImageView(new Image("images/icon/move.png")));
+        MenuItem delete = new MenuItem("删除好友",new ImageView(new Image("images/icon/delete.png")));
+        MenuItem jubao = new MenuItem("举报此用户",new ImageView(new Image("images/icon/jubao.png")));
+        addMenu.getItems().addAll(message,email,info,card,history,auth,remark,move,delete,jubao);
+        return addMenu;
+    }
+
+    public ContextMenu groupMenu(){
+        ContextMenu addMenu = new ContextMenu();
+        MenuItem add = new MenuItem("添加分组",new ImageView(new Image("images/icon/add.png")));
+        MenuItem edit = new MenuItem("重命名",new ImageView(new Image("images/icon/edit.png")));
+        MenuItem delete = new MenuItem("删除该组",new ImageView(new Image("images/icon/delete.png")));
+        MenuItem flush = new MenuItem("刷新好友列表",new ImageView(new Image("images/icon/flush.png")));
+        MenuItem onlyOnline = new MenuItem("显示在线联系人",new ImageView(new Image("images/icon/onlyOnline.png")));
+        MenuItem visableFor = new MenuItem("隐身对改分组可见",new ImageView(new Image("images/icon/invisableFor.png")));
+        MenuItem invisableFor = new MenuItem("在线对该分组隐身",new ImageView(new Image("images/icon/invisableFor.png")));
+        addMenu.getItems().addAll(add,edit,delete,flush,onlyOnline,visableFor,invisableFor);
+        add.setOnAction(this::addGroup);
+        delete.setOnAction(this::deleteGroup);
+        edit.setOnAction(this::editGroup);
+        flush.setOnAction(this::flushGroup);
+        onlyOnline.setOnAction(this::showOnlyOnline);
+        visableFor.setOnAction(this::visableForGroup);
+        invisableFor.setOnAction(this::invisableForGroup);
+        return addMenu;
+    }
+
+    private void invisableForGroup(ActionEvent event) {
+
+    }
+
+    private void visableForGroup(ActionEvent event) {
+
+    }
+
+    private void showOnlyOnline(ActionEvent event) {
+
+    }
+
+    private void flushGroup(ActionEvent event) {
+
+    }
+
+    private void editGroup(ActionEvent event) {
+        TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
+        if(item==null){
+            return;
+        }
+        ContractItemView contractItemView=item.getValue();
+        if(contractItemView.getId().contains("GROUP")){
+            TextField textField=contractItemView.getGroupName();
+            contractItemView.setGroupEditable();
+            textField.focusedProperty().addListener(new ChangeListener<Boolean>()
+            {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                {
+                    if(!newPropertyValue)
+                    {
+                        if(textField.isEditable()){
+                            chatService.updateGroup(contractItemView.getId(),textField.getText());
+                            textField.setEditable(false);
+                            contractItemView.setGroupEditDisable();
+                        }
+                    }
+                }
+            });
+        }else{
+
+        }
+    }
+
+
+    private void deleteGroup(ActionEvent event) {
+        TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
+        if(item==null){
+            return;
+        }
+        ContractItemView contractItemView=item.getValue();
+        if(contractItemView.getId().contains("GROUP")){
+            //删除分组,原分组下的人移到默认的分组中
+            String groupId=contractItemView.getId();
+            chatService.deleteGroup(UserUtils.getCurrentUserId(),Integer.valueOf(groupId.substring(groupId.indexOf("P")+1,groupId.length())));
+            initContract(UserUtils.getCurrentUser());
+        }else{
+            //删除用户
+            String parentId=item.getParent().getValue().getId();
+            Integer pid=Integer.valueOf(parentId.substring(parentId.indexOf("P")+1,parentId.length()));
+            chatService.deleteFriend(pid,Integer.valueOf(contractItemView.getId()));
+            initContract(UserUtils.getCurrentUser());
+        }
+    }
+
+    private void addGroup(ActionEvent event) {
             TreeItem<ContractItemView> newGroup = new TreeItem<ContractItemView>();
             ContractItemView itemView=new ContractItemView("");
             TextField textField=itemView.getGroupName();
@@ -375,54 +471,5 @@ public class MainController  implements Initializable {
             newGroup.setValue(itemView);
             //新分组都挂在根节点下
             contractTree.getRoot().getChildren().add(newGroup);
-        });
-        deleteMenu.setOnAction(event -> {
-            TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
-            if(item==null){
-                return;
-            }
-            ContractItemView contractItemView=item.getValue();
-            if(contractItemView.getId().contains("GROUP")){
-                //删除分组,原分组下的人移到默认的分组中
-                String groupId=contractItemView.getId();
-                chatService.deleteGroup(UserUtils.getCurrentUserId(),Integer.valueOf(groupId.substring(groupId.indexOf("P")+1,groupId.length())));
-                initContract(UserUtils.getCurrentUser());
-            }else{
-                //删除用户
-                String parentId=item.getParent().getValue().getId();
-                Integer pid=Integer.valueOf(parentId.substring(parentId.indexOf("P")+1,parentId.length()));
-                chatService.deleteFriend(pid,Integer.valueOf(contractItemView.getId()));
-                initContract(UserUtils.getCurrentUser());
-            }
-        });
-        edit.setOnAction(event ->  {
-            TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
-            if(item==null){
-                return;
-            }
-            ContractItemView contractItemView=item.getValue();
-            if(contractItemView.getId().contains("GROUP")){
-                TextField textField=contractItemView.getGroupName();
-                contractItemView.setGroupEditable();
-                textField.focusedProperty().addListener(new ChangeListener<Boolean>()
-                {
-                    @Override
-                    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-                    {
-                        if(!newPropertyValue)
-                        {
-                            if(textField.isEditable()){
-                                chatService.updateGroup(contractItemView.getId(),textField.getText());
-                                textField.setEditable(false);
-                                contractItemView.setGroupEditDisable();
-                            }
-                        }
-                    }
-                });
-            }else{
-
-            }
-        });
-        return addMenu;
     }
 }
