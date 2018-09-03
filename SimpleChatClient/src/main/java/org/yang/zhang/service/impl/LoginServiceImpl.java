@@ -19,11 +19,12 @@ public class LoginServiceImpl implements LoginService {
     private RestTemplate restTemplate;
 
     @Override
-    public Result<User> login(String userName, String passWord) {
+    public Result<User> login(String userName, String passWord,Integer status) {
         TypeReference type = new TypeReference<Result<User>>(){};
         LoginDto loginDto=new LoginDto();
         loginDto.setUserName(userName);
         loginDto.setPassWord(passWord);
+        loginDto.setStatus(status);
         try {
             String result=restTemplate.postForObject(Constant.LoginUrl,loginDto,String.class);
             return JsonUtils.fromJson(result, type);

@@ -11,4 +11,5 @@ import lombok.Data;
 public class LoginDto {
     String userName;
     String passWord;
+    Integer status;
 }

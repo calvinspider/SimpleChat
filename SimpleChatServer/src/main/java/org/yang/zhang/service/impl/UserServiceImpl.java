@@ -26,12 +26,14 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public Result<User> login(String userName, String passWord) {
+    public Result<User> login(String userName, String passWord,Integer status) {
         try {
             User user=userRepository.getOne(Integer.valueOf(userName));
             User newUser=new User();
             BeanUtils.copyProperties(user,newUser);
             if(newUser.getPassword().equals(passWord)){
+                user.setStatus(status);
+                userRepository.saveAndFlush(user);
                 return Result.successData(newUser);
             }
         }catch (Exception e){

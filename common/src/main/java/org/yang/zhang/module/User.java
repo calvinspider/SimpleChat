@@ -37,7 +37,16 @@ public class User implements Serializable {
     private String password;
 //    private String personalDesc;
 //    private String job;
+    private Integer status;
 
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public Integer getId() {
         return id;

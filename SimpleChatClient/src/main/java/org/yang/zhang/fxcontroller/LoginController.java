@@ -47,6 +47,7 @@ import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
+import org.yang.zhang.enums.UserStatusType;
 import org.yang.zhang.keyboard.VirtualKeyboard;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
@@ -109,6 +110,8 @@ public class LoginController  implements Initializable {
     private double yOffset = 0;
     Stage keyBoardStage;
 
+    UserStatusType status=UserStatusType.ONLINE;
+
     Map<String,String> loginedMap=new HashMap<>();
 
     public void initialize(URL url, ResourceBundle rb) {
@@ -143,6 +146,17 @@ public class LoginController  implements Initializable {
                 });
         userStatus.setButtonCell(new StatusListCell());
         userStatus.getSelectionModel().selectFirst();
+        userStatus.valueProperty().addListener(new ChangeListener<UserStatusView>() {
+            @Override public void changed(ObservableValue ov, UserStatusView old, UserStatusView newv) {
+                if("我在线上".equals(newv.getStatus())){
+                    status=UserStatusType.ONLINE;
+                }else if("忙碌".equals(newv.getStatus())){
+                    status=UserStatusType.BUSY;
+                }else if("隐身".equals(newv.getStatus())){
+                    status=UserStatusType.INVISIBLE;
+                }
+            }
+        });
     }
 
     public class StatusListCell extends ListCell<UserStatusView> {
@@ -282,11 +296,12 @@ public class LoginController  implements Initializable {
     public void login() {
         String name=userName.getEditor().getText();
         String pwd=passWord.getText();
+        Integer s=this.status.getValue();
         if(StringUtils.isBlank(name)||StringUtils.isBlank(pwd)){
             return;
         }
         loginButton.setText("登录中...");
-        Result<User> result=loginService.login(name,pwd);
+        Result<User> result=loginService.login(name,pwd,s);
         if(ResultConstants.RESULT_FAILED.equals(result.getCode())){
             //登陆失败显示失败框
             DialogUtils.alert("登陆失败,用户名或密码错误!");

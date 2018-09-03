@@ -20,6 +20,7 @@ public class UserStatusView {
     private Scene scene;
     private Pane pane;
     private Image image;
+    private String status;
 
     public UserStatusView(String icon,String name) {
         try {
@@ -34,6 +35,11 @@ public class UserStatusView {
         statusNameLabel=(Label)scene.lookup("#statusName");
         statusNameLabel.setText(name);
         pane=(Pane)scene.lookup("#pane");
+        status=name;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public Pane getPane() {

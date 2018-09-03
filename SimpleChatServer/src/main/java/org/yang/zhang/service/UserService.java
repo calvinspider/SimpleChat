@@ -10,7 +10,7 @@ import org.yang.zhang.module.User;
  */
 
 public interface UserService {
-    Result<User> login(String userName, String passWord);
+    Result<User> login(String userName, String passWord,Integer status);
     User register(User user);
     Result<Void> findPassWord(String userId);
 }

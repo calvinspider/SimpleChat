@@ -23,7 +23,7 @@ public class LoginController {
 
     @RequestMapping("/login")
     public String login(@RequestBody LoginDto loginDto) {
-        Result<User> result= userService.login(loginDto.getUserName(),loginDto.getPassWord());
+        Result<User> result= userService.login(loginDto.getUserName(),loginDto.getPassWord(),loginDto.getStatus());
         System.out.println(JsonUtils.toJson(result));
         return JsonUtils.toJson(result);
     }
