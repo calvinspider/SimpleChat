@@ -109,6 +109,8 @@ public class MainController  implements Initializable {
     private ContractItemView focusGroup;
     private double xOffset = 0;
     private double yOffset = 0;
+    public static ContextMenu groupMenu = new ContextMenu();
+    public static ContextMenu userMenu = new ContextMenu();
     /**
      * 主页面初始化
      * @param location
@@ -119,6 +121,8 @@ public class MainController  implements Initializable {
 
     }
 
+
+
     public void init(User user){
         this.userId=user.getId();
         initMainPane(user);
@@ -126,6 +130,8 @@ public class MainController  implements Initializable {
         initContract(user);
         initTabPane(user);
         initEvent();
+        userMenu();
+        groupMenu();
     }
 
     private void initMainPane(User user) {
@@ -218,8 +224,6 @@ public class MainController  implements Initializable {
         }
         contractTree.setCellFactory(ContractTreeCellImpl.callback);
         contractTree.setEditable(true);
-        contractTree.setContextMenu(groupMenu());
-
     }
 
 
@@ -343,8 +347,7 @@ public class MainController  implements Initializable {
         });
     }
 
-    public ContextMenu userMenu(){
-        ContextMenu addMenu = new ContextMenu();
+    private void userMenu(){
         MenuItem message = new MenuItem("发送即时消息",new ImageView(new Image("images/icon/message.png")));
         MenuItem email = new MenuItem("发送电子邮件",new ImageView(new Image("images/icon/email.png")));
         MenuItem info = new MenuItem("查看资料",new ImageView(new Image("images/icon/info.png")));
@@ -355,12 +358,10 @@ public class MainController  implements Initializable {
         MenuItem move = new MenuItem("移动联系人至",new ImageView(new Image("images/icon/move.png")));
         MenuItem delete = new MenuItem("删除好友",new ImageView(new Image("images/icon/delete.png")));
         MenuItem jubao = new MenuItem("举报此用户",new ImageView(new Image("images/icon/jubao.png")));
-        addMenu.getItems().addAll(message,email,info,card,history,auth,remark,move,delete,jubao);
-        return addMenu;
+        userMenu.getItems().addAll(message,email,info,card,history,auth,remark,move,delete,jubao);
     }
 
-    public ContextMenu groupMenu(){
-        ContextMenu addMenu = new ContextMenu();
+    private void  groupMenu(){
         MenuItem add = new MenuItem("添加分组",new ImageView(new Image("images/icon/add.png")));
         MenuItem edit = new MenuItem("重命名",new ImageView(new Image("images/icon/edit.png")));
         MenuItem delete = new MenuItem("删除该组",new ImageView(new Image("images/icon/delete.png")));
@@ -368,7 +369,7 @@ public class MainController  implements Initializable {
         MenuItem onlyOnline = new MenuItem("显示在线联系人",new ImageView(new Image("images/icon/onlyOnline.png")));
         MenuItem visableFor = new MenuItem("隐身对改分组可见",new ImageView(new Image("images/icon/invisableFor.png")));
         MenuItem invisableFor = new MenuItem("在线对该分组隐身",new ImageView(new Image("images/icon/invisableFor.png")));
-        addMenu.getItems().addAll(add,edit,delete,flush,onlyOnline,visableFor,invisableFor);
+        groupMenu.getItems().addAll(add,edit,delete,flush,onlyOnline,visableFor,invisableFor);
         add.setOnAction(this::addGroup);
         delete.setOnAction(this::deleteGroup);
         edit.setOnAction(this::editGroup);
@@ -376,7 +377,6 @@ public class MainController  implements Initializable {
         onlyOnline.setOnAction(this::showOnlyOnline);
         visableFor.setOnAction(this::visableForGroup);
         invisableFor.setOnAction(this::invisableForGroup);
-        return addMenu;
     }
 
     private void invisableForGroup(ActionEvent event) {

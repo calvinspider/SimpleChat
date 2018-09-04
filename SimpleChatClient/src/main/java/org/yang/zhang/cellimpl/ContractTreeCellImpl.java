@@ -67,8 +67,6 @@ public class ContractTreeCellImpl extends TreeCell<ContractItemView> {
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             event.consume();
         });
-
-
     }
 
     @Override
@@ -83,6 +81,12 @@ public class ContractTreeCellImpl extends TreeCell<ContractItemView> {
             }else{
                 this.cellId=pane.getId();
                 setGraphic(pane.getItemPane());
+                if(cellId.startsWith("GROUP")){
+                    setContextMenu(MainController.groupMenu);
+                }else{
+                    setContextMenu(MainController.userMenu);
+                }
+
             }
 
         }
