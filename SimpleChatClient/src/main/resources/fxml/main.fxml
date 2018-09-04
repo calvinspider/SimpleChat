@@ -12,55 +12,54 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="root" maxHeight="731.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" style="-fx-border-radius:10;-fx-background-color: #9BB7D6;" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
+<Pane fx:id="root" maxHeight="731.0" maxWidth="280.0" minHeight="700.0" minWidth="280.0" prefHeight="700.0" prefWidth="280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.yang.zhang.fxcontroller.MainController">
    <children>
-      <Pane maxHeight="110.0" maxWidth="280.0" minHeight="110.0" minWidth="280.0" prefHeight="110.0" prefWidth="280.0" style="-fx-background-color: #9BB7D6;">
+      <Pane fx:id="header" maxHeight="110.0" maxWidth="280.0" minHeight="110.0" minWidth="280.0" prefHeight="110.0" prefWidth="280.0">
          <children>
             <Pane layoutX="21.0" layoutY="25.0" prefHeight="60.0" prefWidth="180.0">
                <children>
-                  <ImageView fx:id="userIcon" fitHeight="60.0" fitWidth="72.0" layoutX="-12.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 10">
+                  <ImageView fx:id="userIcon" fitHeight="60.0" fitWidth="72.0" layoutX="-12.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
 
                   </ImageView>
                   <Label fx:id="nameLabel" layoutX="61.0" layoutY="13.0" prefHeight="30.0" prefWidth="102.0" text="浮生" />
-                  <TextField fx:id="personWord" layoutX="56.0" layoutY="48.0" promptText="编辑个性签名" style="-fx-background-color: #9BB7D6" />
+                  <TextField fx:id="personWord" layoutX="56.0" layoutY="48.0" promptText="编辑个性签名" />
                </children>
             </Pane>
-            <ToolBar layoutX="208.0" layoutY="1.0" prefHeight="35.0" prefWidth="72.0" style="-fx-background-color: #9BB7D6">
-               <items>
-                  <Button mnemonicParsing="false" onAction="#minsize" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#9BB7D6;-fx-background-image:url(images/icon/min.jpg)" />
-                  <Button mnemonicParsing="false" onAction="#closeApp" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#9BB7D6;-fx-background-image:url(images/icon/close.jpg)" />
-               </items>
-            </ToolBar>
-            <ImageView fitHeight="25.0" fitWidth="147.0" layoutX="7.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+
+           <Button fx:id="minBtn" layoutX="224.0" layoutY="6.0" mnemonicParsing="false" onAction="#minsize" prefHeight="20.0" prefWidth="20.0" />
+           <Button fx:id="closeBtn" layoutX="255.0" layoutY="6.0" mnemonicParsing="false" onAction="#closeApp" prefHeight="20.0" prefWidth="20.0" />
+              
+            <ImageView fx:id="logo" fitHeight="25.0" fitWidth="147.0" layoutX="7.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                 <image>
                     <Image url="@../images/icon/songshu.png" />
                 </image>
             </ImageView>
             <Label layoutX="40.0" layoutY="7.0" text="SIM" />
-         </children></Pane>
-      <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" style="-fx-background-color: #8096AF" />
-      <TabPane fx:id="tabPane" layoutY="140.0" prefHeight="526.0" prefWidth="280.0" style="-fx-background-color:#A1BBD8" tabClosingPolicy="UNAVAILABLE">
+         </children>
+      </Pane>
+      <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" />
+      <TabPane fx:id="tabPane" layoutY="140.0" prefHeight="526.0" prefWidth="280.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab id="groupTab" closable="false" style="-fx-background-position:center;-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/contract.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 90; -fx-text-alignment: center;">
+          <Tab fx:id="groupTab" closable="false">
             <content>
                 <TreeView fx:id="contractTree" prefHeight="515.0" prefWidth="280.0" />
             </content>
           </Tab>
-            <Tab fx:id="messageTab" closable="false" style="-fx-background-position:center;-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/recentmessage.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 90;">
+            <Tab fx:id="chatRoomTab" closable="false">
+                <content>
+                    <ListView fx:id="chatRoomList" layoutX="-4.0" layoutY="6.0" prefHeight="492.0" prefWidth="287.0" />
+                </content>
+            </Tab>
+            <Tab fx:id="messageTab" closable="false">
               <content>
                   <ListView fx:id="messageList" prefHeight="546.0" prefWidth="280.0" />
               </content>
             </Tab>
-            <Tab fx:id="chatRoomTab" closable="false" style="-fx-background-position:center;-fx-background-color:#A1BBD8;-fx-background-image:url(images/icon/contractgroup.jpg);-fx-background-repeat:no-repeat;-fx-pref-Width: 80;">
-              <content>
-                  <ListView fx:id="chatRoomList" layoutX="-4.0" layoutY="6.0" prefHeight="492.0" prefWidth="287.0" />
-              </content>
-            </Tab>
         </tabs>
       </TabPane>
-       <ToolBar layoutX="1.0" layoutY="662.0" prefHeight="43.0" prefWidth="280.0" style="-fx-background-color:#A1BBD8;">
-           <Button fx:id="addFriendBtn" layoutX="4.0" layoutY="672.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#A1BBD8;-fx-background-image: url(images/icon/system.jpg)" />
-           <Button fx:id="systemBtn" layoutX="73.0" layoutY="671.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color:#A1BBD8;-fx-background-image: url(images/icon/addfriend.jpg)" />
+       <ToolBar layoutX="1.0" layoutY="662.0" prefHeight="43.0" prefWidth="280.0">
+           <Button fx:id="addFriendBtn" layoutX="4.0" layoutY="672.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
+           <Button fx:id="systemBtn" layoutX="73.0" layoutY="671.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
        </ToolBar>
    </children>
 </Pane>

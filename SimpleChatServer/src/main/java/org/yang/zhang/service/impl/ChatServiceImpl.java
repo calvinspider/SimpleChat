@@ -10,6 +10,7 @@ import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.dto.RoomChatInfoDto;
 import org.yang.zhang.dto.SearchContractDto;
 import org.yang.zhang.entity.Result;
+import org.yang.zhang.enums.UserStatusType;
 import org.yang.zhang.mapper.ChatMapper;
 import org.yang.zhang.mapper.ChatRoomMapper;
 import org.yang.zhang.mapper.GroupUserMapper;
@@ -71,6 +72,14 @@ public class ChatServiceImpl implements ChatService {
             groupDto.setUserList(users);
             result.add(groupDto);
         });
+        for (ContractGroupDto groupDto:result){
+            if(parma.getOnlyOnline()){
+                groupDto.setUserList(groupDto.getUserList().stream().filter(item->item.getStatus()!=UserStatusType.INVISIBLE.getValue()).collect(Collectors.toList()));
+            }
+            groupDto.setOnlineCount(groupDto.getUserList().stream().filter((item->item.getStatus()!=UserStatusType.INVISIBLE.getValue()
+                    &&item.getStatus()!=UserStatusType.OFFLINE.getValue())).count());
+            groupDto.setAllCount(groupDto.getUserList().size());
+        }
         return result;
     }
 

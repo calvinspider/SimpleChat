@@ -5,7 +5,15 @@ import lombok.Data;
 @Data
 public class FindByUserDto {
     private Integer userId;
+    private Boolean onlyOnline;
 
+    public Boolean getOnlyOnline() {
+        return onlyOnline;
+    }
+
+    public void setOnlyOnline(Boolean onlyOnline) {
+        this.onlyOnline = onlyOnline;
+    }
 
     public Integer getUserId() {
         return userId;

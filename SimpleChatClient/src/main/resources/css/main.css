@@ -1,40 +1,94 @@
-#contractLabel{
-    -fx-background-color: #A1BBD8;
+#minBtn{
+    -fx-background-color: transparent;
+    -fx-background-image:url("../images/icon/min.png");
+    -fx-background-repeat: no-repeat;
 }
 
-#contractLabel:hover{
-    -fx-background-color: #D1E0EF;
+#closeBtn{
+    -fx-background-color: transparent;
+    -fx-background-image:url("../images/icon/close.png");
+    -fx-background-repeat: no-repeat;
 }
 
-#contractTree .tree-cell {
-    -fx-background-color: #A1BBD8;
+#groupTab{
+    -fx-background-position:center;
+    -fx-background-image:url("../images/icon/contract-normal.png");
+    -fx-background-repeat:no-repeat;
+    -fx-pref-Width: 80px;
+    -fx-pref-height:30px;
+    -fx-text-alignment: center;
+    -fx-background-color: rgba(255, 255, 255, 0);
 }
 
-#contractLabel:hover {
-    -fx-background-color: #D2D8CC;
+#groupTab:hover{
+    -fx-background-image:url("../images/icon/contract-focus.png");
 }
 
-.tab-pane .headers-region {
-    -fx-background-color: #A1BBD8;
-}
-.tab-pane .tab-header-background {
-    -fx-background-color: #A1BBD8;
-}
-.tab-pane .tab-selected-line {
-    -fx-stroke: #A1BBD8;
-    -fx-stroke-width: 3pt;
-}
-
-.list-view .list-cell:even {
-    -fx-background-color: #A1BBD8;;
-    -fx-text-fill: #A1BBD8;;
-}
-.list-view .list-cell:odd {
-    -fx-background-color: #A1BBD8;;
-    -fx-text-fill: #A1BBD8;;
+#messageTab{
+    -fx-background-position:center;
+    -fx-background-image:url("../images/icon/message-normal.png");
+    -fx-background-repeat:no-repeat;
+    -fx-pref-Width: 80px;
+    -fx-pref-height:30px;
+    -fx-text-alignment: center;
+    -fx-background-color: rgba(255, 255, 255, 0);
 }
 
-.list-view .list-cell:hover {
-    -fx-background-color: #D2D8CC;;
-    -fx-text-fill: #D2D8CC;;
+#messageTab:hover{
+    -fx-background-image:url("../images/icon/message-focus.png");
 }
+
+#chatRoomTab{
+    -fx-background-position:center;
+    -fx-background-image:url("../images/icon/group-normal.png");
+    -fx-background-repeat:no-repeat;
+    -fx-pref-Width: 80px;
+    -fx-pref-height:30px;
+    -fx-text-alignment: center;
+    -fx-background-color: rgba(255, 255, 255, 0);
+}
+
+#chatRoomTab:hover{
+    -fx-background-image:url("../images/icon/group-focus.png");
+}
+
+#header{
+
+}
+
+#logo{
+
+}
+
+#searchField{
+    -fx-background-color: rgba(255, 255, 255, 0);
+}
+
+#tabPane{
+    -fx-background-color: rgba(255, 255, 255, 0);
+}
+
+#addFriendBtn{
+    -fx-background-image: url(../images/icon/system.jpg);
+}
+
+#systemBtn{
+    -fx-background-image: url(../images/icon/addfriend.jpg);
+}
+
+#root{
+    -fx-background-image:url("../images/icon/bg.jpg");
+}
+
+#contractTree{
+    -fx-background-color: rgba(255, 255, 255, 0);
+}
+
+#chatRoomList{
+    -fx-background-color: rgba(255, 255, 255, 0);
+}
+
+#messageList{
+    -fx-background-color: rgba(255, 255, 255, 0);
+}
+

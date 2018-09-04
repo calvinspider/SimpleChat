@@ -13,12 +13,31 @@ import lombok.Data;
  */
 @Data
 public class ContractGroupDto {
+
     private Integer groupId;
     private String groupName;
     private Integer userId;
     private List<User> userList;
     private String oldGroupId;
     private String newGroupId;
+    private Long onlineCount;
+    private Integer allCount;
+
+    public Long getOnlineCount() {
+        return onlineCount;
+    }
+
+    public void setOnlineCount(Long onlineCount) {
+        this.onlineCount = onlineCount;
+    }
+
+    public Integer getAllCount() {
+        return allCount;
+    }
+
+    public void setAllCount(Integer allCount) {
+        this.allCount = allCount;
+    }
 
     public String getOldGroupId() {
         return oldGroupId;

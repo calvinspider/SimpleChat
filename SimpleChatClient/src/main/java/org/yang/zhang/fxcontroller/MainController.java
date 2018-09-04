@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -23,6 +24,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +143,11 @@ public class MainController  implements Initializable {
         nameLabel.setText(user.getNickName());
         personWord.setText(user.getPersonWord());
         personWord.setFocusTraversable(false);
+        DropShadow shadow = new DropShadow();
+        shadow.setOffsetY(10.0);
+        shadow.setOffsetX(10.0);
+        shadow.setColor(Color.GRAY);
+        root.setEffect(shadow);
     }
 
 
@@ -195,6 +202,7 @@ public class MainController  implements Initializable {
         //获取当前用户联系人列表
         FindByUserDto findByUserDto=new FindByUserDto();
         findByUserDto.setUserId(id);
+        findByUserDto.setOnlyOnline(false);
         List<ContractGroupDto> contracts= contractService.getContractList(findByUserDto);
         //添加根节点
         TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
@@ -205,7 +213,7 @@ public class MainController  implements Initializable {
         ClientCache.clearGroup();
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
-            ContractItemView pane=new ContractItemView(contract.getGroupName());
+            ContractItemView pane=new ContractItemView(contract.getGroupName()+" "+contract.getOnlineCount()+"/"+contract.getAllCount());
             pane.setId("GROUP"+contract.getGroupId());
             TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
             ClientCache.addGroup(groupItem);
@@ -388,11 +396,43 @@ public class MainController  implements Initializable {
     }
 
     private void showOnlyOnline(ActionEvent event) {
-
+        //获取当前用户联系人列表
+        FindByUserDto findByUserDto=new FindByUserDto();
+        findByUserDto.setUserId(UserUtils.getCurrentUserId());
+        findByUserDto.setOnlyOnline(true);
+        List<ContractGroupDto> contracts= contractService.getContractList(findByUserDto);
+        //添加根节点
+        TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
+        rootItem.setValue(null);
+        contractTree.setRoot(rootItem);
+        contractTree.setShowRoot(false);
+        ClientCache.clearContract();
+        ClientCache.clearGroup();
+        //添加联系人到列表
+        for (ContractGroupDto contract:contracts) {
+            ContractItemView pane=new ContractItemView(contract.getGroupName()+" "+contract.getOnlineCount()+"/"+contract.getAllCount());
+            pane.setId("GROUP"+contract.getGroupId());
+            TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
+            ClientCache.addGroup(groupItem);
+            rootItem.getChildren().add(groupItem);
+            List<User> users = contract.getUserList();
+            for (User user : users) {
+                TreeItem<ContractItemView> item = new TreeItem<ContractItemView>();
+                ContractItemView contractItemView=new ContractItemView(user);
+                contractItemView.setId(String.valueOf(user.getId()));
+                item.setValue(contractItemView);
+                ClientCache.addContract(String.valueOf(user.getId()),item);
+                UserUtils.setUser(user.getId(),user);
+                ImageUtiles.setUserIcon(user.getId(),contractItemView.getUserImage());
+                groupItem.getChildren().add(item);
+            }
+        }
+        contractTree.setCellFactory(ContractTreeCellImpl.callback);
+        contractTree.setEditable(true);
     }
 
     private void flushGroup(ActionEvent event) {
-
+        initContract(UserUtils.getCurrentUser());
     }
 
     private void editGroup(ActionEvent event) {
