@@ -14,10 +14,10 @@
     -fx-background-position:center;
     -fx-background-image:url("../images/icon/contract-normal.png");
     -fx-background-repeat:no-repeat;
-    -fx-pref-Width: 80px;
+    -fx-pref-Width: 90px;
     -fx-pref-height:30px;
     -fx-text-alignment: center;
-    -fx-background-color: rgba(255, 255, 255, 0);
+    -fx-background-color: rgba(255, 255, 255, 0.3);
 }
 
 #groupTab:hover{
@@ -31,7 +31,7 @@
     -fx-pref-Width: 80px;
     -fx-pref-height:30px;
     -fx-text-alignment: center;
-    -fx-background-color: rgba(255, 255, 255, 0);
+    -fx-background-color: rgba(255, 255, 255, 0.3);
 }
 
 #messageTab:hover{
@@ -42,10 +42,10 @@
     -fx-background-position:center;
     -fx-background-image:url("../images/icon/group-normal.png");
     -fx-background-repeat:no-repeat;
-    -fx-pref-Width: 80px;
+    -fx-pref-Width: 90px;
     -fx-pref-height:30px;
     -fx-text-alignment: center;
-    -fx-background-color: rgba(255, 255, 255, 0);
+    -fx-background-color: rgba(255, 255, 255, 0.3);
 }
 
 #chatRoomTab:hover{
@@ -64,31 +64,52 @@
     -fx-background-color: rgba(255, 255, 255, 0);
 }
 
-#tabPane{
+#personWord{
     -fx-background-color: rgba(255, 255, 255, 0);
 }
 
 #addFriendBtn{
-    -fx-background-image: url(../images/icon/system.jpg);
+    -fx-background-color: transparent;
+    -fx-background-image: url("../images/icon/addFriend.png");
+    -fx-background-repeat: no-repeat;
 }
 
 #systemBtn{
-    -fx-background-image: url(../images/icon/addfriend.jpg);
+    -fx-background-color: transparent;
+    -fx-background-image: url("../images/icon/system.png");
+    -fx-background-repeat: no-repeat;
 }
 
 #root{
     -fx-background-image:url("../images/icon/bg.jpg");
+    -fx-background-color: rgba(255, 255, 255, 0.3);
 }
 
-#contractTree{
-    -fx-background-color: rgba(255, 255, 255, 0);
+.list-cell {
+    -fx-background-color: transparent;
+}
+.list-view {
+    -fx-padding: 10 0 0 0;
+    -fx-background-color: transparent;
 }
 
-#chatRoomList{
-    -fx-background-color: rgba(255, 255, 255, 0);
+.tree-cell{
+
+    -fx-background-color: transparent;
 }
 
-#messageList{
-    -fx-background-color: rgba(255, 255, 255, 0);
+.tree-view{
+    -fx-padding: 10 0 0 0;
+    -fx-background-color: transparent;
 }
 
+.tab-pane *.tab-header-background {
+    -fx-background-color: transparent;
+}
+.tab-pane *.tab- {
+    -fx-background-color: transparent;
+}
+
+#footerBar{
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}

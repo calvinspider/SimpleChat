@@ -37,8 +37,8 @@
             <Label layoutX="40.0" layoutY="7.0" text="SIM" />
          </children>
       </Pane>
-      <TextField fx:id="searchField" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="30.0" minWidth="280.0" prefHeight="30.0" prefWidth="280.0" promptText="搜索" />
-      <TabPane fx:id="tabPane" layoutY="140.0" prefHeight="526.0" prefWidth="280.0" tabClosingPolicy="UNAVAILABLE">
+      <TextField fx:id="searchField" layoutX="28.0" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="33.0" minWidth="242.0" prefHeight="30.0" prefWidth="252.0" promptText="搜索" />
+      <TabPane fx:id="tabPane" layoutY="140.0" prefHeight="526.0" prefWidth="280.0">
         <tabs>
           <Tab fx:id="groupTab" closable="false">
             <content>
@@ -57,9 +57,14 @@
             </Tab>
         </tabs>
       </TabPane>
-       <ToolBar layoutX="1.0" layoutY="662.0" prefHeight="43.0" prefWidth="280.0">
+       <ToolBar fx:id="footerBar" layoutX="1.0" layoutY="662.0" prefHeight="43.0" prefWidth="280.0">
            <Button fx:id="addFriendBtn" layoutX="4.0" layoutY="672.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
            <Button fx:id="systemBtn" layoutX="73.0" layoutY="671.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
        </ToolBar>
+      <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="7.0" layoutY="118.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+              <Image url="@../images/icon/mirror.png" />
+          </image>
+      </ImageView>
    </children>
 </Pane>

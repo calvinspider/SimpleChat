@@ -48,7 +48,6 @@ public class ContractItemView {
             groupName=(TextField) itemPane.lookup("#groupName");
             groupName.setEditable(false);
             groupName.setText(text);
-            groupName.setStyle("-fx-background-color: #A1BBD8");
             groupName.setCursor(Cursor.DEFAULT);
         }catch (Exception e){
             e.printStackTrace();
@@ -64,8 +63,6 @@ public class ContractItemView {
             Label personword = (Label) itemPane.lookup("#personword");
             nameLabel=username;
             personLabel=personword;
-            username.setStyle("-fx-font-size:13");
-            personword.setStyle("-fx-font-size:13");
             username.setText(user.getNickName());
             personword.setText(user.getPersonWord());
             this.user=user;
@@ -159,9 +156,6 @@ public class ContractItemView {
         this.userIconView.setLayoutY(this.userIconView.getLayoutY()-5);
         this.nameLabel.setLayoutY(this.nameLabel.getLayoutY()-10);
         this.personLabel.setLayoutY(this.personLabel.getLayoutY()-10);
-        this.nameLabel.setStyle("-fx-font-size:13");
-        this.personLabel.setStyle("-fx-font-size:13");
-        this.getItemPane().setStyle("-fx-background-color: #A1BBD8");
     }
 
     public void setFocus() {
@@ -172,32 +166,23 @@ public class ContractItemView {
         this.userIconView.setLayoutY(this.userIconView.getLayoutY()+5);
         this.nameLabel.setLayoutY(this.nameLabel.getLayoutY()+10);
         this.personLabel.setLayoutY(this.personLabel.getLayoutY()+10);
-        this.nameLabel.setStyle("-fx-font-size:15");
-        this.personLabel.setStyle("-fx-font-size:15");
-        this.nameLabel.setTextFill(Color.web("#000000"));
-        this.personLabel.setTextFill(Color.web("#000000"));
-        this.getItemPane().setStyle("-fx-background-color: #D3D6C1");
     }
 
     public void setGroupEditable(){
         this.groupName.setEditable(true);
-        this.groupName.setStyle("-fx-background-color: #FFFFFF");
         this.groupName.setFocusTraversable(true);
     }
 
     public void setGroupEditDisable(){
         this.groupName.setEditable(false);
-        this.groupName.setStyle("-fx-background-color: #A1BBD8");
     }
 
     public void setGroupFocus() {
-        this.getItemPane().setStyle("-fx-background-color: #D3D6C1");
-        this.groupName.setStyle("-fx-background-color: #D3D6C1");
+
     }
 
     public void setGroupNoFocus() {
-        this.getItemPane().setStyle("-fx-background-color: #A1BBD8");
-        this.groupName.setStyle("-fx-background-color: #A1BBD8");
+
     }
 
     public String getNickName() {

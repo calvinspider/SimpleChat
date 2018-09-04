@@ -143,11 +143,6 @@ public class MainController  implements Initializable {
         nameLabel.setText(user.getNickName());
         personWord.setText(user.getPersonWord());
         personWord.setFocusTraversable(false);
-        DropShadow shadow = new DropShadow();
-        shadow.setOffsetY(10.0);
-        shadow.setOffsetX(10.0);
-        shadow.setColor(Color.GRAY);
-        root.setEffect(shadow);
     }
 
 
