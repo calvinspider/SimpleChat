@@ -39,7 +39,6 @@ public class ContractItemView {
     private ImageView userIconView;
     private Timeline timeline=new Timeline();
     private Label nameLabel;
-    private Label personLabel;
     private String nickName;
 
     public ContractItemView(String text){
@@ -60,11 +59,8 @@ public class ContractItemView {
             userImage=ImageUtiles.getHttpImage(Constant.serverHost+"/static/images/userIcon/"+user.getIconUrl());
             usericon.setImage(userImage);
             Label username = (Label) itemPane.lookup("#username");
-            Label personword = (Label) itemPane.lookup("#personword");
             nameLabel=username;
-            personLabel=personword;
-            username.setText(user.getNickName());
-            personword.setText(user.getPersonWord());
+            username.setText(user.getNickName()+" "+user.getPersonWord());
             this.user=user;
             this.nickName=user.getNickName();
             this.userIconView=usericon;
@@ -154,8 +150,8 @@ public class ContractItemView {
         this.userIconView.setFitWidth(25);
         this.userIconView.setLayoutX(this.userIconView.getLayoutX()-5);
         this.userIconView.setLayoutY(this.userIconView.getLayoutY()-5);
-        this.nameLabel.setLayoutY(this.nameLabel.getLayoutY()-10);
-        this.personLabel.setLayoutY(this.personLabel.getLayoutY()-10);
+        this.nameLabel.setLayoutX(nameLabel.getLayoutX()-20);
+        this.nameLabel.setLayoutY(nameLabel.getLayoutY()-10);
     }
 
     public void setFocus() {
@@ -164,8 +160,9 @@ public class ContractItemView {
         this.userIconView.setFitWidth(40);
         this.userIconView.setLayoutX(this.userIconView.getLayoutX()+5);
         this.userIconView.setLayoutY(this.userIconView.getLayoutY()+5);
-        this.nameLabel.setLayoutY(this.nameLabel.getLayoutY()+10);
-        this.personLabel.setLayoutY(this.personLabel.getLayoutY()+10);
+        this.nameLabel.setLayoutX(nameLabel.getLayoutX()+20);
+        this.nameLabel.setLayoutY(nameLabel.getLayoutY()+10);
+        this.nameLabel.setStyle("-fx-text-fill: black");
     }
 
     public void setGroupEditable(){

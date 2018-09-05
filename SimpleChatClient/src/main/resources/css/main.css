@@ -88,14 +88,40 @@
 .list-cell {
     -fx-background-color: transparent;
 }
+
+.list-cell:hover .groupItem{
+    -fx-background-color: #CFE8FF;
+}
+.list-cell:hover .contractLabel{
+    -fx-background-color: #CFE8FF;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: #E6CEAC;
+    -fx-text-fill: black;
+}
+
+
 .list-view {
     -fx-padding: 10 0 0 0;
     -fx-background-color: transparent;
 }
 
 .tree-cell{
-
     -fx-background-color: transparent;
+}
+
+.tree-cell:filled:selected:focused .contractItem, .tree-cell:filled:selected .contractItem{
+    -fx-background-color: #E6CEAC;
+    -fx-text-fill: black;
+
+}
+
+.tree-cell:hover .contractItem{
+    -fx-background-color: #CFE8FF;
+}
+.tree-cell:hover .groupItem{
+    -fx-background-color: #CFE8FF;
 }
 
 .tree-view{
@@ -112,4 +138,17 @@
 
 #footerBar{
     -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+
+.tree-view *.scroll-bar:horizontal,
+.tree-view *.scroll-bar:horizontal *.track,
+.tree-view *.scroll-bar:horizontal *.track-background,
+.tree-view *.scroll-bar:horizontal *.thumb,
+.tree-view *.scroll-bar:horizontal *.increment-button,
+.tree-view *.scroll-bar:horizontal *.decrement-button,
+.tree-view *.scroll-bar:horizontal *.increment-arrow,
+.tree-view *.scroll-bar:horizontal *.decrement-arrow {
+    -fx-base: transparent;
+    -fx-background-color: transparent;
 }

@@ -4,10 +4,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="contractLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="240.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="contractLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" styleClass="contractItem" stylesheets="@../css/contractitem.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="usericon" fitHeight="25.0" fitWidth="25.0" layoutX="9.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="username" layoutX="55.0" layoutY="5.0" prefHeight="20.0" prefWidth="80.0" text="Label" />
-      <Label fx:id="personword" layoutX="148.0" layoutY="4.0" prefHeight="20.0" prefWidth="92.0" text="Label" />
+      <ImageView fx:id="usericon" fitHeight="25.0" fitWidth="25.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="username" layoutX="30.0" prefHeight="25.0" prefWidth="80.0" text="Label" />
    </children>
 </Pane>
