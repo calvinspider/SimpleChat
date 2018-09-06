@@ -3,8 +3,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
+<?import javafx.scene.control.Label?>
 <Pane styleClass="groupItem" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="260.0" stylesheets="@../css/groupItem.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField style="-fx-background-color: rgba(255, 255, 255, 0);" fx:id="groupName" layoutY="-2.0" prefHeight="25.0" prefWidth="100.0" text="Label" />
+      <Label style="-fx-background-color: rgba(255, 255, 255, 0);" fx:id="groupName" layoutY="-2.0" prefHeight="25.0" prefWidth="250.0" text="Label" />
    </children>
 </Pane>

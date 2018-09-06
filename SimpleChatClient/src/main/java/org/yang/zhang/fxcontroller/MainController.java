@@ -1,6 +1,7 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
@@ -132,6 +134,7 @@ public class MainController  implements Initializable {
         initEvent();
         userMenu();
         groupMenu();
+        contractTree.setContextMenu(groupMenu);
     }
 
     private void initMainPane(User user) {
@@ -191,12 +194,15 @@ public class MainController  implements Initializable {
     }
 
     public void initContract(User loginUser){
+
         Integer id=loginUser.getId();
+
         //获取当前用户联系人列表
         FindByUserDto findByUserDto=new FindByUserDto();
         findByUserDto.setUserId(id);
         findByUserDto.setOnlyOnline(false);
         List<ContractGroupDto> contracts= contractService.getContractList(findByUserDto);
+
         //添加根节点
         TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
         rootItem.setValue(null);
@@ -204,30 +210,38 @@ public class MainController  implements Initializable {
         contractTree.setShowRoot(false);
         ClientCache.clearContract();
         ClientCache.clearGroup();
+
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
+
+            //添加组
             ContractItemView pane=new ContractItemView(contract.getGroupName()+" "+contract.getOnlineCount()+"/"+contract.getAllCount());
             pane.setId("GROUP"+contract.getGroupId());
             TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
             ClientCache.addGroup(groupItem);
             rootItem.getChildren().add(groupItem);
+
             List<User> users = contract.getUserList();
+            //添加组成员
             for (User user : users) {
+
                 TreeItem<ContractItemView> item = new TreeItem<ContractItemView>();
                 ContractItemView contractItemView=new ContractItemView(user);
                 contractItemView.setId(String.valueOf(user.getId()));
                 item.setValue(contractItemView);
+                groupItem.getChildren().add(item);
+
+                //添加缓存
                 ClientCache.addContract(String.valueOf(user.getId()),item);
                 UserUtils.setUser(user.getId(),user);
                 ImageUtiles.setUserIcon(user.getId(),contractItemView.getUserImage());
-                groupItem.getChildren().add(item);
+
             }
         }
         contractTree.setCellFactory(ContractTreeCellImpl.callback);
         contractTree.setEditable(true);
+
     }
-
-
 
 
     /**
@@ -435,23 +449,23 @@ public class MainController  implements Initializable {
         }
         ContractItemView contractItemView=item.getValue();
         if(contractItemView.getId().contains("GROUP")){
-            TextField textField=contractItemView.getGroupName();
-            contractItemView.setGroupEditable();
-            textField.focusedProperty().addListener(new ChangeListener<Boolean>()
-            {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-                {
-                    if(!newPropertyValue)
-                    {
-                        if(textField.isEditable()){
-                            chatService.updateGroup(contractItemView.getId(),textField.getText());
-                            textField.setEditable(false);
-                            contractItemView.setGroupEditDisable();
-                        }
-                    }
-                }
-            });
+//            TextField textField=contractItemView.getGroupName();
+//            contractItemView.setGroupEditable();
+//            textField.focusedProperty().addListener(new ChangeListener<Boolean>()
+//            {
+//                @Override
+//                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+//                {
+//                    if(!newPropertyValue)
+//                    {
+//                        if(textField.isEditable()){
+//                            chatService.updateGroup(contractItemView.getId(),textField.getText());
+//                            textField.setEditable(false);
+//                            contractItemView.setGroupEditDisable();
+//                        }
+//                    }
+//                }
+//            });
         }else{
 
         }
@@ -479,30 +493,42 @@ public class MainController  implements Initializable {
     }
 
     private void addGroup(ActionEvent event) {
-            TreeItem<ContractItemView> newGroup = new TreeItem<ContractItemView>();
-            ContractItemView itemView=new ContractItemView("");
-            TextField textField=itemView.getGroupName();
-            textField.setText("未命名");
-            itemView.setId("未命名");
-            itemView.setGroupEditable();
-            textField.focusedProperty().addListener(new ChangeListener<Boolean>()
+
+        TreeItem<ContractItemView> newGroup = new TreeItem<ContractItemView>();
+        ContractItemView itemView=new ContractItemView("");
+        itemView.setId("未命名");
+
+        Label label=itemView.getGroupName();
+        TextField textField=new TextField("未命名");
+        textField.setPrefWidth(label.getPrefWidth());
+        label.setGraphic(textField);
+        textField.focusTraversableProperty().setValue(true);
+        textField.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
             {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+                if(!newPropertyValue)
                 {
-                    if(!newPropertyValue)
-                    {
-                        if(textField.isEditable()){
-                            ContractGroup contractGroup= chatService.createNewGroup(textField.getText());
-                            textField.setEditable(false);
-                            itemView.setGroupEditDisable();
-                            itemView.setId("GROUP"+contractGroup.getId());
-                        }
-                    }
+                    createGroup(textField.getText(),label,itemView);
                 }
-            });
-            newGroup.setValue(itemView);
-            //新分组都挂在根节点下
-            contractTree.getRoot().getChildren().add(newGroup);
+            }
+        });
+        textField.setOnKeyReleased(e->{
+            if (e.getCode().equals(KeyCode.ENTER)){
+                createGroup(textField.getText(),label,itemView);
+            }
+        });
+
+        newGroup.setValue(itemView);
+        //新分组都挂在根节点下
+        contractTree.getRoot().getChildren().add(newGroup);
+    }
+
+    public void createGroup(String text,Label label,ContractItemView itemView){
+        ContractGroup contractGroup= chatService.createNewGroup(text);
+        label.setText(text+" 0/0");
+        label.setGraphic(null);
+        itemView.setId("GROUP"+contractGroup.getId());
     }
 }

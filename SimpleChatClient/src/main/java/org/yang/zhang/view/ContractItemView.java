@@ -36,7 +36,7 @@ public class ContractItemView {
     private String id;
     private Pane itemPane;
     private Image userImage;
-    private TextField groupName;
+    private Label groupName;
     private User user;
     private Boolean blink;
     private ImageView userIconView;
@@ -48,10 +48,8 @@ public class ContractItemView {
     public ContractItemView(String text){
         try {
             itemPane=FXMLLoader.load(getClass().getResource("/fxml/groupItem.fxml"));
-            groupName=(TextField) itemPane.lookup("#groupName");
-            groupName.setEditable(false);
+            groupName=(Label) itemPane.lookup("#groupName");
             groupName.setText(text);
-            groupName.setCursor(Cursor.DEFAULT);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -119,14 +117,6 @@ public class ContractItemView {
         this.userImage = userImage;
     }
 
-    public TextField getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(TextField groupName) {
-        this.groupName = groupName;
-    }
-
     public User getUser() {
         return user;
     }
@@ -141,6 +131,10 @@ public class ContractItemView {
 
     public void setBlink(Boolean blink) {
         this.blink = blink;
+    }
+
+    public Label getGroupName() {
+        return groupName;
     }
 
     public void startBlink(){
@@ -179,12 +173,11 @@ public class ContractItemView {
     }
 
     public void setGroupEditable(){
-        this.groupName.setEditable(true);
-        this.groupName.setFocusTraversable(true);
+
     }
 
     public void setGroupEditDisable(){
-        this.groupName.setEditable(false);
+
     }
 
     public void setGroupFocus() {
