@@ -88,11 +88,14 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void updateGroup(String id, String text) {
+    public ContractGroupDto updateGroup(String id, String text) {
         ContractGroupDto contractGroupDto=new ContractGroupDto();
         contractGroupDto.setGroupName(text);
         contractGroupDto.setGroupId(Integer.valueOf(id.substring(id.indexOf("P")+1,id.length())));
-        restTemplate.postForObject(Constant.UPDATEGROUP,contractGroupDto,String.class);
+        TypeReference typeReference=new TypeReference<Result<ContractGroupDto>>() {};
+        String result=restTemplate.postForObject(Constant.UPDATEGROUP,contractGroupDto,String.class);
+        Result<ContractGroupDto> result1=JsonUtils.fromJson(result,typeReference);
+        return result1.getData();
     }
 
     @Override

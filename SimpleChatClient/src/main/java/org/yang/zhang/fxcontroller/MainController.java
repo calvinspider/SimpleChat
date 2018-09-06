@@ -194,52 +194,12 @@ public class MainController  implements Initializable {
     }
 
     public void initContract(User loginUser){
-
         Integer id=loginUser.getId();
-
         //获取当前用户联系人列表
         FindByUserDto findByUserDto=new FindByUserDto();
         findByUserDto.setUserId(id);
         findByUserDto.setOnlyOnline(false);
-        List<ContractGroupDto> contracts= contractService.getContractList(findByUserDto);
-
-        //添加根节点
-        TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
-        rootItem.setValue(null);
-        contractTree.setRoot(rootItem);
-        contractTree.setShowRoot(false);
-        ClientCache.clearContract();
-        ClientCache.clearGroup();
-
-        //添加联系人到列表
-        for (ContractGroupDto contract:contracts) {
-
-            //添加组
-            ContractItemView pane=new ContractItemView(contract.getGroupName()+" "+contract.getOnlineCount()+"/"+contract.getAllCount());
-            pane.setId("GROUP"+contract.getGroupId());
-            TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
-            ClientCache.addGroup(groupItem);
-            rootItem.getChildren().add(groupItem);
-
-            List<User> users = contract.getUserList();
-            //添加组成员
-            for (User user : users) {
-
-                TreeItem<ContractItemView> item = new TreeItem<ContractItemView>();
-                ContractItemView contractItemView=new ContractItemView(user);
-                contractItemView.setId(String.valueOf(user.getId()));
-                item.setValue(contractItemView);
-                groupItem.getChildren().add(item);
-
-                //添加缓存
-                ClientCache.addContract(String.valueOf(user.getId()),item);
-                UserUtils.setUser(user.getId(),user);
-                ImageUtiles.setUserIcon(user.getId(),contractItemView.getUserImage());
-
-            }
-        }
-        contractTree.setCellFactory(ContractTreeCellImpl.callback);
-        contractTree.setEditable(true);
+        initContracts(findByUserDto);
 
     }
 
@@ -374,7 +334,9 @@ public class MainController  implements Initializable {
         MenuItem delete = new MenuItem("删除好友",new ImageView(new Image("images/icon/delete.png")));
         MenuItem jubao = new MenuItem("举报此用户",new ImageView(new Image("images/icon/jubao.png")));
         userMenu.getItems().addAll(message,email,info,card,history,auth,remark,move,delete,jubao);
+        delete.setOnAction(this::deleteContract);
     }
+
 
     private void  groupMenu(){
         MenuItem add = new MenuItem("添加分组",new ImageView(new Image("images/icon/add.png")));
@@ -407,35 +369,7 @@ public class MainController  implements Initializable {
         FindByUserDto findByUserDto=new FindByUserDto();
         findByUserDto.setUserId(UserUtils.getCurrentUserId());
         findByUserDto.setOnlyOnline(true);
-        List<ContractGroupDto> contracts= contractService.getContractList(findByUserDto);
-        //添加根节点
-        TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
-        rootItem.setValue(null);
-        contractTree.setRoot(rootItem);
-        contractTree.setShowRoot(false);
-        ClientCache.clearContract();
-        ClientCache.clearGroup();
-        //添加联系人到列表
-        for (ContractGroupDto contract:contracts) {
-            ContractItemView pane=new ContractItemView(contract.getGroupName()+" "+contract.getOnlineCount()+"/"+contract.getAllCount());
-            pane.setId("GROUP"+contract.getGroupId());
-            TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
-            ClientCache.addGroup(groupItem);
-            rootItem.getChildren().add(groupItem);
-            List<User> users = contract.getUserList();
-            for (User user : users) {
-                TreeItem<ContractItemView> item = new TreeItem<ContractItemView>();
-                ContractItemView contractItemView=new ContractItemView(user);
-                contractItemView.setId(String.valueOf(user.getId()));
-                item.setValue(contractItemView);
-                ClientCache.addContract(String.valueOf(user.getId()),item);
-                UserUtils.setUser(user.getId(),user);
-                ImageUtiles.setUserIcon(user.getId(),contractItemView.getUserImage());
-                groupItem.getChildren().add(item);
-            }
-        }
-        contractTree.setCellFactory(ContractTreeCellImpl.callback);
-        contractTree.setEditable(true);
+        initContracts(findByUserDto);
     }
 
     private void flushGroup(ActionEvent event) {
@@ -448,27 +382,35 @@ public class MainController  implements Initializable {
             return;
         }
         ContractItemView contractItemView=item.getValue();
-        if(contractItemView.getId().contains("GROUP")){
-//            TextField textField=contractItemView.getGroupName();
-//            contractItemView.setGroupEditable();
-//            textField.focusedProperty().addListener(new ChangeListener<Boolean>()
-//            {
-//                @Override
-//                public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-//                {
-//                    if(!newPropertyValue)
-//                    {
-//                        if(textField.isEditable()){
-//                            chatService.updateGroup(contractItemView.getId(),textField.getText());
-//                            textField.setEditable(false);
-//                            contractItemView.setGroupEditDisable();
-//                        }
-//                    }
-//                }
-//            });
+        Label label=contractItemView.getGroupName();
+        String groupName=label.getText();
+        TextField textField;
+        if(groupName.contains(" ")){
+            textField=new TextField(groupName.substring(0,groupName.indexOf(" ")));
         }else{
-
+            textField=new TextField(groupName);
         }
+        textField.setPrefWidth(label.getPrefWidth());
+        label.setGraphic(textField);
+        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {
+                if(!newPropertyValue)
+                {
+                    ContractGroupDto dto=chatService.updateGroup(contractItemView.getId(),textField.getText());
+                    label.setText(textField.getText()+" "+dto.getOnlineCount()+"/"+dto.getAllCount());
+                    label.setGraphic(null);
+                }
+            }
+        });
+        textField.setOnKeyReleased(e->{
+            if (e.getCode().equals(KeyCode.ENTER)){
+                chatService.updateGroup(contractItemView.getId(),textField.getText());
+                label.setText(textField.getText());
+                label.setGraphic(null);
+            }
+        });
     }
 
 
@@ -478,18 +420,24 @@ public class MainController  implements Initializable {
             return;
         }
         ContractItemView contractItemView=item.getValue();
-        if(contractItemView.getId().contains("GROUP")){
-            //删除分组,原分组下的人移到默认的分组中
-            String groupId=contractItemView.getId();
-            chatService.deleteGroup(UserUtils.getCurrentUserId(),Integer.valueOf(groupId.substring(groupId.indexOf("P")+1,groupId.length())));
-            initContract(UserUtils.getCurrentUser());
-        }else{
-            //删除用户
-            String parentId=item.getParent().getValue().getId();
-            Integer pid=Integer.valueOf(parentId.substring(parentId.indexOf("P")+1,parentId.length()));
-            chatService.deleteFriend(pid,Integer.valueOf(contractItemView.getId()));
-            initContract(UserUtils.getCurrentUser());
+        //删除分组,原分组下的人移到默认的分组中
+        String groupId = contractItemView.getId();
+        chatService.deleteGroup(UserUtils.getCurrentUserId(), Integer.valueOf(groupId.substring(groupId.indexOf("P") + 1, groupId.length())));
+        initContract(UserUtils.getCurrentUser());
+
+    }
+
+    private void deleteContract(ActionEvent actionEvent) {
+        TreeItem<ContractItemView> item=contractTree.getSelectionModel().getSelectedItem();
+        if(item==null){
+            return;
         }
+        ContractItemView contractItemView=item.getValue();
+        //删除用户
+        String parentId=item.getParent().getValue().getId();
+        Integer pid=Integer.valueOf(parentId.substring(parentId.indexOf("P")+1,parentId.length()));
+        chatService.deleteFriend(pid,Integer.valueOf(contractItemView.getId()));
+        initContract(UserUtils.getCurrentUser());
     }
 
     private void addGroup(ActionEvent event) {
@@ -530,5 +478,37 @@ public class MainController  implements Initializable {
         label.setText(text+" 0/0");
         label.setGraphic(null);
         itemView.setId("GROUP"+contractGroup.getId());
+    }
+
+    public void initContracts(FindByUserDto findByUserDto){
+        List<ContractGroupDto> contracts= contractService.getContractList(findByUserDto);
+        //添加根节点
+        TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
+        rootItem.setValue(null);
+        contractTree.setRoot(rootItem);
+        contractTree.setShowRoot(false);
+        ClientCache.clearContract();
+        ClientCache.clearGroup();
+        //添加联系人到列表
+        for (ContractGroupDto contract:contracts) {
+            ContractItemView pane=new ContractItemView(contract.getGroupName()+" "+contract.getOnlineCount()+"/"+contract.getAllCount());
+            pane.setId("GROUP"+contract.getGroupId());
+            TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
+            ClientCache.addGroup(groupItem);
+            rootItem.getChildren().add(groupItem);
+            List<User> users = contract.getUserList();
+            for (User user : users) {
+                TreeItem<ContractItemView> item = new TreeItem<ContractItemView>();
+                ContractItemView contractItemView=new ContractItemView(user);
+                contractItemView.setId(String.valueOf(user.getId()));
+                item.setValue(contractItemView);
+                ClientCache.addContract(String.valueOf(user.getId()),item);
+                UserUtils.setUser(user.getId(),user);
+                ImageUtiles.setUserIcon(user.getId(),contractItemView.getUserImage());
+                groupItem.getChildren().add(item);
+            }
+        }
+        contractTree.setCellFactory(ContractTreeCellImpl.callback);
+        contractTree.setEditable(true);
     }
 }

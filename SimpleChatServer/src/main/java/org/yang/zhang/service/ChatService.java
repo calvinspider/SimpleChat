@@ -36,7 +36,7 @@ public interface ChatService {
 
     Result<Void> updateContractGroup(ContractGroupDto contractGroupDto);
 
-    void updateGroup(ContractGroupDto contractGroupDto);
+    Result<ContractGroupDto> updateGroup(ContractGroupDto contractGroupDto);
 
     void deleteGroup(ContractGroupDto contractGroupDto);
 

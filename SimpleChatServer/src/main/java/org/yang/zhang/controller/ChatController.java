@@ -72,8 +72,8 @@ public class ChatController {
     }
 
     @RequestMapping(value = "/updateGroup")
-    public void  updateGroup(@RequestBody ContractGroupDto contractGroupDto){
-         chatService.updateGroup(contractGroupDto);
+    public Result<ContractGroupDto>  updateGroup(@RequestBody ContractGroupDto contractGroupDto){
+         return chatService.updateGroup(contractGroupDto);
     }
     @RequestMapping(value = "/deleteGroup")
     public void  deleteGroup(@RequestBody ContractGroupDto contractGroupDto){

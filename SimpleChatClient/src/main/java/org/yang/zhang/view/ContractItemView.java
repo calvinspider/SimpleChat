@@ -33,6 +33,7 @@ import javafx.util.Duration;
  */
 
 public class ContractItemView {
+    
     private String id;
     private Pane itemPane;
     private Image userImage;
@@ -172,16 +173,8 @@ public class ContractItemView {
         this.nameLabel.setStyle("-fx-text-fill: black");
     }
 
-    public void setGroupEditable(){
-
-    }
-
-    public void setGroupEditDisable(){
-
-    }
-
     public void setGroupFocus() {
-
+        this.groupName.setStyle("-fx-background-color: black");
     }
 
     public void setGroupNoFocus() {
