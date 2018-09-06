@@ -30,9 +30,9 @@ public class Constant {
     public static String fileRoot="D:\\simpleChatFiles";
     public static String historyUserFileName="historyUser.txt";
     public static String SystemConfigFileName="systemConfig.txt";
-    public static String STATUS_ONLINE_ICON="images/icon/green.jpg";
-    public static String STATUS_BUSY_ICON="images/icon/red.jpg";
-    public static String STATUS_INVISIBLE_ICON="images/icon/yellow.jpg";
+    public static String STATUS_ONLINE_ICON="images/icon/online_status.png";
+    public static String STATUS_BUSY_ICON="images/icon/busy_status.png";
+    public static String STATUS_INVISIBLE_ICON="images/icon/invisiable_status.png";
 
 
 }

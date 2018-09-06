@@ -37,12 +37,12 @@
             <Label layoutX="40.0" layoutY="7.0" text="SIM" />
          </children>
       </Pane>
-      <TextField fx:id="searchField" layoutX="28.0" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="33.0" minWidth="242.0" prefHeight="30.0" prefWidth="252.0" promptText="搜索" />
+      <TextField fx:id="searchField" layoutX="28.0" layoutY="110.0" maxHeight="30.0" maxWidth="280.0" minHeight="33.0" minWidth="242.0" prefHeight="30.0" prefWidth="252.0" promptText="搜索联系人" />
       <TabPane fx:id="tabPane" layoutY="140.0" prefHeight="526.0" prefWidth="280.0">
         <tabs>
           <Tab fx:id="groupTab" closable="false">
             <content>
-                <TreeView fx:id="contractTree" prefHeight="515.0" prefWidth="280.0" />
+                <TreeView fx:id="contractTree" prefHeight="515.0" prefWidth="121.0" />
             </content>
           </Tab>
             <Tab fx:id="chatRoomTab" closable="false">

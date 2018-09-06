@@ -7,6 +7,7 @@
 <Pane fx:id="contractLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" styleClass="contractItem" stylesheets="@../css/contractitem.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fx:id="usericon" fitHeight="25.0" fitWidth="25.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true" />
-      <Label fx:id="username" layoutX="30.0" prefHeight="25.0" prefWidth="80.0" text="Label" />
+      <Label fx:id="username" layoutX="40.0" prefHeight="25.0" text="Label" prefWidth="100"/>
+      <Label fx:id="personWord" layoutX="150.0" prefHeight="25.0" prefWidth="150.0" text="Label"/>
    </children>
 </Pane>

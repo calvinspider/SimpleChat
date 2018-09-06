@@ -4,6 +4,7 @@ import org.yang.zhang.constants.Constant;
 import org.yang.zhang.module.ContractGroup;
 import org.yang.zhang.module.User;
 import org.yang.zhang.utils.ImageUtiles;
+import org.yang.zhang.utils.TextUtils;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -20,7 +21,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 /**
@@ -39,6 +42,7 @@ public class ContractItemView {
     private ImageView userIconView;
     private Timeline timeline=new Timeline();
     private Label nameLabel;
+    private Label personwordLabel;
     private String nickName;
 
     public ContractItemView(String text){
@@ -59,8 +63,13 @@ public class ContractItemView {
             userImage=ImageUtiles.getHttpImage(Constant.serverHost+"/static/images/userIcon/"+user.getIconUrl());
             usericon.setImage(userImage);
             Label username = (Label) itemPane.lookup("#username");
-            nameLabel=username;
-            username.setText(user.getNickName()+" "+user.getPersonWord());
+            personwordLabel = (Label) itemPane.lookup("#personWord");
+            username.setText(user.getNickName());
+            personwordLabel.setText(user.getPersonWord());
+            username.setPrefWidth(TextUtils.computeTextWidth(username.getFont(),
+                    username.getText(), 0.0D) + 10);
+            personwordLabel.setLayoutX(username.getLayoutX()+username.getPrefWidth());
+            this.nameLabel=username;
             this.user=user;
             this.nickName=user.getNickName();
             this.userIconView=usericon;
@@ -152,6 +161,8 @@ public class ContractItemView {
         this.userIconView.setLayoutY(this.userIconView.getLayoutY()-5);
         this.nameLabel.setLayoutX(nameLabel.getLayoutX()-20);
         this.nameLabel.setLayoutY(nameLabel.getLayoutY()-10);
+        this.personwordLabel.setLayoutX(personwordLabel.getLayoutX()-20);
+        this.personwordLabel.setLayoutY(personwordLabel.getLayoutY()-10);
     }
 
     public void setFocus() {
@@ -162,6 +173,8 @@ public class ContractItemView {
         this.userIconView.setLayoutY(this.userIconView.getLayoutY()+5);
         this.nameLabel.setLayoutX(nameLabel.getLayoutX()+20);
         this.nameLabel.setLayoutY(nameLabel.getLayoutY()+10);
+        this.personwordLabel.setLayoutX(personwordLabel.getLayoutX()+20);
+        this.personwordLabel.setLayoutY(personwordLabel.getLayoutY()+10);
         this.nameLabel.setStyle("-fx-text-fill: black");
     }
 

@@ -18,6 +18,7 @@
     -fx-pref-height:30px;
     -fx-text-alignment: center;
     -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-size: 23;
 }
 
 #groupTab:hover{
@@ -32,6 +33,7 @@
     -fx-pref-height:30px;
     -fx-text-alignment: center;
     -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-size: 23;
 }
 
 #messageTab:hover{
@@ -52,6 +54,10 @@
     -fx-background-image:url("../images/icon/group-focus.png");
 }
 
+#nameLabel{
+    -fx-font-size: 14;
+}
+
 #header{
 
 }
@@ -59,12 +65,11 @@
 #logo{
 
 }
-
-#searchField{
-    -fx-background-color: rgba(255, 255, 255, 0);
-}
-
 #personWord{
+    -fx-background-color: rgba(255, 255, 255, 0);
+    -fx-text-fill: black;
+}
+#searchField{
     -fx-background-color: rgba(255, 255, 255, 0);
 }
 

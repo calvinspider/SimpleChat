@@ -123,8 +123,6 @@ public class MainController  implements Initializable {
 
     }
 
-
-
     public void init(User user){
         this.userId=user.getId();
         initMainPane(user);
