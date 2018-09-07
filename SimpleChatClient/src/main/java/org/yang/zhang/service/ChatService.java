@@ -3,6 +3,7 @@ package org.yang.zhang.service;
 import java.util.List;
 
 import org.yang.zhang.dto.ChatRoomDto;
+import org.yang.zhang.dto.ContractGroupDto;
 import org.yang.zhang.dto.RecentChatLogDto;
 import org.yang.zhang.dto.RecentContract;
 import org.yang.zhang.module.ChatRoom;
@@ -25,7 +26,7 @@ public interface ChatService {
 
     void updateContractGroup(String itemId, String oldGroupId, String newGroupId);
 
-    void updateGroup(String id, String text);
+    ContractGroupDto updateGroup(String id, String text);
 
     void deleteGroup(Integer currentUserId, Integer integer);
 

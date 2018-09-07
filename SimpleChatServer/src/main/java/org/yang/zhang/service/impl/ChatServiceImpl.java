@@ -130,10 +130,18 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void updateGroup(ContractGroupDto contractGroupDto) {
+    public Result<ContractGroupDto> updateGroup(ContractGroupDto contractGroupDto) {
         ContractGroup old=contractGroupRepository.getOne(contractGroupDto.getGroupId());
         old.setGroupName(contractGroupDto.getGroupName());
         contractGroupRepository.save(old);
+
+        List<GroupUser> groupUsers=groupUserRepository.findByGroupId(contractGroupDto.getGroupId());
+        List<Integer> userIds=groupUsers.stream().map(groupUser -> groupUser.getUserId()).collect(Collectors.toList());
+        List<User> users=userRepository.findByIdIn(userIds);
+
+        contractGroupDto.setOnlineCount(Long.valueOf(users.stream().filter(item->item.getStatus()!=UserStatusType.INVISIBLE.getValue()).count()));
+        contractGroupDto.setAllCount(userIds.size());
+        return Result.successData(contractGroupDto);
     }
 
     @Override
