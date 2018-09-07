@@ -7,3 +7,53 @@
     -fx-background-color: #088cb7;
     -fx-border-radius: 12px;
 }
+
+#root{
+    -fx-background-image:url("../images/icon/bg.jpg");
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+#minBtn{
+    -fx-background-image: url("../images/icon/min.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
+}
+
+#headCloseBtn{
+    -fx-background-image: url("../images/icon/close.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
+}
+
+#nameLabel{
+    -fx-font-size: 16;
+}
+
+#userIcon{
+    -fx-background-radius: 5;
+}
+
+#userId{
+
+}
+
+#chatPane{
+    -fx-background-color: transparent;
+}
+
+#chatHistory{
+    -fx-background-color: transparent;
+}
+
+#sendBtn{
+    -fx-background-color: #4CCAFF;
+}
+
+#closeBtn{
+    -fx-background-color: #4BCAFF;
+}
+
+#chatArea{
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+

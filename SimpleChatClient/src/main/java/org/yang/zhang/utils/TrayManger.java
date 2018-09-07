@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 
 public class TrayManger {
 
-    private  final String iconImageLoc = "file:D:\\Documents\\SimpleChat\\SimpleChatClient\\src\\main\\resources\\images\\icon\\songshu.png";
+    private  final String iconImageLoc = "file:D:\\Documents\\SimpleChat\\SimpleChatClient\\src\\main\\resources\\images\\icon\\QQ.png";
     private Stage stage;
     public  void tray(Stage stage){
         this.stage=stage;

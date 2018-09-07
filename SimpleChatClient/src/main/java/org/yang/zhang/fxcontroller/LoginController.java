@@ -229,7 +229,7 @@ public class LoginController extends AbstractController implements Initializable
         mainController.init(user);
         mainStage.show();
         mainStage.setResizable(false);
-
+        mainStage.getIcons().add(userIcon.getImage());
         //注册主界面
         StageManager.registerStage(StageCodes.MAIN,mainStage);
         trayManger.tray(mainStage);

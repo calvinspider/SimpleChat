@@ -138,6 +138,10 @@ public class ContractItemView {
         return groupName;
     }
 
+    public Label getPersonwordLabel() {
+        return personwordLabel;
+    }
+
     public void startBlink(){
         timeline.play();
     }
@@ -174,11 +178,11 @@ public class ContractItemView {
     }
 
     public void setGroupFocus() {
-        this.groupName.setStyle("-fx-background-color: black");
+        this.groupName.setStyle("-fx-text-fill: black");
     }
 
     public void setGroupNoFocus() {
-
+        this.groupName.setStyle("-fx-text-fill: black");
     }
 
     public String getNickName() {

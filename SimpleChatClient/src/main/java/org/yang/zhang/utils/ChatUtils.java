@@ -40,13 +40,13 @@ public class ChatUtils {
         new ChatRoomView(chatRoomId,icon);
     }
 
-    public static void openChatWindow(Integer id,String nickName,Image userIcon) {
+    public static void openChatWindow(Integer id,String nickName,String personword,Image userIcon) {
         Stage stage=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW));
         if(stage!=null){
             stage.show();
             return;
         }
-        ChatView chatView=new ChatView(id,nickName,userIcon);
+        ChatView chatView=new ChatView(id,nickName,personword,userIcon);
         ChatViewManager.registerStage(String.valueOf(id),chatView);
     }
 
@@ -62,7 +62,7 @@ public class ChatUtils {
     public static void appendBubble(ScrollPane scrollPane, BubbleType bubbleType, String content, Image icon, Double width){
         VBox chatHistory=(VBox)scrollPane.getContent();
         Label time=new Label(DateUtils.formatDateTime(new Date()));
-        time.setPrefWidth(width-200);
+        time.setPrefWidth(width-60);
         time.setAlignment(Pos.CENTER);
         time.setPrefHeight(30);
         switch (bubbleType){

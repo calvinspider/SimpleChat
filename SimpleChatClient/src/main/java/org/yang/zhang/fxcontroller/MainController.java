@@ -110,7 +110,6 @@ public class MainController  implements Initializable {
 
     private Integer userId;
     private ContractItemView focusItem;
-    private ContractItemView focusGroup;
     private double xOffset = 0;
     private double yOffset = 0;
     public static ContextMenu groupMenu = new ContextMenu();
@@ -134,18 +133,16 @@ public class MainController  implements Initializable {
         initEvent();
         userMenu();
         groupMenu();
-        contractTree.setContextMenu(groupMenu);
     }
 
     private void initMainPane(User user) {
         Image image=ImageUtiles.getUserIcon(user.getIconUrl());
         userIcon.setImage(image);
-        UserUtils.setUserIcon(image);
         nameLabel.setText(user.getNickName());
         personWord.setText(user.getPersonWord());
         personWord.setFocusTraversable(false);
+        UserUtils.setUserIcon(image);
     }
-
 
     private void regesterChannel(User user) {
         //向服务器注册当前channel
@@ -247,7 +244,7 @@ public class MainController  implements Initializable {
                 RecentContractView selectedItem = messageList.getSelectionModel().getSelectedItem();
                 String userid=selectedItem.getId();
                 if (userid != null) {
-                    ChatUtils.openChatWindow(Integer.valueOf(userid),selectedItem.getNickName(),ImageUtiles.getUserIcon(selectedItem.getUserIcon()));
+                    ChatUtils.openChatWindow(Integer.valueOf(userid),selectedItem.getNickName(),"",ImageUtiles.getUserIcon(selectedItem.getUserIcon()));
                 }
             }
         });
@@ -275,51 +272,64 @@ public class MainController  implements Initializable {
             }
         });
         contractTree.setOnMouseClicked(click -> {
-            //左键双击弹出聊天框
-            if (click.getButton()==MouseButton.PRIMARY&&click.getClickCount() == 2) {
-                TreeItem<ContractItemView> selectedItem = contractTree.getSelectionModel().getSelectedItem();
-                if(selectedItem!=null){
-                    String userid = selectedItem.getValue().getId();
-                    if (!userid.contains("GROUP")) {
-                        ChatUtils.openChatWindow(Integer.valueOf(userid),selectedItem.getValue().getNickName(),selectedItem.getValue().getUserImage());
-                        selectedItem.getValue().setBlink(false);
-                        selectedItem.getValue().stopBlink();
-                    }else{
-                        return;
-                    }
-                }
-            }
-            if (click.getButton()==MouseButton.PRIMARY&&click.getClickCount() == 1) {
-                TreeItem<ContractItemView> selectedItem = contractTree.getSelectionModel().getSelectedItem();
-                if(selectedItem!=null){
-                    String userid = selectedItem.getValue().getId();
-                    if(userid==null){
-                        return;
-                    }
-                    ContractItemView contractItemView=selectedItem.getValue();
-                    if (!userid.contains("GROUP")) {
-                        if(this.focusGroup!=null){
-                            this.focusGroup.setGroupNoFocus();
+
+            //点击聚焦
+            TreeItem<ContractItemView> selectedItem = contractTree.getSelectionModel().getSelectedItem();
+            if(selectedItem!=null){
+                ContractItemView view=selectedItem.getValue();
+                String id = selectedItem.getValue().getId();
+                if (id.contains("GROUP")) {
+                    view.setGroupFocus();
+                    if(focusItem!=null){
+                        if(focusItem.getId().startsWith("GROUP")){
+                            focusItem.setGroupNoFocus();
+                        }else{
+                            focusItem.setNoFocus();
                         }
-                        if(focusItem==null){
-                            contractItemView.setFocus();
-                            this.focusItem=contractItemView;
-                        }else if(focusItem!=contractItemView){
-                            this.focusItem.setNoFocus();
-                            contractItemView.setFocus();
-                            this.focusItem=contractItemView;
-                        }
-                    }else{
-                        //收缩或者展开分组
+                    }
+
+                    focusItem=view;
+                    if (click.getButton()==MouseButton.PRIMARY&&click.getClickCount() == 1) {
                         if(selectedItem.isExpanded()){
                             selectedItem.setExpanded(false);
                         }else{
                             selectedItem.setExpanded(true);
                         }
                     }
+                }else{
+                    if(focusItem!=null){
+                        if(focusItem.getId().startsWith("GROUP")){
+                            focusItem.setGroupNoFocus();
+                        }else{
+                            focusItem.setNoFocus();
+                        }
+                    }
+                    view.setFocus();
+                    focusItem=view;
+                    //左键双击弹出聊天框
+                    if (click.getButton()==MouseButton.PRIMARY&&click.getClickCount() == 2) {
+                        ChatUtils.openChatWindow(Integer.valueOf(id),selectedItem.getValue().getNickName(),selectedItem.getValue().getPersonwordLabel().getText(),selectedItem.getValue().getUserImage());
+                        //打开时停止闪动
+                        if(selectedItem.getValue().getBlink()){
+                            selectedItem.getValue().setBlink(false);
+                            selectedItem.getValue().stopBlink();
+                        }
+                    }
                 }
             }
         });
+    }
+
+    private ContextMenu emptyAreaMenu(){
+        ContextMenu contextMenu=new ContextMenu();
+        MenuItem add = new MenuItem("添加分组",new ImageView(new Image("images/icon/add.png")));
+        MenuItem flush = new MenuItem("刷新好友列表",new ImageView(new Image("images/icon/flush.png")));
+        MenuItem onlyOnline = new MenuItem("显示在线联系人",new ImageView(new Image("images/icon/onlyOnline.png")));
+        contextMenu.getItems().addAll(add,flush,onlyOnline);
+        add.setOnAction(this::addGroup);
+        flush.setOnAction(this::flushGroup);
+        onlyOnline.setOnAction(this::showOnlyOnline);
+        return contextMenu;
     }
 
     private void userMenu(){
@@ -337,14 +347,13 @@ public class MainController  implements Initializable {
         delete.setOnAction(this::deleteContract);
     }
 
-
     private void  groupMenu(){
         MenuItem add = new MenuItem("添加分组",new ImageView(new Image("images/icon/add.png")));
         MenuItem edit = new MenuItem("重命名",new ImageView(new Image("images/icon/edit.png")));
         MenuItem delete = new MenuItem("删除该组",new ImageView(new Image("images/icon/delete.png")));
         MenuItem flush = new MenuItem("刷新好友列表",new ImageView(new Image("images/icon/flush.png")));
         MenuItem onlyOnline = new MenuItem("显示在线联系人",new ImageView(new Image("images/icon/onlyOnline.png")));
-        MenuItem visableFor = new MenuItem("隐身对改分组可见",new ImageView(new Image("images/icon/invisableFor.png")));
+        MenuItem visableFor = new MenuItem("隐身对该分组可见",new ImageView(new Image("images/icon/invisableFor.png")));
         MenuItem invisableFor = new MenuItem("在线对该分组隐身",new ImageView(new Image("images/icon/invisableFor.png")));
         groupMenu.getItems().addAll(add,edit,delete,flush,onlyOnline,visableFor,invisableFor);
         add.setOnAction(this::addGroup);
@@ -510,5 +519,6 @@ public class MainController  implements Initializable {
         }
         contractTree.setCellFactory(ContractTreeCellImpl.callback);
         contractTree.setEditable(true);
+        contractTree.setContextMenu(emptyAreaMenu());
     }
 }

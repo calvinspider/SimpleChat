@@ -66,11 +66,11 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                     ChatView chatWindow=ChatViewManager.getStage(String.valueOf(userId));
                     //聊天框未打开,头像闪动
                     if(chatWindow==null){
-                        TreeItem<ContractItemView> itemViewTreeItem= ClientCache.getContractMap().get(String.valueOf(userId));
-                        ContractItemView contractItemView=itemViewTreeItem.getValue();
-                        contractItemView.startBlink();
+//                        TreeItem<ContractItemView> itemViewTreeItem= ClientCache.getContractMap().get(String.valueOf(userId));
+//                        ContractItemView contractItemView=itemViewTreeItem.getValue();
+//                        contractItemView.startBlink();
                     }else {
-                        ChatUtils.appendBubble(chatWindow.getChatPane(),BubbleType.RIGHT,info.getMsgcontent(),UserUtils.getUserIcon(),570D);
+                        ChatUtils.appendBubble(chatWindow.getChatPane(),BubbleType.LEFT,info.getMsgcontent(),ImageUtiles.getUserIcon(userId),670D);
                     }
                     rightConerPop(info.getMsgcontent(),String.valueOf(userId),userId);
                 });

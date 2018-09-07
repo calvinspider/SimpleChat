@@ -23,8 +23,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -47,18 +49,19 @@ public class ChatView {
     private TextArea chatArea;
     private VBox chatHistory;
     private ScrollPane chatPane;
+    private Label personWordLabel;
     private Pane root;
-    private static Double DEFAULTDUBBLEWIDTH=570D;
+    private static Double DEFAULTDUBBLEWIDTH=670D;
     private double xOffset = 0;
     private double yOffset = 0;
-    public ChatView(Integer openUserId,String openUserName,Image userIcon) {
+    public ChatView(Integer openUserId,String openUserName,String personword,Image userIcon) {
         try {
             scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
         }catch (Exception e){
             e.printStackTrace();
         }
         initMember(scene);
-        setMemberValue(openUserId,openUserName,userIcon);
+        setMemberValue(openUserId,openUserName,personword,userIcon);
         initStage(scene);
         initChatHistory();
         initEvent();
@@ -110,14 +113,16 @@ public class ChatView {
         chatStage.setScene(scene);
         chatStage.setResizable(false);
         chatStage.initStyle(StageStyle.UNDECORATED);
+        chatStage.getIcons().add(icon);
         StageManager.registerStage(IDUtils.formatID(id,IDType.CHATWINDOW),chatStage);
     }
 
-    private void setMemberValue(Integer openUserId,String openUserName,Image userIcon) {
+    private void setMemberValue(Integer openUserId,String openUserName,String personWord,Image userIcon) {
         nameLabel.setText(openUserName);
         userIdLabel.setVisible(false);
         userIdLabel.setText(String.valueOf(openUserId));
         userImage.setImage(userIcon);
+        personWordLabel.setText(personWord);
         this.id=openUserId;
         this.icon=userIcon;
         chatArea.wrapTextProperty().setValue(true);
@@ -128,13 +133,14 @@ public class ChatView {
         userIdLabel= (Label)scene.lookup("#userId");
         userImage  = (ImageView)scene.lookup("#userIcon");
         chatArea=(TextArea) scene.lookup("#chatArea");
-        chatHistory = (VBox)scene.lookup("#chatHistory");
         chatPane = (ScrollPane)scene.lookup("#chatPane");
-        root=(Pane)scene.lookup("#root");
-    }
+        VBox vBox=new VBox();
+        vBox.setBackground(Background.EMPTY);
+        vBox.setStyle("-fx-background-color: transparent");
 
-    public VBox getChatHistory() {
-        return chatHistory;
+        chatPane.setContent(vBox);
+        root=(Pane)scene.lookup("#root");
+        personWordLabel=(Label)scene.lookup("#personWordLabel");
     }
 
     public ScrollPane getChatPane() {

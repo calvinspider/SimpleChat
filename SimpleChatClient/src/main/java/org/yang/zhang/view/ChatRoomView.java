@@ -150,7 +150,7 @@ public class ChatRoomView {
                 ContractItemView selectedItem = friendList.getSelectionModel().getSelectedItem();
                 String userid=selectedItem.getId();
                 if (userid != null) {
-                    ChatUtils.openChatWindow(Integer.valueOf(userid),selectedItem.getNickName(),ImageUtiles.getUserIcon(Integer.valueOf(userid)));
+                    ChatUtils.openChatWindow(Integer.valueOf(userid),selectedItem.getNickName(),selectedItem.getPersonwordLabel().getText(),ImageUtiles.getUserIcon(Integer.valueOf(userid)));
                 }
             }
         });

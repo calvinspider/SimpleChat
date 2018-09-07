@@ -31,7 +31,7 @@
               
             <ImageView fx:id="logo" fitHeight="25.0" fitWidth="147.0" layoutX="7.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                 <image>
-                    <Image url="@../images/icon/songshu.png" />
+                    <Image url="@../images/icon/QQ_big.png" />
                 </image>
             </ImageView>
             <Label layoutX="40.0" layoutY="7.0" text="SIM" />
