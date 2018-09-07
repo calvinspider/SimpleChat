@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="680.0" stylesheets="@../css/bubble.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutX="312.0" layoutY="1.0" prefHeight="80.0" prefWidth="300.0">
+         <children>
+            <ImageView fx:id="fileIcon" fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/icon/file.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="fileName" layoutX="76.0" layoutY="18.0" prefHeight="25.0" prefWidth="100.0" text="Label" />
+            <Label fx:id="fileSize" layoutX="180.0" layoutY="18.0" prefHeight="25.0" prefWidth="100.0" text="Label" />
+            <Label fx:id="messageLabel" layoutX="76.0" layoutY="46.0" prefHeight="25.0" prefWidth="200.0" text="Label" />
+         </children>
+      </Pane>
+      <ProgressBar fx:id="processBar" layoutX="312.0" layoutY="81.0" prefHeight="20.0" prefWidth="300.0" progress="0.0" />
+      <ImageView fx:id="userIcon" fitHeight="35.0" fitWidth="35.0" layoutX="626.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="3.0" layoutY="42.0" prefHeight="17.0" prefWidth="300.0" />
+   </children>
+</Pane>

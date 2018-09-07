@@ -38,11 +38,9 @@
 }
 
 #chatPane{
-    -fx-background-color: transparent;
 }
 
 #chatHistory{
-    -fx-background-color: transparent;
 }
 
 #sendBtn{

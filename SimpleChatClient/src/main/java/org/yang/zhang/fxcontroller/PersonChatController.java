@@ -1,49 +1,42 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.enums.BubbleType;
 import org.yang.zhang.enums.IDType;
 import org.yang.zhang.enums.MessageType;
-import org.yang.zhang.module.MessageInfo;
-import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.utils.ActionManager;
 import org.yang.zhang.utils.AnimationUtils;
 import org.yang.zhang.utils.ChatUtils;
 import org.yang.zhang.utils.ChatViewManager;
+import org.yang.zhang.utils.FileSizeUtil;
 import org.yang.zhang.utils.IDUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.utils.UserUtils;
-import org.yang.zhang.utils.DateUtils;
-import org.yang.zhang.utils.JsonUtils;
+import org.yang.zhang.view.RightFileMessageView;
 import org.yang.zhang.view.RightMessageBubble;
 
 @FXMLController
@@ -92,16 +85,30 @@ public class PersonChatController implements Initializable {
         });
 
         root.setOnDragDropped(new EventHandler<DragEvent>() {
+
             @Override
             public void handle(DragEvent event) {
+                VBox chatHistory=(VBox)chatPane.getContent();
                 Dragboard db = event.getDragboard();
                 boolean success = false;
                 if (db.hasFiles()) {
                     success = true;
-                    String filePath = null;
                     for (File file:db.getFiles()) {
-                        filePath = file.getAbsolutePath();
-                        System.out.println(filePath);
+                        String filePath = file.getAbsolutePath();
+
+                    //将文件框添加到聊天框中
+                    RightFileMessageView messageView=new RightFileMessageView(null,filePath
+                            , "("+FileSizeUtil.getFileOrFilesSize(file,FileSizeUtil.SIZETYPE_KB)+"KB"+")"
+                            ,UserUtils.getUserIcon());
+                    chatHistory.getChildren().add(messageView.getRoot());
+                        Platform.runLater(()->chatPane.setVvalue(1.0));
+                        AnimationUtils.slowScrollToBottom(chatPane);
+                    Float[] values = new Float[] {-1.0f, 0f, 0.6f, 1.0f};
+                    for (int i = 0; i < values.length; i++) {
+                        messageView.getProcessBar().setProgress(values[i]);
+                        final ProgressIndicator pin = new ProgressIndicator();
+                        pin.setProgress(values[i]);
+                    }
                     }
                 }
                 event.setDropCompleted(success);
