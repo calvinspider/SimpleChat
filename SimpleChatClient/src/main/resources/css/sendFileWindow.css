@@ -1,0 +1,11 @@
+#root{
+    -fx-background-color: white;
+}
+
+#filebox{
+    -fx-background-color: white;
+}
+
+.label{
+    -fx-background-color: green;
+}

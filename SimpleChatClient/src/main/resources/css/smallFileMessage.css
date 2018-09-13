@@ -1,0 +1,12 @@
+.progress-bar > .bar {
+    -fx-background-color: #319EDE;
+    -fx-background-radius: 2;
+    -fx-background-insets: 1 1 2 1;
+    -fx-padding: 0.20em;
+}
+
+#root{
+    -fx-background-color: white;
+    -fx-border-width: 4;
+    -fx-background-radius: 4;
+}

@@ -34,15 +34,7 @@ import org.yang.zhang.enums.IDType;
 import org.yang.zhang.enums.MessageType;
 import org.yang.zhang.socket.NettyClient;
 import org.yang.zhang.sound.Client;
-import org.yang.zhang.utils.ActionManager;
-import org.yang.zhang.utils.AnimationUtils;
-import org.yang.zhang.utils.ChatUtils;
-import org.yang.zhang.utils.ChatViewManager;
-import org.yang.zhang.utils.ClientCache;
-import org.yang.zhang.utils.FileSizeUtil;
-import org.yang.zhang.utils.IDUtils;
-import org.yang.zhang.utils.StageManager;
-import org.yang.zhang.utils.UserUtils;
+import org.yang.zhang.utils.*;
 import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.RightFileMessageView;
 import org.yang.zhang.view.RightMessageBubble;
@@ -114,20 +106,17 @@ public class PersonChatController implements Initializable {
                             vBox.getChildren().add(smallFileMessage.getRoot());
                         }
 
-//                        NettyClient.sendFileWithProcess(file,fileName,smallFileMessage.getProcessbar());
-//
-//                        closeSendFileWindow();
-//                        //将文件框添加到聊天框中
-//                        RightFileMessageView messageView=new RightFileMessageView(null,fileName
-//                            , "("+FileSizeUtil.getFileOrFilesSize(file,FileSizeUtil.SIZETYPE_KB)+"KB"+")"
-//                            ,UserUtils.getUserIcon());
-//                        chatHistory.getChildren().add(messageView.getRoot());
-//                        Platform.runLater(()->chatPane.setVvalue(1.0));
-//                        AnimationUtils.slowScrollToBottom(chatPane);
-
-
+                        ThreadPoolUtils.run(()->{
+                            NettyClient.sendFileWithProcess(file,fileName,smallFileMessage.getProcessbar());
+                            //将文件框添加到聊天框中
+                            RightFileMessageView messageView=new RightFileMessageView(null,fileName
+                                    , "("+FileSizeUtil.getFileOrFilesSize(file,FileSizeUtil.SIZETYPE_KB)+"KB"+")"
+                                    ,UserUtils.getUserIcon());
+                            chatHistory.getChildren().add(messageView.getRoot());
+                            Platform.runLater(()->chatPane.setVvalue(1.0));
+                            AnimationUtils.slowScrollToBottom(chatPane);
+                        });
                     }
-//                    closeSendFileWindow();
                 }
 
             }

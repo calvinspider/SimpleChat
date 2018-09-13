@@ -31,7 +31,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 
-    private static String fileDir = "D:\\Documents\\SimpleChat\\SimpleChatServer\\src\\main\\resources\\static\\images\\userIcon";
+    private static String fileDir = "D:\\simpleChatFiles";
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

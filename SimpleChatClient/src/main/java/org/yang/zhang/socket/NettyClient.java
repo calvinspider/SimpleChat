@@ -108,7 +108,7 @@ public class NettyClient{
         }
         RandomAccessFile randomAccessFile=null;
         try {
-            int size=1;
+            int size=1024*50;
             Long totalByte=file.length();
             Long original=totalByte;
             randomAccessFile = new RandomAccessFile(file, "r");
