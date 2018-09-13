@@ -38,9 +38,11 @@
 }
 
 #chatPane{
+    -fx-background-color: white;
 }
 
 #chatHistory{
+    -fx-background-color: white;
 }
 
 #sendBtn{

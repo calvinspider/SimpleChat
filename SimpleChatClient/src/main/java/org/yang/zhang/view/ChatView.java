@@ -52,8 +52,10 @@ public class ChatView {
     private Label personWordLabel;
     private Pane root;
     private static Double DEFAULTDUBBLEWIDTH=670D;
+
     private double xOffset = 0;
     private double yOffset = 0;
+
     public ChatView(Integer openUserId,String openUserName,String personword,Image userIcon) {
         try {
             scene=new Scene(FXMLLoader.load(getClass().getResource("/fxml/chatWindow.fxml")));
@@ -87,6 +89,11 @@ public class ChatView {
         root.setOnMouseDragged(event -> {
             StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)).setX(event.getScreenX() - xOffset);
             StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)).setY(event.getScreenY() - yOffset);
+            Stage stage=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
+            if(stage!=null){
+                stage.setX(event.getScreenX() - xOffset+680);
+                stage.setY(event.getScreenY() - yOffset+60);
+            }
         });
     }
 

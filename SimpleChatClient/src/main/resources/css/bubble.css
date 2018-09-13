@@ -19,6 +19,17 @@
     -fx-background-color: transparent;
 }
 
-#root{
-    /*-fx-background-color: rgba(255, 255, 255, 1);*/
+#fileMessagePane{
+    -fx-background-color: white;
+    -fx-border-width: 4;
+    -fx-border-color: #78CDF8;
+    -fx-background-radius: 4;
+}
+
+
+.progress-bar > .bar {
+    -fx-background-color: #319EDE;
+    -fx-background-radius: 2;
+    -fx-background-insets: 1 1 2 1;
+    -fx-padding: 0.20em;
 }

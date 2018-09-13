@@ -5,11 +5,13 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -18,6 +20,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.net.URL;
@@ -25,19 +28,26 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.enums.BubbleType;
 import org.yang.zhang.enums.IDType;
 import org.yang.zhang.enums.MessageType;
+import org.yang.zhang.socket.NettyClient;
+import org.yang.zhang.sound.Client;
 import org.yang.zhang.utils.ActionManager;
 import org.yang.zhang.utils.AnimationUtils;
 import org.yang.zhang.utils.ChatUtils;
 import org.yang.zhang.utils.ChatViewManager;
+import org.yang.zhang.utils.ClientCache;
 import org.yang.zhang.utils.FileSizeUtil;
 import org.yang.zhang.utils.IDUtils;
 import org.yang.zhang.utils.StageManager;
 import org.yang.zhang.utils.UserUtils;
+import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.RightFileMessageView;
 import org.yang.zhang.view.RightMessageBubble;
+import org.yang.zhang.view.SendFileView;
+import org.yang.zhang.view.SmallFileMessage;
 
 @FXMLController
 public class PersonChatController implements Initializable {
@@ -61,6 +71,8 @@ public class PersonChatController implements Initializable {
     @FXML
     private Button sendBtn;
 
+    private SendFileView sendFileView;
+
     @Autowired
     private MainController mainController;
 
@@ -71,7 +83,6 @@ public class PersonChatController implements Initializable {
     }
 
     private void initEvent() {
-
         root.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
@@ -90,32 +101,73 @@ public class PersonChatController implements Initializable {
             public void handle(DragEvent event) {
                 VBox chatHistory=(VBox)chatPane.getContent();
                 Dragboard db = event.getDragboard();
-                boolean success = false;
                 if (db.hasFiles()) {
-                    success = true;
+                    event.setDropCompleted(true);
+                    event.consume();
+                    openSendFileWindow();
                     for (File file:db.getFiles()) {
                         String filePath = file.getAbsolutePath();
+                        String fileName=filePath.substring(filePath.lastIndexOf(File.separator)+1,filePath.length());
+                        SmallFileMessage smallFileMessage=new SmallFileMessage(new Image("images/icon/file.png"),fileName);
+                        if(sendFileView!=null){
+                            VBox vBox=sendFileView.getvBox();
+                            vBox.getChildren().add(smallFileMessage.getRoot());
+                        }
 
-                    //将文件框添加到聊天框中
-                    RightFileMessageView messageView=new RightFileMessageView(null,filePath
-                            , "("+FileSizeUtil.getFileOrFilesSize(file,FileSizeUtil.SIZETYPE_KB)+"KB"+")"
-                            ,UserUtils.getUserIcon());
-                    chatHistory.getChildren().add(messageView.getRoot());
-                        Platform.runLater(()->chatPane.setVvalue(1.0));
-                        AnimationUtils.slowScrollToBottom(chatPane);
-                    Float[] values = new Float[] {-1.0f, 0f, 0.6f, 1.0f};
-                    for (int i = 0; i < values.length; i++) {
-                        messageView.getProcessBar().setProgress(values[i]);
-                        final ProgressIndicator pin = new ProgressIndicator();
-                        pin.setProgress(values[i]);
+//                        NettyClient.sendFileWithProcess(file,fileName,smallFileMessage.getProcessbar());
+//
+//                        closeSendFileWindow();
+//                        //将文件框添加到聊天框中
+//                        RightFileMessageView messageView=new RightFileMessageView(null,fileName
+//                            , "("+FileSizeUtil.getFileOrFilesSize(file,FileSizeUtil.SIZETYPE_KB)+"KB"+")"
+//                            ,UserUtils.getUserIcon());
+//                        chatHistory.getChildren().add(messageView.getRoot());
+//                        Platform.runLater(()->chatPane.setVvalue(1.0));
+//                        AnimationUtils.slowScrollToBottom(chatPane);
+
+
                     }
-                    }
+//                    closeSendFileWindow();
                 }
-                event.setDropCompleted(success);
-                event.consume();
+
             }
         });
     }
+
+    public void openSendFileWindow() {
+        String id=userId.getText();
+        Stage window=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
+        if(window!=null){
+            Stage chat=ChatViewManager.getStage(id).getChatStage();
+            window.setX(chat.getX()+680);
+            window.setY(chat.getY()+60);
+            window.show();
+        }else{
+            Stage stage=new Stage();
+            sendFileView=new SendFileView();
+            Scene scene=new Scene(sendFileView.getRoot());
+            stage.setScene(scene);
+            Stage chat=ChatViewManager.getStage(id).getChatStage();
+            stage.setX(chat.getX()+680);
+            stage.setY(chat.getY()+60);
+            stage.initStyle(StageStyle.UNDECORATED);
+            sendFileView.getRoot().setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            sendFileView.getRoot().setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            stage.show();
+            StageManager.registerStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id,stage);
+        }
+    }
+
+    public void closeSendFileWindow() {
+        String id=userId.getText();
+        Stage window=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
+        if(window!=null){
+            window.close();
+            StageManager.unregisterStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
+            sendFileView=null;
+        }
+    }
+
 
     @FXML
     public void sendMessage() {
@@ -133,14 +185,21 @@ public class PersonChatController implements Initializable {
         if(stage!=null){
             stage.close();
             ChatViewManager.unregisterStage(IDUtils.formatID(userId.getText(),IDType.ID));
+            closeSendFileWindow();
         }
     }
 
     @FXML
     public void minWindow(){
+        String id=userId.getText();
         Stage stage=StageManager.getStage(IDUtils.formatID(userId.getText(),IDType.CHATWINDOW));
         stage.setIconified(true);
+        Stage window=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
+        if(window!=null){
+            window.hide();
+        }
     }
+
 
 
 }

@@ -13,6 +13,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;
+import javafx.scene.control.ProgressBar;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -96,4 +97,51 @@ public class NettyClient{
             }
         }
     }
+
+
+    public static void sendFileWithProcess(File file, String fileName, ProgressBar progressBar){
+        if (file.exists()) {
+            if (!file.isFile()) {
+                System.out.println("Not a file :" + file);
+                return;
+            }
+        }
+        RandomAccessFile randomAccessFile=null;
+        try {
+            int size=1;
+            Long totalByte=file.length();
+            Long original=totalByte;
+            randomAccessFile = new RandomAccessFile(file, "r");
+            byte[] bytes = new byte[size];
+            int byteRead = randomAccessFile.read(bytes);
+            totalByte=totalByte-byteRead;
+            Boolean create=true;
+            while (byteRead!=-1) {
+                FileUploadFile uploadFile = new FileUploadFile();
+                uploadFile.setBytes(bytes);
+                uploadFile.setFileName(fileName);
+                uploadFile.setCreate(create);
+                channel.writeAndFlush(uploadFile);
+                progressBar.setProgress((original-totalByte)/original);
+                create = false;
+                totalByte=totalByte-byteRead;
+                if(totalByte<size){
+                    bytes=new byte[byteRead];
+                }
+                byteRead = randomAccessFile.read(bytes);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            if(randomAccessFile!=null){
+                try {
+                    randomAccessFile.close();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
