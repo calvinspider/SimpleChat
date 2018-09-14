@@ -6,13 +6,23 @@ package org.yang.zhang.socket;
  * @Date 2018 06 08 15:12
  */
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.RandomAccessFile;
+
+import org.yang.zhang.constants.Constant;
 import org.yang.zhang.enums.BubbleType;
+import org.yang.zhang.enums.IDType;
 import org.yang.zhang.fxcontroller.MainController;
+import org.yang.zhang.module.FileUploadFile;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.utils.*;
 import org.yang.zhang.view.ChatView;
 import org.yang.zhang.view.ContractItemView;
 import org.yang.zhang.view.LeftMessageBubble;
+import org.yang.zhang.view.RightFileMessageView;
+import org.yang.zhang.view.SendFileView;
+import org.yang.zhang.view.SmallFileMessage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -26,14 +36,18 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
@@ -47,15 +61,29 @@ import javafx.util.Duration;
  */
 public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 
+    private static String fileDir = "D:\\simpleChatFiles\\receiveFiles";
+
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg){
+
         if(msg==null||"".equals(msg)){
             return;
         }
+
+        //文件传输
+        if (msg instanceof FileUploadFile) {
+            dealFileMessage(msg);
+        }else{
+            //文字传输
+            dealTextMessage(msg);
+        }
+    }
+
+    private void dealTextMessage(Object msg) {
         TypeReference type = new TypeReference<MessageInfo>(){};
         MessageInfo info=JsonUtils.fromJson((String) msg,type);
         if(info==null){
-            throw new Exception("MessageInfo must not be NULL!");
+            return;
         }
         Integer userId=info.getSourceclientid();
         Integer targetId=info.getTargetclientid();
@@ -78,6 +106,51 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             case ROOM:
                 Platform.runLater(()->rightConerPop(info.getMsgcontent(),String.valueOf(userId),userId));
                 break;
+        }
+    }
+
+    private void dealFileMessage(Object msg) {
+
+        FileUploadFile ef = (FileUploadFile) msg;
+
+        String path=ef.getOriginalUserId()+"";
+        File file=new File(fileDir+File.separator+path);
+        if(!file.exists()){
+            file.mkdir();
+        }
+
+        String userId=String.valueOf(ef.getOriginalUserId());
+        ChatView chatWindow=ChatViewManager.getStage(userId);
+        if(chatWindow!=null){
+            ScrollPane chatPane=chatWindow.getChatPane();
+            VBox chatHistory=(VBox)chatPane.getContent();
+
+            if(ef.getCreate()){
+                    SendFileWindowManager.openStage(userId);
+                    SendFileView sendFileView=SendFileWindowManager.getView(userId);
+                    SmallFileMessage smallFileMessage=new SmallFileMessage(new Image(Constant.DEFAULT_FILE_ICON),ef.getFileName());
+                    if(sendFileView!=null){
+                        VBox vBox=sendFileView.getvBox();
+                        //插入文件传送框
+                        vBox.getChildren().add(smallFileMessage.getRoot());
+                    }
+
+                    //提交文件传输线程
+                    ThreadPoolUtils.run(()-> {
+                        saveFile(ef,fileDir+path+ef.getFileName());
+
+                        smallFileMessage.getProcessbar().setProgress((ef.getTotal()-ef.getRemain())/ef.getTotal());
+                    });
+                    //传输完成后将文件框添加到聊天框中
+                    RightFileMessageView messageView=new RightFileMessageView(new Image(Constant.DEFAULT_FILE_ICON)
+                            ,ef.getFileName()
+                            , "("+FileSizeUtil.getFileOrFilesSize(file,FileSizeUtil.SIZETYPE_KB)+"KB"+")"
+                            ,UserUtils.getUserIcon());
+                    chatHistory.getChildren().add(messageView.getRoot());
+                    //聊天框下拉到底
+                    Platform.runLater(()->chatPane.setVvalue(1.0));
+                    AnimationUtils.slowScrollToBottom(chatPane);
+            }
         }
     }
 
@@ -123,6 +196,37 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                 }
             });
             ConerPopUtils.registerConer(userId,page);
+        }
+    }
+
+    private void saveFile(FileUploadFile ef, String fileDir) {
+        byte[] bytes = ef.getBytes();
+        String fileName=ef.getFileName();
+        File file=null;
+        FileOutputStream out=null;
+        RandomAccessFile randomAccessFile=null;
+        try {
+            file= new File(fileDir + File.separator + fileName);
+            if(!file.exists()){
+                randomAccessFile= new RandomAccessFile(file, "rw");
+                randomAccessFile.write(bytes);
+            }else{
+                out= new FileOutputStream(file,true);
+                out.write(bytes);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if(randomAccessFile!=null){
+                    randomAccessFile.close();
+                }
+                if(out!=null){
+                    out.close();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }

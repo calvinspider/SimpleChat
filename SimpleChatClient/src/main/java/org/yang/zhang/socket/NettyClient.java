@@ -73,6 +73,7 @@ public class NettyClient{
             Boolean create=true;
             while (byteRead!=-1) {
                 FileUploadFile uploadFile = new FileUploadFile();
+                uploadFile.setType(0);
                 uploadFile.setBytes(bytes);
                 uploadFile.setFileName(fileName);
                 uploadFile.setCreate(create);
@@ -98,8 +99,7 @@ public class NettyClient{
         }
     }
 
-
-    public static void sendFileWithProcess(File file, String fileName, ProgressBar progressBar){
+    public static void sendFileWithProcess(Integer originalUserId,Integer targetUserId,File file, String fileName, ProgressBar progressBar){
         if (file.exists()) {
             if (!file.isFile()) {
                 System.out.println("Not a file :" + file);
@@ -116,11 +116,16 @@ public class NettyClient{
             int byteRead = randomAccessFile.read(bytes);
             totalByte=totalByte-byteRead;
             Boolean create=true;
+            FileUploadFile uploadFile = new FileUploadFile();
             while (byteRead!=-1) {
-                FileUploadFile uploadFile = new FileUploadFile();
+                uploadFile.setOriginalUserId(originalUserId);
+                uploadFile.setTargetUserId(targetUserId);
+                uploadFile.setType(1);
                 uploadFile.setBytes(bytes);
                 uploadFile.setFileName(fileName);
                 uploadFile.setCreate(create);
+                uploadFile.setTotal(original);
+                uploadFile.setRemain(totalByte.intValue());
                 channel.writeAndFlush(uploadFile);
                 progressBar.setProgress((original-totalByte)/original);
                 create = false;

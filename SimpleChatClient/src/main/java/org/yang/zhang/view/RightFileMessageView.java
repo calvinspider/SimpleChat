@@ -36,8 +36,7 @@ public class RightFileMessageView {
         this.fileSize=(Label)root.lookup("#fileSize");
         messageLabel=(Label)root.lookup("#messageLabel");
         this.processBar=(ProgressBar)root.lookup("#processBar");
-        if(icon!=null)
-            this.fileIcon.setImage(icon);
+        this.fileIcon.setImage(icon);
         this.fileName.setText(fileName);
         this.fileSize.setText(fileSize);
         this.userIcon.setImage(userIcon);

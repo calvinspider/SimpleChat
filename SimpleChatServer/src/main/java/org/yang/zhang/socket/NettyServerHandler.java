@@ -33,6 +33,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
 
     private static String fileDir = "D:\\simpleChatFiles";
 
+    private static String userIconDir = "D:\\simpleChatFiles\\usericon";
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if(msg==null){
@@ -41,36 +43,19 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
         //文件传输
         if (msg instanceof FileUploadFile) {
             FileUploadFile ef = (FileUploadFile) msg;
-            byte[] bytes = ef.getBytes();
-            String fileName=ef.getFileName();
-            File file=null;
-            FileOutputStream out=null;
-            RandomAccessFile randomAccessFile=null;
-            try {
-                file= new File(fileDir + File.separator + fileName);
+
+            if(0==ef.getType()){//上传头像
+                saveFile(ef,userIconDir);
+            }else if(1==ef.getType()){//上传文件
+                String path=ef.getOriginalUserId()+ef.getTargetUserId()+"";
+                File file=new File(fileDir+path);
                 if(!file.exists()){
-                    randomAccessFile= new RandomAccessFile(file, "rw");
-                    randomAccessFile.write(bytes);
-                }else{
-                    out= new FileOutputStream(file,true);
-                    out.write(bytes);
+                    file.mkdir();
                 }
-            }catch (Exception e){
-                e.printStackTrace();
-            }finally {
-                try {
-                    if(randomAccessFile!=null){
-                        randomAccessFile.close();
-                    }
-                    if(out!=null){
-                        out.close();
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                saveFile(ef,fileDir+path);
+                ChannelHandlerContext targetChannel=ChannelManager.getChannel(String.valueOf(ef.getTargetUserId()));
+                targetChannel.writeAndFlush(ef);
             }
-
-
             return;
         }
         TypeReference type = new TypeReference<MessageInfo>(){};
@@ -132,6 +117,37 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
                 recentContractRepository.save(recentContract1);
             }
             chatMessageRepository.save(info);
+        }
+    }
+
+    private void saveFile(FileUploadFile ef,String fileDir) {
+        byte[] bytes = ef.getBytes();
+        String fileName=ef.getFileName();
+        File file=null;
+        FileOutputStream out=null;
+        RandomAccessFile randomAccessFile=null;
+        try {
+            file= new File(fileDir + File.separator + fileName);
+            if(!file.exists()){
+                randomAccessFile= new RandomAccessFile(file, "rw");
+                randomAccessFile.write(bytes);
+            }else{
+                out= new FileOutputStream(file,true);
+                out.write(bytes);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if(randomAccessFile!=null){
+                    randomAccessFile.close();
+                }
+                if(out!=null){
+                    out.close();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

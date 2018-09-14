@@ -33,6 +33,8 @@ public class Constant {
     public static String STATUS_ONLINE_ICON="images/icon/online_status.png";
     public static String STATUS_BUSY_ICON="images/icon/busy_status.png";
     public static String STATUS_INVISIBLE_ICON="images/icon/invisiable_status.png";
+    public static String DEFAULT_FILE_ICON="images/icon/file.png";
+
 
 
 }

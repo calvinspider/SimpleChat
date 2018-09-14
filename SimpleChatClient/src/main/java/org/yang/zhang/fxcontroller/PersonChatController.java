@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.enums.BubbleType;
 import org.yang.zhang.enums.IDType;
@@ -63,11 +64,6 @@ public class PersonChatController implements Initializable {
     @FXML
     private Button sendBtn;
 
-    private SendFileView sendFileView;
-
-    @Autowired
-    private MainController mainController;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ActionManager.setKeyPressAction(chatArea,KeyCode.ENTER,this::sendMessage);
@@ -88,7 +84,6 @@ public class PersonChatController implements Initializable {
         });
 
         root.setOnDragDropped(new EventHandler<DragEvent>() {
-
             @Override
             public void handle(DragEvent event) {
                 VBox chatHistory=(VBox)chatPane.getContent();
@@ -96,23 +91,32 @@ public class PersonChatController implements Initializable {
                 if (db.hasFiles()) {
                     event.setDropCompleted(true);
                     event.consume();
-                    openSendFileWindow();
+                    //打开文件传输框
+                    SendFileWindowManager.openStage(getUserId());
+                    SendFileView sendFileView=SendFileWindowManager.getView(getUserId());
+                    VBox vBox=sendFileView.getvBox();
                     for (File file:db.getFiles()) {
                         String filePath = file.getAbsolutePath();
                         String fileName=filePath.substring(filePath.lastIndexOf(File.separator)+1,filePath.length());
-                        SmallFileMessage smallFileMessage=new SmallFileMessage(new Image("images/icon/file.png"),fileName);
-                        if(sendFileView!=null){
-                            VBox vBox=sendFileView.getvBox();
-                            vBox.getChildren().add(smallFileMessage.getRoot());
-                        }
 
+                        SmallFileMessage smallFileMessage=new SmallFileMessage(new Image(Constant.DEFAULT_FILE_ICON),fileName);
+                        //插入文件传送框
+                        vBox.getChildren().add(smallFileMessage.getRoot());
+
+                        //提交文件传输线程
                         ThreadPoolUtils.run(()->{
-                            NettyClient.sendFileWithProcess(file,fileName,smallFileMessage.getProcessbar());
-                            //将文件框添加到聊天框中
-                            RightFileMessageView messageView=new RightFileMessageView(null,fileName
+                            NettyClient.sendFileWithProcess(UserUtils.getCurrentUserId()
+                                    ,Integer.valueOf(getUserId())
+                                    ,file,fileName
+                                    ,smallFileMessage.getProcessbar());
+
+                            //传输完成后将文件框添加到聊天框中
+                            RightFileMessageView messageView=new RightFileMessageView(new Image(Constant.DEFAULT_FILE_ICON)
+                                    ,fileName
                                     , "("+FileSizeUtil.getFileOrFilesSize(file,FileSizeUtil.SIZETYPE_KB)+"KB"+")"
                                     ,UserUtils.getUserIcon());
                             chatHistory.getChildren().add(messageView.getRoot());
+                            //聊天框下拉到底
                             Platform.runLater(()->chatPane.setVvalue(1.0));
                             AnimationUtils.slowScrollToBottom(chatPane);
                         });
@@ -121,40 +125,6 @@ public class PersonChatController implements Initializable {
 
             }
         });
-    }
-
-    public void openSendFileWindow() {
-        String id=userId.getText();
-        Stage window=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
-        if(window!=null){
-            Stage chat=ChatViewManager.getStage(id).getChatStage();
-            window.setX(chat.getX()+680);
-            window.setY(chat.getY()+60);
-            window.show();
-        }else{
-            Stage stage=new Stage();
-            sendFileView=new SendFileView();
-            Scene scene=new Scene(sendFileView.getRoot());
-            stage.setScene(scene);
-            Stage chat=ChatViewManager.getStage(id).getChatStage();
-            stage.setX(chat.getX()+680);
-            stage.setY(chat.getY()+60);
-            stage.initStyle(StageStyle.UNDECORATED);
-            sendFileView.getRoot().setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            sendFileView.getRoot().setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            stage.show();
-            StageManager.registerStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id,stage);
-        }
-    }
-
-    public void closeSendFileWindow() {
-        String id=userId.getText();
-        Stage window=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
-        if(window!=null){
-            window.close();
-            StageManager.unregisterStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
-            sendFileView=null;
-        }
     }
 
 
@@ -170,25 +140,26 @@ public class PersonChatController implements Initializable {
 
     @FXML
     public void closeWindow(){
-        Stage stage=StageManager.getStage(IDUtils.formatID(userId.getText(),IDType.CHATWINDOW));
+        String id=getUserId();
+        Stage stage=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW));
         if(stage!=null){
             stage.close();
-            ChatViewManager.unregisterStage(IDUtils.formatID(userId.getText(),IDType.ID));
-            closeSendFileWindow();
+            ChatViewManager.unregisterStage(IDUtils.formatID(id,IDType.ID));
+            SendFileWindowManager.closeStage(id);
         }
     }
 
     @FXML
     public void minWindow(){
-        String id=userId.getText();
-        Stage stage=StageManager.getStage(IDUtils.formatID(userId.getText(),IDType.CHATWINDOW));
+        String id=getUserId();
+        Stage stage=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW));
         stage.setIconified(true);
-        Stage window=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
-        if(window!=null){
-            window.hide();
-        }
+        SendFileWindowManager.hideStage(id);
     }
 
+    public String getUserId(){
+        return userId.getText();
+    }
 
 
 }
