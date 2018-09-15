@@ -57,20 +57,18 @@ public class SendFileWindowManager {
             fileWindow.setY(chatWindow.getY()+60);
             fileWindow.show();
         }else{
-            Platform.runLater(()->{
-                Stage window=new Stage();
-                SendFileView sendFileView=new SendFileView();
-                Scene scene=new Scene(sendFileView.getRoot());
-                window.setScene(scene);
-                window.setX(chatWindow.getX()+680);
-                window.setY(chatWindow.getY()+60);
-                window.initStyle(StageStyle.UNDECORATED);
-                sendFileView.getRoot().setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-                sendFileView.getRoot().setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-                fileWindow.show();
-                registerStage(userId,window);
-                registerView(userId,sendFileView);
-            });
+            Stage window=new Stage();
+            SendFileView sendFileView=new SendFileView();
+            Scene scene=new Scene(sendFileView.getRoot());
+            window.setScene(scene);
+            window.setX(chatWindow.getX()+680);
+            window.setY(chatWindow.getY()+60);
+            window.initStyle(StageStyle.UNDECORATED);
+            sendFileView.getRoot().setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            sendFileView.getRoot().setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            window.show();
+            registerStage(userId,window);
+            registerView(userId,sendFileView);
         }
         return fileWindow;
     }

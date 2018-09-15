@@ -89,7 +89,7 @@ public class ChatView {
         root.setOnMouseDragged(event -> {
             StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)).setX(event.getScreenX() - xOffset);
             StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)).setY(event.getScreenY() - yOffset);
-            Stage stage=StageManager.getStage(IDUtils.formatID(id,IDType.CHATWINDOW)+id);
+            Stage stage=SendFileWindowManager.getStage(String.valueOf(id));
             if(stage!=null){
                 stage.setX(event.getScreenX() - xOffset+680);
                 stage.setY(event.getScreenY() - yOffset+60);

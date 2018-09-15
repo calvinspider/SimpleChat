@@ -86,15 +86,15 @@ public class PersonChatController implements Initializable {
         root.setOnDragDropped(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                VBox chatHistory=(VBox)chatPane.getContent();
                 Dragboard db = event.getDragboard();
+                event.setDropCompleted(true);
+                event.consume();
                 if (db.hasFiles()) {
-                    event.setDropCompleted(true);
-                    event.consume();
                     //打开文件传输框
                     SendFileWindowManager.openStage(getUserId());
                     SendFileView sendFileView=SendFileWindowManager.getView(getUserId());
                     VBox vBox=sendFileView.getvBox();
+                    int index=0;
                     for (File file:db.getFiles()) {
                         String filePath = file.getAbsolutePath();
                         String fileName=filePath.substring(filePath.lastIndexOf(File.separator)+1,filePath.length());
@@ -109,17 +109,26 @@ public class PersonChatController implements Initializable {
                                     ,Integer.valueOf(getUserId())
                                     ,file,fileName
                                     ,smallFileMessage.getProcessbar());
-
+                        Platform.runLater(()->{
+                            //文件传送完之后删除右侧文件节点
+                            vBox.getChildren().remove(smallFileMessage.getRoot());
+                            if(vBox.getChildren().size()==1){
+                                SendFileWindowManager.closeStage(getUserId());
+                            }
                             //传输完成后将文件框添加到聊天框中
                             RightFileMessageView messageView=new RightFileMessageView(new Image(Constant.DEFAULT_FILE_ICON)
                                     ,fileName
                                     , "("+FileSizeUtil.getFileOrFilesSize(file,FileSizeUtil.SIZETYPE_KB)+"KB"+")"
                                     ,UserUtils.getUserIcon());
+                            VBox chatHistory=(VBox)chatPane.getContent();
+
                             chatHistory.getChildren().add(messageView.getRoot());
                             //聊天框下拉到底
-                            Platform.runLater(()->chatPane.setVvalue(1.0));
+                            chatPane.setVvalue(1.0);
                             AnimationUtils.slowScrollToBottom(chatPane);
                         });
+                        });
+                        index++;
                     }
                 }
 

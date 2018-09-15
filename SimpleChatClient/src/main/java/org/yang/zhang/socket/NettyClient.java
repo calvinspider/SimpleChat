@@ -100,15 +100,15 @@ public class NettyClient{
     }
 
     public static void sendFileWithProcess(Integer originalUserId,Integer targetUserId,File file, String fileName, ProgressBar progressBar){
-        if (file.exists()) {
-            if (!file.isFile()) {
-                System.out.println("Not a file :" + file);
-                return;
+            if (file.exists()) {
+                if (!file.isFile()) {
+                    System.out.println("Not a file :" + file);
+                    return;
+                }
             }
-        }
         RandomAccessFile randomAccessFile=null;
         try {
-            int size=1024*50;
+            int size=1024;
             Long totalByte=file.length();
             Long original=totalByte;
             randomAccessFile = new RandomAccessFile(file, "r");

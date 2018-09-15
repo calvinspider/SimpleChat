@@ -113,8 +113,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 
         FileUploadFile ef = (FileUploadFile) msg;
 
-        String path=ef.getOriginalUserId()+"";
-        File file=new File(fileDir+File.separator+path);
+        File file=new File(fileDir);
         if(!file.exists()){
             file.mkdir();
         }
@@ -126,6 +125,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             VBox chatHistory=(VBox)chatPane.getContent();
 
             if(ef.getCreate()){
+                Platform.runLater(()->{
                     SendFileWindowManager.openStage(userId);
                     SendFileView sendFileView=SendFileWindowManager.getView(userId);
                     SmallFileMessage smallFileMessage=new SmallFileMessage(new Image(Constant.DEFAULT_FILE_ICON),ef.getFileName());
@@ -134,11 +134,9 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                         //插入文件传送框
                         vBox.getChildren().add(smallFileMessage.getRoot());
                     }
-
                     //提交文件传输线程
                     ThreadPoolUtils.run(()-> {
-                        saveFile(ef,fileDir+path+ef.getFileName());
-
+                        saveFile(ef,fileDir);
                         smallFileMessage.getProcessbar().setProgress((ef.getTotal()-ef.getRemain())/ef.getTotal());
                     });
                     //传输完成后将文件框添加到聊天框中
@@ -150,6 +148,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                     //聊天框下拉到底
                     Platform.runLater(()->chatPane.setVvalue(1.0));
                     AnimationUtils.slowScrollToBottom(chatPane);
+                });
             }
         }
     }

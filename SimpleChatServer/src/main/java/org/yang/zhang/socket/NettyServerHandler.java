@@ -47,14 +47,13 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             if(0==ef.getType()){//上传头像
                 saveFile(ef,userIconDir);
             }else if(1==ef.getType()){//上传文件
-                String path=ef.getOriginalUserId()+ef.getTargetUserId()+"";
-                File file=new File(fileDir+path);
+                File file=new File(fileDir);
                 if(!file.exists()){
                     file.mkdir();
                 }
-                saveFile(ef,fileDir+path);
-                ChannelHandlerContext targetChannel=ChannelManager.getChannel(String.valueOf(ef.getTargetUserId()));
-                targetChannel.writeAndFlush(ef);
+                saveFile(ef,fileDir);
+//                ChannelHandlerContext targetChannel=ChannelManager.getChannel(String.valueOf(ef.getTargetUserId()));
+//                targetChannel.writeAndFlush(ef);
             }
             return;
         }
