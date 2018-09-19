@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.yang.zhang.enums.MessageType;
 import org.yang.zhang.mapper.ChatRoomMapper;
-import org.yang.zhang.module.FileUploadFile;
+import org.yang.zhang.module.FileMessage;
 import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.module.RecentContract;
 import org.yang.zhang.module.RoomChatInfo;
@@ -29,44 +29,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
+public class MessageInfoHandler extends SimpleChannelInboundHandler<MessageInfo> {
 
-    private static String fileDir = "D:\\simpleChatFiles";
 
-    private static String userIconDir = "D:\\simpleChatFiles\\usericon";
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(msg==null){
-            return;
-        }
-        //文件传输
-        if (msg instanceof FileUploadFile) {
-            FileUploadFile ef = (FileUploadFile) msg;
-
-            if(0==ef.getType()){//上传头像
-                saveFile(ef,userIconDir);
-            }else if(1==ef.getType()){//上传文件
-                File file=new File(fileDir);
-                if(!file.exists()){
-                    file.mkdir();
-                }
-                saveFile(ef,fileDir);
-//                ChannelHandlerContext targetChannel=ChannelManager.getChannel(String.valueOf(ef.getTargetUserId()));
-//                targetChannel.writeAndFlush(ef);
-            }
-            return;
-        }
-        TypeReference type = new TypeReference<MessageInfo>(){};
-        MessageInfo info=JsonUtils.fromJson((String)msg,type);
-        if(info==null){
-            throw new Exception("MessageInfo must not be NULL!");
-        }
+    protected void channelRead0(ChannelHandlerContext ctx, MessageInfo info) throws Exception {
 
         ChatMessageRepository chatMessageRepository=SpringContextUtils.getBean("chatMessageRepository");
         RecentContractRepository recentContractRepository=SpringContextUtils.getBean("recentContractRepository");
         ChatRoomMapper chatRoomMapper=SpringContextUtils.getBean("chatRoomMapper");
         ChatRoomMessageRepository chatRoomMessageRepository=SpringContextUtils.getBean("chatRoomMessageRepository");
+
         Integer targetUser=info.getTargetclientid();
         Integer sourceUser=info.getSourceclientid();
         if(info.getMsgtype()==MessageType.REGISTER){//注册channel
@@ -82,7 +56,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
                 }
                 ChannelHandlerContext targetChannel=ChannelManager.getChannel(String.valueOf(id));
                 if(targetChannel!=null){
-                    targetChannel.writeAndFlush(msg+"\n");
+                    targetChannel.writeAndFlush(info);
                 }
             }
             RoomChatInfo roomChatInfo=new RoomChatInfo();
@@ -97,7 +71,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             if(targetChannel==null){
                 info.setSendflag(0);
             }else{
-                targetChannel.writeAndFlush(msg+"\n");
+                targetChannel.writeAndFlush(info);
                 info.setSendflag(1);
             }
             info.setTime(new Date());
@@ -117,42 +91,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<String> {
             }
             chatMessageRepository.save(info);
         }
-    }
-
-    private void saveFile(FileUploadFile ef,String fileDir) {
-        byte[] bytes = ef.getBytes();
-        String fileName=ef.getFileName();
-        File file=null;
-        FileOutputStream out=null;
-        RandomAccessFile randomAccessFile=null;
-        try {
-            file= new File(fileDir + File.separator + fileName);
-            if(!file.exists()){
-                randomAccessFile= new RandomAccessFile(file, "rw");
-                randomAccessFile.write(bytes);
-            }else{
-                out= new FileOutputStream(file,true);
-                out.write(bytes);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            try {
-                if(randomAccessFile!=null){
-                    randomAccessFile.close();
-                }
-                if(out!=null){
-                    out.close();
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
-        System.out.println(s);
     }
 
     @Override

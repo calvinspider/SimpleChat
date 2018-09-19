@@ -1,16 +1,11 @@
 package org.yang.zhang.view;
 
-import com.sun.javaws.progress.Progress;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-
 /**
  * @Author calvin.zhang
  * @Description

@@ -1,5 +1,6 @@
 package org.yang.zhang.module;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -20,7 +21,11 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "t_chatinfo")
-public class MessageInfo {
+public class MessageInfo implements Serializable {
+
+
+    private static final long serialVersionUID = 3003591638655395359L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

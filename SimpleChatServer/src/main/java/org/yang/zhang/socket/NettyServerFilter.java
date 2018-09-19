@@ -6,19 +6,12 @@ package org.yang.zhang.socket;
  * @Date 2018 06 08 15:11
  */
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 
 /**
  *
@@ -35,13 +28,9 @@ public class NettyServerFilter extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline ph = ch.pipeline();
-        // 以("\n")为结尾分割的 解码器
-//        ph.addLast("framer", new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-        // 解码和编码，应和客户端一致
-//        ph.addLast("decoder", new StringDecoder());
-//        ph.addLast("encoder", new StringEncoder());
         ph.addLast(new ObjectEncoder());
         ph.addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.weakCachingConcurrentResolver(null))); // 最大长度
-        ph.addLast(new NettyServerHandler());// 服务端业务逻辑
+        ph.addLast(new MessageInfoHandler());
+        ph.addLast(new FileMessageHandler());
     }
 }

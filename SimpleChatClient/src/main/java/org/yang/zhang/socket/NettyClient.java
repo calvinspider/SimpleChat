@@ -7,21 +7,15 @@ package org.yang.zhang.socket;
  */
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.CharsetUtil;
 import javafx.scene.control.ProgressBar;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
 
-import org.yang.zhang.module.FileUploadFile;
+import org.yang.zhang.module.FileMessage;
 
 /**
  *
@@ -72,7 +66,7 @@ public class NettyClient{
             totalByte=totalByte-byteRead;
             Boolean create=true;
             while (byteRead!=-1) {
-                FileUploadFile uploadFile = new FileUploadFile();
+                FileMessage uploadFile = new FileMessage();
                 uploadFile.setType(0);
                 uploadFile.setBytes(bytes);
                 uploadFile.setFileName(fileName);
@@ -116,7 +110,7 @@ public class NettyClient{
             int byteRead = randomAccessFile.read(bytes);
             totalByte=totalByte-byteRead;
             Boolean create=true;
-            FileUploadFile uploadFile = new FileUploadFile();
+            FileMessage uploadFile = new FileMessage();
             while (byteRead!=-1) {
                 uploadFile.setOriginalUserId(originalUserId);
                 uploadFile.setTargetUserId(targetUserId);

@@ -9,7 +9,7 @@ package org.yang.zhang.module;
 import java.io.File;
 import java.io.Serializable;
 
-public class FileUploadFile implements Serializable {
+public class FileMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String fileName;// 文件名
