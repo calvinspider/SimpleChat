@@ -8,6 +8,7 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.yang.zhang.interceptor.HttpInterceptor;
 
 /**
  * @Author calvin.zhang
@@ -24,6 +25,7 @@ public class RestConfig {
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getInterceptors().add(new HttpInterceptor());
         return restTemplate;
     }
 
