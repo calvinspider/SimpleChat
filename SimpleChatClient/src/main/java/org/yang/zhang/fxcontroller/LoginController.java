@@ -29,6 +29,7 @@ import org.yang.zhang.constants.StageCodes;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.enums.UserStatusType;
+import org.yang.zhang.service.LoginService;
 import org.yang.zhang.utils.VirtualKeyboard;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
@@ -67,7 +68,7 @@ public class LoginController extends AbstractController implements Initializable
     private MenuButton statusMenu;
 
     @Autowired
-    private LoginServiceImpl loginService;
+    private LoginService loginService;
     @Autowired
     private MainController mainController;
     @Autowired
@@ -84,24 +85,38 @@ public class LoginController extends AbstractController implements Initializable
     //默认登陆状态
     private UserStatusType status=UserStatusType.ONLINE;
     //历史登陆账号缓存
-    private Map<String,String> loginedMap=new HashMap<>();
+    private Map<String,String> loginedUserIconMap=new HashMap<>();
 
     public void initialize(URL url, ResourceBundle rb) {
-        //初始化历史登陆用户数据（账号下拉框）
+
         initHistoryLoginedUsers();
-        //初始化用户状态选择框
+
         initUserStatusList();
-        //初始化密码虚拟键盘
+
         initKeyBoard();
-        //初始化系统配置
+
         initConfig();
     }
 
+    /**
+     * 初始化用户状态选择框
+     */
     private void initUserStatusList() {
+
+        //默认状态在线
         statusMenu.setGraphic(new ImageView(new Image(Constant.STATUS_ONLINE_ICON)));
+
+        //三种登陆状态
         MenuItem online=new MenuItem(UserStatusType.ONLINE.getText(),new ImageView(new Image(Constant.STATUS_ONLINE_ICON)));
         MenuItem busy=new MenuItem(UserStatusType.BUSY.getText(),new ImageView(new Image(Constant.STATUS_BUSY_ICON)));
         MenuItem invisible=new MenuItem(UserStatusType.INVISIBLE.getText(),new ImageView(new Image(Constant.STATUS_INVISIBLE_ICON)));
+
+        //添加状态菜单
+        statusMenu.getItems().add(online);
+        statusMenu.getItems().add(busy);
+        statusMenu.getItems().add(invisible);
+
+        //设置全局用户状态
         online.setOnAction((event)->{
             statusMenu.setGraphic(new ImageView(new Image(Constant.STATUS_ONLINE_ICON)));
             status=UserStatusType.ONLINE;
@@ -114,40 +129,53 @@ public class LoginController extends AbstractController implements Initializable
             statusMenu.setGraphic(new ImageView(new Image(Constant.STATUS_INVISIBLE_ICON)));
             status=UserStatusType.INVISIBLE;
         });
-        statusMenu.getItems().add(online);
-        statusMenu.getItems().add(busy);
-        statusMenu.getItems().add(invisible);
+
+
     }
 
+    /**
+     * 初始化系统配置
+     */
     private void initConfig() {
-       if(ClientCache.systemConfig.getRemember()!=null&&ClientCache.systemConfig.getRemember()){
+        //若勾选过记住账号,使用第一个账号
+        Boolean setRemember=ClientCache.systemConfig.getRemember()!=null&&ClientCache.systemConfig.getRemember();
+       if(setRemember){
            remember.setSelected(true);
            Map<String,String> map=ClientCache.systemConfig.getPwdMap();
-           if(map!=null){
-               for (Map.Entry<String,String> entry:map.entrySet()){
+           if(map!=null&&map.size()!=0){
+               Map.Entry<String,String> entry= map.entrySet().iterator().next();
                    userName.setValue(entry.getKey());
                    passWord.setText(entry.getValue());
-                   break;
-               }
            }
        }else{
            remember.setSelected(false);
        }
+
+       //登陆框可拖拽
        setDragable();
     }
 
+    /**
+     * 初始化历史登陆用户数据（账号下拉框）
+     */
     private void initHistoryLoginedUsers() {
+
+        userName.setCellFactory(LoginedUserCellImpl.callback);
+
+        //从登陆历史文件中获取用户账号
         List<LoginedUserView> list=SystemConfigUtils.findLoginedUsers();
-        for (LoginedUserView view:list){
-            loginedMap.put(view.getId(),view.getIconUrl());
-        }
+        //填充用户id-用户头像MAP后续展示使用
+        list.forEach((item)->loginedUserIconMap.put(item.getId(),item.getIconUrl()));
+
+        //用户名下拉框元素填充
         userName.getItems().addAll(list);
         userName.setEditable(true);
+
+        //用户名下拉框元素选中后切换左侧头像框图片
         userName.getEditor().setOnKeyReleased((KeyEvent)->{
             String text=userName.getEditor().getText();
-            setIcon(text);}
-        );
-        userName.setCellFactory(LoginedUserCellImpl.callback);
+            setIcon(text);
+        });
         userName.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             if(newValue instanceof String){
                 setIcon((String) newValue);
@@ -158,6 +186,9 @@ public class LoginController extends AbstractController implements Initializable
         });
     }
 
+    /**
+     * 初始化密码虚拟键盘
+     */
     private void initKeyBoard(){
         keyBoardStage=new Stage();
         final VBox root = new VBox();
@@ -167,28 +198,29 @@ public class LoginController extends AbstractController implements Initializable
         keyBoardStage.setScene(scene);
         keyBoardStage.initStyle(StageStyle.UNDECORATED);
         keyBoardStage.setResizable(false);
-        keyborad.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(keyBoardStage.isShowing()){
-                    keyBoardStage.hide();
-                }else{
-                    keyBoardStage.setY(StageManager.getStage(StageCodes.LOGIN).getY()+260);
-                    keyBoardStage.setX(StageManager.getStage(StageCodes.LOGIN).getX()+100);
-                    keyBoardStage.show();
-                }
-                event.consume();
+        keyborad.addEventHandler(MouseEvent.MOUSE_CLICKED, (event)->{
+            if(keyBoardStage.isShowing()){
+                keyBoardStage.hide();
+            }else{
+                keyBoardStage.setY(StageManager.getStage(StageCodes.LOGIN).getY()+260);
+                keyBoardStage.setX(StageManager.getStage(StageCodes.LOGIN).getX()+100);
+                keyBoardStage.show();
             }
+            event.consume();
         });
         keyborad.cursorProperty().setValue(Cursor.HAND);
     }
 
+    /**
+     * 根据用户ID来设置左侧头像
+     * @param id
+     */
     private void setIcon(String id){
-        if(!loginedMap.containsKey(id)){
+        if(!loginedUserIconMap.containsKey(id)){
             userIcon.setImage(ImageUtiles.getUserIcon("defaultIcon.png"));
             return;
         }
-        Image image=ImageUtiles.getUserIcon(loginedMap.get(id));
+        Image image=ImageUtiles.getUserIcon(loginedUserIconMap.get(id));
         userIcon.setImage(image);
     }
 
@@ -196,17 +228,14 @@ public class LoginController extends AbstractController implements Initializable
     public void login() {
         String name=userName.getEditor().getText();
         String pwd=passWord.getText();
-        Integer s=this.status.getValue();
+        Integer userStatus=status.getValue();
         if(StringUtils.isBlank(name)||StringUtils.isBlank(pwd)){
             return;
         }
-        loginButton.setText("登录中...");
-        Result<User> result=loginService.login(name,pwd,s);
+        Result<User> result=loginService.login(name,pwd,userStatus);
         if(ResultConstants.RESULT_FAILED.equals(result.getCode())){
             //登陆失败显示失败框
             DialogUtils.alert("登陆失败,用户名或密码错误!");
-            loginButton.setText("登录");
-            passWord.setText("");
             return;
         }
         User user= result.getData();
@@ -219,8 +248,9 @@ public class LoginController extends AbstractController implements Initializable
         }
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
-        login.hide();
-        keyBoardStage.hide();
+        login.close();
+        keyBoardStage.close();
+        //弹出主页面
         Stage mainStage=new Stage();
         mainStage.setScene(new Scene(mainView.getView()));
         mainStage.initStyle(StageStyle.UNDECORATED);
@@ -232,9 +262,15 @@ public class LoginController extends AbstractController implements Initializable
         mainStage.getIcons().add(userIcon.getImage());
         //注册主界面
         StageManager.registerStage(StageCodes.MAIN,mainStage);
+        //托盘图标显示
         trayManger.tray(mainStage);
     }
 
+    /**
+     * 文件保存用户账号信息
+     * @param id
+     * @param pwd
+     */
     private void saveUserPwdMap(Integer id, String pwd) {
         Map<String,String> map=ClientCache.systemConfig.getPwdMap();
         map.put(String.valueOf(id),pwd);
@@ -250,11 +286,8 @@ public class LoginController extends AbstractController implements Initializable
             registerStage.initStyle(StageStyle.TRANSPARENT);
             registerStage.show();
             StageManager.registerStage(StageCodes.REGISTER,registerStage);
-            registerStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                    registerStage.hide();
-                }
+            registerStage.setOnCloseRequest((event)->{
+                registerStage.hide();
             });
         }else{
             StageManager.getStage(StageCodes.REGISTER).show();

@@ -8,11 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yang.zhang.dto.in.UserLoginDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.module.User;
 import org.yang.zhang.repository.UserRepository;
 import org.yang.zhang.service.UserService;
 import org.yang.zhang.utils.MailUtils;
+import org.yang.zhang.utils.Md5SaltTool;
 
 /**
  * @Author calvin.zhang
@@ -26,25 +28,27 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public Result<User> login(String userName, String passWord,Integer status) {
+    public Result<User> login(UserLoginDto userLoginDto) {
         try {
-            User user=userRepository.findById(Integer.valueOf(userName)).get();
-            User newUser=new User();
-            BeanUtils.copyProperties(user,newUser);
-            if(newUser.getPassword().equals(passWord)){
-                user.setStatus(status);
-                userRepository.saveAndFlush(user);
-                return Result.successData(newUser);
+            Optional<User> optionalUser=userRepository.findById(userLoginDto.getUserId());
+            if(optionalUser.isPresent()){
+                User user=optionalUser.get();
+                if(Md5SaltTool.validPassword(userLoginDto.getPassWord(),user.getPassword())){
+                    //设置用户登录状态
+                    user.setStatus(userLoginDto.getStatus());
+                    userRepository.saveAndFlush(user);
+                    return Result.successData(user);
+                }
             }
         }catch (Exception e){
             return Result.errorMessage("用户登陆失败");
         }
-
         return Result.errorMessage("用户登陆失败");
     }
 
     @Override
     public User register(User user) {
+        user.setPassword(Md5SaltTool.getEncryptedPwd(user.getPassword()));
         return userRepository.save(user);
     }
 

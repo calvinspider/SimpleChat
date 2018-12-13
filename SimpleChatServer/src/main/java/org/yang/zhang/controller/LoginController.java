@@ -1,13 +1,11 @@
 package org.yang.zhang.controller;
 
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.yang.zhang.dto.LoginDto;
+import org.yang.zhang.dto.in.UserLoginDto;
 import org.yang.zhang.entity.Result;
-import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.UserService;
 import org.yang.zhang.utils.JsonUtils;
@@ -24,9 +22,8 @@ public class LoginController {
     private UserService userService;
 
     @RequestMapping("/login")
-    public Result<User> login(@RequestBody LoginDto loginDto) {
-        Result<User> result= userService.login(loginDto.getUserName(),loginDto.getPassWord(),loginDto.getStatus());
-        return result;
+    public Result<User> login(@RequestBody UserLoginDto userLoginDto) {
+        return userService.login(userLoginDto);
     }
 
     @RequestMapping("/findPassWord")

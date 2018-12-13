@@ -1,5 +1,6 @@
 package org.yang.zhang.service;
 
+import org.yang.zhang.dto.in.UserLoginDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.module.User;
 
@@ -10,7 +11,10 @@ import org.yang.zhang.module.User;
  */
 
 public interface UserService {
-    Result<User> login(String userName, String passWord,Integer status);
+
+    Result<User> login(UserLoginDto userLoginDto);
+
     User register(User user);
+
     Result<Void> findPassWord(String userId);
 }

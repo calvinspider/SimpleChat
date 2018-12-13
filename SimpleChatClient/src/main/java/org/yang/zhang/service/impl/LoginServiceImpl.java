@@ -2,46 +2,27 @@ package org.yang.zhang.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.yang.zhang.constants.Constant;
-import org.yang.zhang.dto.LoginDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.module.User;
+import org.yang.zhang.service.ApiService;
 import org.yang.zhang.service.LoginService;
-import org.yang.zhang.utils.JsonUtils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
-@Service("LoginService")
+@Service("loginService")
 public class LoginServiceImpl implements LoginService {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private ApiService apiService;
 
     @Override
-    public Result<User> login(String userName, String passWord,Integer status) {
-        TypeReference type = new TypeReference<Result<User>>(){};
-        LoginDto loginDto=new LoginDto();
-        loginDto.setUserName(userName);
-        loginDto.setPassWord(passWord);
-        loginDto.setStatus(status);
-        try {
-            String result=restTemplate.postForObject(Constant.LoginUrl,loginDto,String.class);
-            return JsonUtils.fromJson(result, type);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return Result.errorMessage("登陆失败");
+    public Result<User> login(String userId, String passWord,Integer status) {
+
+        return apiService.login(userId,passWord,status);
+
     }
 
     public Result<Void> findPassWord(String userId) {
-        TypeReference type = new TypeReference<Result<Void>>(){};
-        try {
-            String result=restTemplate.postForObject(Constant.FindPassword,null,String.class,userId);
-            return JsonUtils.fromJson(result, type);
-        }catch (Exception e){
-            e.printStackTrace();
-            return Result.errorMessage("系统异常,请稍后再试!");
-        }
+
+        return apiService.findPassWord(userId);
+
     }
 }
