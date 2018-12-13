@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<User> login(String userName, String passWord,Integer status) {
         try {
-            User user=userRepository.getOne(Integer.valueOf(userName));
+            User user=userRepository.findById(Integer.valueOf(userName)).get();
             User newUser=new User();
             BeanUtils.copyProperties(user,newUser);
             if(newUser.getPassword().equals(passWord)){

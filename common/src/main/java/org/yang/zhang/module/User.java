@@ -35,8 +35,6 @@ public class User implements Serializable {
     private String email;
     private String iconUrl;
     private String password;
-//    private String personalDesc;
-//    private String job;
     private Integer status;
 
 
