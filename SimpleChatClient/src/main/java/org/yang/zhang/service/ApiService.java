@@ -1,5 +1,6 @@
 package org.yang.zhang.service;
 
+import org.yang.zhang.dto.in.QrLoginDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.module.User;
 
@@ -13,4 +14,6 @@ public interface ApiService {
     Result<User> login(String userId, String passWord, Integer status);
 
     Result<Void> findPassWord(String userId);
+
+    Result<User> loginByQrCode(QrLoginDto qrLoginDto);
 }

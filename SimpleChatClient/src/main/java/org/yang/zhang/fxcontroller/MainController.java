@@ -108,12 +108,14 @@ public class MainController  implements Initializable {
     @Autowired
     private SearchContractController searchContractController;
 
-    private Integer userId;
     private ContractItemView focusItem;
     private double xOffset = 0;
     private double yOffset = 0;
     public static ContextMenu groupMenu = new ContextMenu();
     public static ContextMenu userMenu = new ContextMenu();
+    private Integer userId;
+    private User user;
+    private Image image;
     /**
      * 主页面初始化
      * @param location
@@ -121,22 +123,25 @@ public class MainController  implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        userId=UserUtils.getCurrentUserId();
+        user=UserUtils.getCurrentUser();
+        image=ImageUtiles.getUserIcon(user.getIconUrl());
     }
 
-    public void init(User user){
-        this.userId=user.getId();
-        initMainPane(user);
-        regesterChannel(user);
-        initContract(user);
-        initTabPane(user);
+    public void init(){
+        initMainPane();
+        regesterChannel();
+        initContractList();
+        initTabPane();
         initEvent();
         userMenu();
         groupMenu();
     }
 
-    private void initMainPane(User user) {
-        Image image=ImageUtiles.getUserIcon(user.getIconUrl());
+    /**
+     * 初始化主面板元素
+     */
+    private void initMainPane() {
         userIcon.setImage(image);
         nameLabel.setText(user.getNickName());
         personWord.setText(user.getPersonWord());
@@ -144,17 +149,22 @@ public class MainController  implements Initializable {
         UserUtils.setUserIcon(image);
     }
 
-    private void regesterChannel(User user) {
-        //向服务器注册当前channel
+    /**
+     * 向服务器注册当前channel
+     */
+    private void regesterChannel() {
         ChatUtils.sendMessage(null,MessageType.REGISTER,null);
     }
 
-    private void initTabPane(User user) {
+    /**
+     * 初始化页签
+     */
+    private void initTabPane() {
         tabPane.setOnMouseClicked(click->{
            int index=tabPane.getSelectionModel().getSelectedIndex();
            //联系人
-           if(index==0){
-               initContract(user);
+            if(index==0){
+               initContractList();
             //最近消息
            }else if (index==1){
                initRecentMessage(user);
@@ -190,14 +200,16 @@ public class MainController  implements Initializable {
 
     }
 
-    public void initContract(User loginUser){
-        Integer id=loginUser.getId();
-        //获取当前用户联系人列表
+    /**
+     *获取当前用户联系人列表
+     */
+    public void initContractList(){
         FindByUserDto findByUserDto=new FindByUserDto();
-        findByUserDto.setUserId(id);
+        findByUserDto.setUserId(userId);
+        //拉取所有好友
         findByUserDto.setOnlyOnline(false);
-        initContracts(findByUserDto);
-
+        //初始化联系人列表
+        doInitContractList(findByUserDto);
     }
 
 
@@ -378,11 +390,11 @@ public class MainController  implements Initializable {
         FindByUserDto findByUserDto=new FindByUserDto();
         findByUserDto.setUserId(UserUtils.getCurrentUserId());
         findByUserDto.setOnlyOnline(true);
-        initContracts(findByUserDto);
+        doInitContractList(findByUserDto);
     }
 
     private void flushGroup(ActionEvent event) {
-        initContract(UserUtils.getCurrentUser());
+        initContractList();
     }
 
     private void editGroup(ActionEvent event) {
@@ -432,7 +444,7 @@ public class MainController  implements Initializable {
         //删除分组,原分组下的人移到默认的分组中
         String groupId = contractItemView.getId();
         chatService.deleteGroup(UserUtils.getCurrentUserId(), Integer.valueOf(groupId.substring(groupId.indexOf("P") + 1, groupId.length())));
-        initContract(UserUtils.getCurrentUser());
+        initContractList();
 
     }
 
@@ -446,7 +458,7 @@ public class MainController  implements Initializable {
         String parentId=item.getParent().getValue().getId();
         Integer pid=Integer.valueOf(parentId.substring(parentId.indexOf("P")+1,parentId.length()));
         chatService.deleteFriend(pid,Integer.valueOf(contractItemView.getId()));
-        initContract(UserUtils.getCurrentUser());
+        initContractList();
     }
 
     private void addGroup(ActionEvent event) {
@@ -489,19 +501,21 @@ public class MainController  implements Initializable {
         itemView.setId("GROUP"+contractGroup.getId());
     }
 
-    public void initContracts(FindByUserDto findByUserDto){
+    private void doInitContractList(FindByUserDto findByUserDto){
         List<ContractGroupDto> contracts= contractService.getContractList(findByUserDto);
         //添加根节点
         TreeItem<ContractItemView> rootItem = new TreeItem<ContractItemView>();
         rootItem.setValue(null);
         contractTree.setRoot(rootItem);
         contractTree.setShowRoot(false);
+        //清空旧联系人和组数据
         ClientCache.clearContract();
         ClientCache.clearGroup();
         //添加联系人到列表
         for (ContractGroupDto contract:contracts) {
+            //分组label未：组名 在线人数/总人数
             ContractItemView pane=new ContractItemView(contract.getGroupName()+" "+contract.getOnlineCount()+"/"+contract.getAllCount());
-            pane.setId("GROUP"+contract.getGroupId());
+            pane.setId(Constant.GROUP_PREFIX+contract.getGroupId());
             TreeItem<ContractItemView> groupItem = new TreeItem<ContractItemView>(pane);
             ClientCache.addGroup(groupItem);
             rootItem.getChildren().add(groupItem);

@@ -35,5 +35,6 @@
       </ImageView>
       <MenuButton fx:id="statusMenu" layoutX="90.0" layoutY="264.0" maxHeight="16" maxWidth="16" minHeight="16.0" minWidth="16.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0">
       </MenuButton>
+      <Button fx:id="qrBtn" layoutX="390.0" layoutY="294.0" maxHeight="40.0" maxWidth="40.0" mnemonicParsing="false" onAction="#showLoginQrCode" prefHeight="32.0" prefWidth="32.0" />
    </children>
 </Pane>

@@ -1,6 +1,7 @@
 package org.yang.zhang.fxcontroller;
 
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,12 +10,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.UUID;
+
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -26,10 +33,12 @@ import org.yang.zhang.abstracts.AbstractController;
 import org.yang.zhang.cellimpl.LoginedUserCellImpl;
 import org.yang.zhang.constants.Constant;
 import org.yang.zhang.constants.StageCodes;
+import org.yang.zhang.dto.in.QrLoginDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.entity.ResultConstants;
 import org.yang.zhang.enums.UserStatusType;
 import org.yang.zhang.service.LoginService;
+import org.yang.zhang.utils.QrCodeCreateUtil;
 import org.yang.zhang.utils.VirtualKeyboard;
 import org.yang.zhang.module.User;
 import org.yang.zhang.service.impl.LoginServiceImpl;
@@ -46,6 +55,8 @@ import org.yang.zhang.view.MainView;
 import org.yang.zhang.view.PasswordBackView;
 import org.yang.zhang.view.RegisterView;
 import org.yang.zhang.view.UserStatusView;
+
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 @FXMLController
 public class LoginController extends AbstractController implements Initializable {
@@ -86,6 +97,8 @@ public class LoginController extends AbstractController implements Initializable
     private UserStatusType status=UserStatusType.ONLINE;
     //历史登陆账号缓存
     private Map<String,String> loginedUserIconMap=new HashMap<>();
+
+    private Stage qrStage=null;
 
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -164,6 +177,7 @@ public class LoginController extends AbstractController implements Initializable
 
         //从登陆历史文件中获取用户账号
         List<LoginedUserView> list=SystemConfigUtils.findLoginedUsers();
+
         //填充用户id-用户头像MAP后续展示使用
         list.forEach((item)->loginedUserIconMap.put(item.getId(),item.getIconUrl()));
 
@@ -239,16 +253,22 @@ public class LoginController extends AbstractController implements Initializable
             return;
         }
         User user= result.getData();
-        UserUtils.setCurrentUser(user);
+        dealAfterLogin(user);
+    }
 
+    private void dealAfterLogin(User user) {
+        UserUtils.setCurrentUser(user);
         //文件保存历史登陆用户
         SystemConfigUtils.saveUserLoginHistory(user);
         if(remember.isSelected()){
-            saveUserPwdMap(user.getId(),pwd);
+            saveUserPwdMap(user.getId(),"");
         }
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.close();
+        if(qrStage!=null){
+            qrStage.close();
+        }
         keyBoardStage.close();
         //弹出主页面
         Stage mainStage=new Stage();
@@ -256,7 +276,7 @@ public class LoginController extends AbstractController implements Initializable
         mainStage.initStyle(StageStyle.UNDECORATED);
         ActionManager.setOnCloseExistListener(mainStage);
         //初始化主界面
-        mainController.init(user);
+        mainController.init();
         mainStage.show();
         mainStage.setResizable(false);
         mainStage.getIcons().add(userIcon.getImage());
@@ -333,6 +353,55 @@ public class LoginController extends AbstractController implements Initializable
             StageManager.getStage(StageCodes.LOGIN).setX(event.getScreenX() - xOffset);
             StageManager.getStage(StageCodes.LOGIN).setY(event.getScreenY() - yOffset);
         });
+    }
+
+    @FXML
+    private void showLoginQrCode()
+    {
+        try{
+            Integer userId=1;
+            String qrToken=UUID.randomUUID().toString().replace("-","");
+
+            QrLoginDto qrLoginDto=new QrLoginDto();
+            qrLoginDto.setQrToken(qrToken);
+            qrLoginDto.setUserId(userId);
+
+            String url=Constant.registerQrCode+"?userId="+userId+"&qrToken="+qrToken;
+            File file=new File(Constant.fileRoot+File.separator+Constant.QrCodeFile);
+            QrCodeCreateUtil.createQrCode(new FileOutputStream(file),url,1200,"JPEG");
+            ImageView imageView=new ImageView(new Image(Constant.FILE_PROTOTAL+file.getAbsolutePath()));
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
+            //弹出二维码框
+            Pane pane = new Pane(imageView);
+            Scene scene = new Scene(pane);
+
+            qrStage = new Stage();
+            qrStage.initStyle(StageStyle.TRANSPARENT);
+            qrStage.setScene(scene);
+            qrStage.show();
+
+            //展示完二维码后启动线程来轮询二维码登陆接口
+            new Thread(()->{
+                //轮询登陆接口
+                try {
+                    for (;;){
+                        Result<User> result=loginService.loginByQrCode(qrLoginDto);
+                        if(ResultConstants.RESULT_SUCCESS.equals(result.getCode())){
+                            Platform.runLater(()->{
+                                dealAfterLogin(result.getData());
+                            });
+                            break;
+                        }
+                        Thread.sleep(1000);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }).start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

@@ -58,7 +58,7 @@ public class ContractTreeCellImpl extends TreeCell<ContractItemView> {
                     newGroupId.substring(newGroupId.indexOf("P")+1,newGroupId.length()));
             e.setDropCompleted(true);
             e.consume();
-            mainController.initContract(UserUtils.getCurrentUser());
+            mainController.initContractList();
         });
         setOnDragExited(e -> {
             e.consume();

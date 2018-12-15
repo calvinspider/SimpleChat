@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.yang.zhang.constants.Constant;
+import org.yang.zhang.dto.in.QrLoginDto;
 import org.yang.zhang.dto.in.UserLoginDto;
 import org.yang.zhang.entity.Result;
 import org.yang.zhang.module.User;
@@ -43,6 +44,18 @@ public class ApiServiceImpl implements ApiService {
         TypeReference type = new TypeReference<Result<Void>>(){};
         try {
             String result=restTemplate.postForObject(Constant.FindPassword,null,String.class,userId);
+            return JsonUtils.fromJson(result, type);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.errorMessage("系统异常,请稍后再试!");
+        }
+    }
+
+    @Override
+    public Result<User> loginByQrCode(QrLoginDto qrLoginDto) {
+        TypeReference type = new TypeReference<Result<User>>(){};
+        try {
+            String result=restTemplate.postForObject(Constant.QrCodeLoginUrl,qrLoginDto,String.class);
             return JsonUtils.fromJson(result, type);
         }catch (Exception e){
             e.printStackTrace();
