@@ -5,6 +5,23 @@
     -fx-pref-height: 42;
 }
 
+#qrRoot{
+    /*-fx-background-color: transparent;*/
+    /*-fx-background-image:url("../images/loginBanner.jpg");*/
+}
+
+#qrCode{
+
+}
+
+#qrBackBtn{
+
+}
+
+#qrMessage{
+
+}
+
 .combo-box-popup .list-view
 {
 }

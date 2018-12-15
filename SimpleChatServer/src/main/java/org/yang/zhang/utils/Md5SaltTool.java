@@ -130,4 +130,8 @@ public class Md5SaltTool {
         }
         return "";
     }
+
+    public static void main(String[] args) {
+        System.out.println(getEncryptedPwd("123456"));
+    }
 }

@@ -24,6 +24,7 @@ public class SimpleChatClientApplication extends AbstractJavaFxApplicationSuppor
 
     @Override
     public void start(Stage stage) throws Exception {
+        System.setProperty("javafx.stage.style","TRANSPARENT");
         stage.setResizable(false);
         stage.setIconified(false);
         StageManager.registerStage(StageCodes.LOGIN,stage);

@@ -50,11 +50,7 @@ import org.yang.zhang.utils.SystemConfigUtils;
 import org.yang.zhang.utils.TrayManger;
 import org.yang.zhang.utils.UserUtils;
 import org.yang.zhang.utils.StageManager;
-import org.yang.zhang.view.LoginedUserView;
-import org.yang.zhang.view.MainView;
-import org.yang.zhang.view.PasswordBackView;
-import org.yang.zhang.view.RegisterView;
-import org.yang.zhang.view.UserStatusView;
+import org.yang.zhang.view.*;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
@@ -88,6 +84,8 @@ public class LoginController extends AbstractController implements Initializable
     private RegisterView registerView;
     @Autowired
     private PasswordBackView passwordBackView;
+    @Autowired
+    private QrLoginView qrLoginView;
 
     //加载托盘图标
     private TrayManger trayManger=new TrayManger();
@@ -99,6 +97,13 @@ public class LoginController extends AbstractController implements Initializable
     private Map<String,String> loginedUserIconMap=new HashMap<>();
 
     private Stage qrStage=null;
+
+    private Scene normalLoginScence;
+
+    private Scene qrLoginScence;
+
+    boolean stopTryLogin=false;
+
 
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -150,6 +155,10 @@ public class LoginController extends AbstractController implements Initializable
      * 初始化系统配置
      */
     private void initConfig() {
+
+        Stage login=StageManager.getStage(StageCodes.LOGIN);
+        normalLoginScence=login.getScene();
+
         //若勾选过记住账号,使用第一个账号
         Boolean setRemember=ClientCache.systemConfig.getRemember()!=null&&ClientCache.systemConfig.getRemember();
        if(setRemember){
@@ -266,9 +275,7 @@ public class LoginController extends AbstractController implements Initializable
         //登陆成功关闭登陆框
         Stage login=StageManager.getStage(StageCodes.LOGIN);
         login.close();
-        if(qrStage!=null){
-            qrStage.close();
-        }
+
         keyBoardStage.close();
         //弹出主页面
         Stage mainStage=new Stage();
@@ -359,6 +366,7 @@ public class LoginController extends AbstractController implements Initializable
     private void showLoginQrCode()
     {
         try{
+            //目前没有客户端，用userId=1模拟一下
             Integer userId=1;
             String qrToken=UUID.randomUUID().toString().replace("-","");
 
@@ -369,23 +377,23 @@ public class LoginController extends AbstractController implements Initializable
             String url=Constant.registerQrCode+"?userId="+userId+"&qrToken="+qrToken;
             File file=new File(Constant.fileRoot+File.separator+Constant.QrCodeFile);
             QrCodeCreateUtil.createQrCode(new FileOutputStream(file),url,1200,"JPEG");
-            ImageView imageView=new ImageView(new Image(Constant.FILE_PROTOTAL+file.getAbsolutePath()));
-            imageView.setFitWidth(200);
-            imageView.setFitHeight(200);
-            //弹出二维码框
-            Pane pane = new Pane(imageView);
-            Scene scene = new Scene(pane);
-
-            qrStage = new Stage();
-            qrStage.initStyle(StageStyle.TRANSPARENT);
-            qrStage.setScene(scene);
-            qrStage.show();
-
+            Stage login=StageManager.getStage(StageCodes.LOGIN);
+            ImageView imageView=(ImageView) qrLoginView.getView().lookup("#qrCode");
+            imageView.setImage(new Image(Constant.FILE_PROTOTAL+file.getAbsolutePath()));
+            if(qrLoginScence==null){
+                qrLoginScence=new Scene(qrLoginView.getView());
+            }
+            login.setScene(qrLoginScence);
+            setDragable();
             //展示完二维码后启动线程来轮询二维码登陆接口
+            stopTryLogin=false;
             new Thread(()->{
                 //轮询登陆接口
                 try {
                     for (;;){
+                        if(stopTryLogin){
+                            break;
+                        }
                         Result<User> result=loginService.loginByQrCode(qrLoginDto);
                         if(ResultConstants.RESULT_SUCCESS.equals(result.getCode())){
                             Platform.runLater(()->{
@@ -402,6 +410,13 @@ public class LoginController extends AbstractController implements Initializable
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void backtoNormalLogin(){
+        Stage login=StageManager.getStage(StageCodes.LOGIN);
+        login.setScene(normalLoginScence);
+        stopTryLogin=true;
     }
 
 }
