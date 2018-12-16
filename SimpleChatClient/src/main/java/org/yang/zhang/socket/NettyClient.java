@@ -11,11 +11,10 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import javafx.scene.control.ProgressBar;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.yang.zhang.module.FileMessage;
 import org.yang.zhang.module.MessageInfo;
@@ -70,7 +69,6 @@ public class NettyClient{
             Boolean create=true;
             while (byteRead!=-1) {
                 FileMessage uploadFile = new FileMessage();
-                uploadFile.setType(0);
                 uploadFile.setBytes(bytes);
                 uploadFile.setFileName(fileName);
                 uploadFile.setCreate(create);
@@ -96,6 +94,8 @@ public class NettyClient{
         }
     }
 
+    private static String fileDir = "D:\\simpleChatFiles";
+
     public static void sendFileWithProcess(Integer originalUserId,Integer targetUserId,File file, String fileName, ProgressBar progressBar){
             if (file.exists()) {
                 if (!file.isFile()) {
@@ -107,27 +107,35 @@ public class NettyClient{
         try {
             int size=4096;
             randomAccessFile = new RandomAccessFile(file, "r");
+            Long original=file.length();
+            BigDecimal ori=new BigDecimal(original);
+            Long totalByte=original;
             byte[] bytes = new byte[size];
             int byteRead;
-            Boolean create=true;
 
-            int count=0;
-            while ((byteRead = randomAccessFile.read(bytes))!=-1) {
+            for (;;) {
+                byteRead = randomAccessFile.read(bytes);
                 FileMessage uploadFile = new FileMessage();
                 uploadFile.setOriginalUserId(originalUserId);
                 uploadFile.setTargetUserId(targetUserId);
                 uploadFile.setType(1);
+                if(byteRead==-1){
+                    uploadFile.setBytes(bytes);
+                    uploadFile.setFileName(fileName);
+                    uploadFile.setDataLength(0);
+
+                    uploadFile.setTag("end");
+                    channel.writeAndFlush(uploadFile);
+                    break;
+                }
                 uploadFile.setBytes(bytes);
                 uploadFile.setFileName(fileName);
-                uploadFile.setCreate(create);
-                uploadFile.setRemain(byteRead);
-                uploadFile.setTotal((long)count++);
-                channel.write(uploadFile);
-//                progressBar.setProgress((original-totalByte)/original);
-                create = false;
-//                totalByte=totalByte-byteRead;
+                uploadFile.setDataLength(byteRead);
+                channel.writeAndFlush(uploadFile);
+                BigDecimal cur=new BigDecimal(original-totalByte);
+                progressBar.setProgress(cur.divide(ori,RoundingMode.HALF_UP).doubleValue());
+                totalByte=totalByte-byteRead;
             }
-            channel.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

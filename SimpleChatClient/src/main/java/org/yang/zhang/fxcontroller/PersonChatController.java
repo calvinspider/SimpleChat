@@ -108,7 +108,7 @@ public class PersonChatController implements Initializable {
                         ThreadPoolUtils.run(()->{
                             NettyClient.sendFileWithProcess(UserUtils.getCurrentUserId()
                                     ,Integer.valueOf(getUserId())
-                                    ,file,new Date().getTime()+fileName
+                                    ,file,fileName
                                     ,smallFileMessage.getProcessbar());
                         Platform.runLater(()->{
                             //文件传送完之后删除右侧文件节点
