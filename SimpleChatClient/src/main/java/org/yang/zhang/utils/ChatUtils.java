@@ -56,7 +56,7 @@ public class ChatUtils {
         messageInfo.setTargetclientid(targetId);
         messageInfo.setMsgtype(messageType);
         messageInfo.setMsgcontent(content);
-        NettyClient.sendMessage(JsonUtils.toJson(messageInfo));
+        NettyClient.sendMessage(messageInfo);
     }
 
     public static void appendBubble(ScrollPane scrollPane, BubbleType bubbleType, String content, Image icon, Double width){

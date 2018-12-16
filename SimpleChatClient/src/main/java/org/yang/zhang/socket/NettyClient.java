@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 
 import org.yang.zhang.module.FileMessage;
+import org.yang.zhang.module.MessageInfo;
 
 /**
  *
@@ -45,8 +46,8 @@ public class NettyClient{
         }
     }
 
-    public static void sendMessage(String message){
-        channel.writeAndFlush(message+"\n");
+    public static void sendMessage(MessageInfo message){
+        channel.writeAndFlush(message);
     }
 
     public static void sendFile(File file, String fileName){

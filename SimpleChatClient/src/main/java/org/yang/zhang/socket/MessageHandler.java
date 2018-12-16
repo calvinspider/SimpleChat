@@ -65,7 +65,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<MessageInfo> {
                     }else {
                         ChatUtils.appendBubble(chatWindow.getChatPane(),BubbleType.LEFT,info.getMsgcontent(),ImageUtiles.getUserIcon(userId),670D);
                     }
-                    rightConerPop(info.getMsgcontent(),String.valueOf(userId),userId);
+//                    rightConerPop(info.getMsgcontent(),String.valueOf(userId),userId);
+
                 });
                 break;
             case ROOM:

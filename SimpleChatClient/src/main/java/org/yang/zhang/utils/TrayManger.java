@@ -8,6 +8,7 @@ import javax.imageio.stream.ImageInputStream;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import org.yang.zhang.constants.Constant;
 
 /**
  * @Author calvin.zhang
@@ -17,9 +18,10 @@ import javafx.stage.Stage;
 
 public class TrayManger {
 
-    private  final String iconImageLoc = "file:D:\\Documents\\SimpleChat\\SimpleChatClient\\src\\main\\resources\\images\\icon\\QQ.png";
     private Stage stage;
     public  void tray(Stage stage){
+        File file=new File(Constant.fileRoot+File.separator+Constant.trayFile);
+        String iconImageLoc="file:"+file.getAbsolutePath();
         this.stage=stage;
         try {
             java.awt.Toolkit.getDefaultToolkit();

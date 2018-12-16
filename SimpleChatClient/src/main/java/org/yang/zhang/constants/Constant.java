@@ -34,6 +34,7 @@ public class Constant {
     public static String historyUserFileName="historyUser.txt";
     public static String SystemConfigFileName="systemConfig.txt";
     public static String QrCodeFile="qrcode.jpg";
+    public static String trayFile="QQ.png";
     public static String STATUS_ONLINE_ICON="images/icon/online_status.png";
     public static String STATUS_BUSY_ICON="images/icon/busy_status.png";
     public static String STATUS_INVISIBLE_ICON="images/icon/invisiable_status.png";

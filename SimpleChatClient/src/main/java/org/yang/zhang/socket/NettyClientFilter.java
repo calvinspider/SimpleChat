@@ -28,7 +28,7 @@ public class NettyClientFilter extends ChannelInitializer<SocketChannel> {
         ChannelPipeline ph = ch.pipeline();
         ph.addLast(new ObjectEncoder());
         ph.addLast(new ObjectDecoder(ClassResolvers.weakCachingConcurrentResolver(null)));
-        ph.addLast(new MessageHandler());
         ph.addLast(new FileMessageHandler());
+        ph.addLast(new MessageHandler());
     }
 }

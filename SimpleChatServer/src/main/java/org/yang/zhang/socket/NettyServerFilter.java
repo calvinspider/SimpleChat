@@ -30,7 +30,8 @@ public class NettyServerFilter extends ChannelInitializer<SocketChannel> {
         ChannelPipeline ph = ch.pipeline();
         ph.addLast(new ObjectEncoder());
         ph.addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.weakCachingConcurrentResolver(null))); // 最大长度
-        ph.addLast(new MessageInfoHandler());
         ph.addLast(new FileMessageHandler());
+        ph.addLast(new MessageInfoHandler());
+
     }
 }

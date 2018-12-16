@@ -3,6 +3,7 @@ package org.yang.zhang.socket;
 import java.io.File;
 
 import org.yang.zhang.module.FileMessage;
+import org.yang.zhang.module.MessageInfo;
 import org.yang.zhang.utils.ChannelManager;
 import org.yang.zhang.utils.FileUtils;
 
@@ -22,8 +23,11 @@ public class FileMessageHandler extends SimpleChannelInboundHandler<FileMessage>
     private static String userIconDir = "D:\\simpleChatFiles\\usericon";
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FileMessage ef) throws Exception {
-
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if(!(msg instanceof FileMessage)){
+            super.channelRead(ctx,msg);
+        }
+        FileMessage ef=(FileMessage)msg;
         if(0==ef.getType()){//上传头像
             FileUtils.saveFile(ef,userIconDir);
         }else if(1==ef.getType()){//上传文件
@@ -35,6 +39,11 @@ public class FileMessageHandler extends SimpleChannelInboundHandler<FileMessage>
             /*ChannelHandlerContext targetChannel=ChannelManager.getChannel(String.valueOf(ef.getTargetUserId()));
             targetChannel.writeAndFlush(ef);*/
         }
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FileMessage ef) throws Exception {
+
     }
 
     @Override

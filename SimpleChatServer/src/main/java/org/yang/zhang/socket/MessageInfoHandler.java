@@ -28,14 +28,17 @@ import org.yang.zhang.utils.SpringContextUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import sun.plugin2.message.Message;
 
 public class MessageInfoHandler extends SimpleChannelInboundHandler<MessageInfo> {
 
 
-
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, MessageInfo info) throws Exception {
-
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if(!(msg instanceof MessageInfo)){
+            super.channelRead(ctx,msg);
+        }
+        MessageInfo info=(MessageInfo)msg;
         ChatMessageRepository chatMessageRepository=SpringContextUtils.getBean("chatMessageRepository");
         RecentContractRepository recentContractRepository=SpringContextUtils.getBean("recentContractRepository");
         ChatRoomMapper chatRoomMapper=SpringContextUtils.getBean("chatRoomMapper");
@@ -91,6 +94,12 @@ public class MessageInfoHandler extends SimpleChannelInboundHandler<MessageInfo>
             }
             chatMessageRepository.save(info);
         }
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, MessageInfo info) throws Exception {
+
+
     }
 
     @Override
