@@ -24,6 +24,7 @@ import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
@@ -107,7 +108,7 @@ public class PersonChatController implements Initializable {
                         ThreadPoolUtils.run(()->{
                             NettyClient.sendFileWithProcess(UserUtils.getCurrentUserId()
                                     ,Integer.valueOf(getUserId())
-                                    ,file,fileName
+                                    ,file,new Date().getTime()+fileName
                                     ,smallFileMessage.getProcessbar());
                         Platform.runLater(()->{
                             //文件传送完之后删除右侧文件节点

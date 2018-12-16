@@ -17,6 +17,9 @@ public class FileUtils {
     public static void saveFile(FileMessage ef, String fileDir) {
         byte[] bytes = ef.getBytes();
         String fileName=ef.getFileName();
+        Integer length=ef.getRemain();
+//        System.out.println(length);
+        System.out.println(ef.getTotal());
         File file=null;
         FileOutputStream out=null;
         RandomAccessFile randomAccessFile=null;
@@ -24,10 +27,10 @@ public class FileUtils {
             file= new File(fileDir + File.separator + fileName);
             if(!file.exists()){
                 randomAccessFile= new RandomAccessFile(file, "rw");
-                randomAccessFile.write(bytes);
+                randomAccessFile.write(bytes,0,length);
             }else{
                 out= new FileOutputStream(file,true);
-                out.write(bytes);
+                out.write(bytes,0,length);
             }
         }catch (Exception e){
             e.printStackTrace();

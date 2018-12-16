@@ -13,6 +13,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import javafx.scene.control.ProgressBar;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 import org.yang.zhang.module.FileMessage;
@@ -103,34 +105,29 @@ public class NettyClient{
             }
         RandomAccessFile randomAccessFile=null;
         try {
-            int size=1024;
-            Long totalByte=file.length();
-            Long original=totalByte;
+            int size=4096;
             randomAccessFile = new RandomAccessFile(file, "r");
             byte[] bytes = new byte[size];
-            int byteRead = randomAccessFile.read(bytes);
-            totalByte=totalByte-byteRead;
+            int byteRead;
             Boolean create=true;
-            FileMessage uploadFile = new FileMessage();
-            while (byteRead!=-1) {
+
+            int count=0;
+            while ((byteRead = randomAccessFile.read(bytes))!=-1) {
+                FileMessage uploadFile = new FileMessage();
                 uploadFile.setOriginalUserId(originalUserId);
                 uploadFile.setTargetUserId(targetUserId);
                 uploadFile.setType(1);
                 uploadFile.setBytes(bytes);
                 uploadFile.setFileName(fileName);
                 uploadFile.setCreate(create);
-                uploadFile.setTotal(original);
-                uploadFile.setRemain(totalByte.intValue());
-                channel.writeAndFlush(uploadFile);
-                progressBar.setProgress((original-totalByte)/original);
+                uploadFile.setRemain(byteRead);
+                uploadFile.setTotal((long)count++);
+                channel.write(uploadFile);
+//                progressBar.setProgress((original-totalByte)/original);
                 create = false;
-                totalByte=totalByte-byteRead;
-                if(totalByte<size){
-                    bytes=new byte[byteRead];
-                }
-                byteRead = randomAccessFile.read(bytes);
-
+//                totalByte=totalByte-byteRead;
             }
+            channel.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
